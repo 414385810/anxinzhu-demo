@@ -35,8 +35,14 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
 /* ===== App Container ===== */
 .app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden}
 
+/* ===== Mobile Adaptation ===== */
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{-webkit-overflow-scrolling:touch}
+button,input,select,textarea{font-family:inherit;-webkit-appearance:none}
+button{touch-action:manipulation;cursor:pointer}
+
 /* ===== Screen System ===== */
-.screen{display:none;min-height:100vh;padding:0;animation:screenIn .4s ease}
+.screen{display:none;min-height:100vh;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);animation:screenIn .4s ease}
 .screen.active{display:block}
 @keyframes screenIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
@@ -69,7 +75,7 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
 .route-badge.live{background:var(--soft);color:var(--accent2)}
 .route-badge.soon{background:#f0ede8;color:var(--muted)}
 
-.welcome-cta{padding:0 28px 40px}
+.welcome-cta{padding:0 28px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
 .welcome-note{font-size:12px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.5}
 
 /* ===== API Key Box ===== */
@@ -118,7 +124,7 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
 .privacy-note::before{content:"🔒";flex-shrink:0}
 
 /* ===== Fixed Bottom Bar ===== */
-.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px 24px;background:var(--bg2);border-top:1px solid var(--rule);z-index:100}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px 24px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg2);border-top:1px solid var(--rule);z-index:100}
 .btn-primary{width:100%;padding:16px;border:none;border-radius:var(--radius);background:linear-gradient(135deg,var(--accent2),#4a7a58);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(95,139,107,.3)}
 .btn-primary:active{transform:scale(.98)}
 .btn-primary:disabled{background:#ccc;box-shadow:none;cursor:not-allowed}
@@ -227,7 +233,7 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
 .report-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
 .share-btn-top{background:var(--accent2);color:#fff;border:none;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .share-btn-top:active{transform:scale(.97)}
-.report-bottom-actions{display:flex;gap:10px;padding:16px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:50}
+.report-bottom-actions{display:flex;gap:10px;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:50}
 .btn-share{flex:1;padding:14px;background:var(--accent2);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
 .btn-share:active{transform:scale(.98)}
 .btn-restart{padding:14px 20px;background:var(--bg2);color:var(--muted);border:1.5px solid var(--rule);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
@@ -245,6 +251,12 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
 .share-option-icon{font-size:22px;flex-shrink:0}
 .share-copied{color:var(--accent2);font-size:14px;font-weight:600;margin-top:12px;display:none}
 .share-copied.show{display:block}
+
+/* Share Image Preview */
+.share-image-preview{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.share-image-preview img{max-width:100%;max-height:68vh;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.share-image-preview-title{color:#fff;font-size:16px;font-weight:600;margin-bottom:12px;text-align:center}
+.share-image-preview-tip{color:rgba(255,255,255,0.8);font-size:13px;margin-top:12px;text-align:center;line-height:1.5}
 
 /* Child Report */
 .report-child{padding:24px;display:none}
@@ -563,11 +575,11 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
           <div style="font-size:12px;color:var(--muted)">粘贴到任何地方</div>
         </div>
       </button>
-      <button class="share-option" onclick="exportReportPDF()">
-        <span class="share-option-icon">📄</span>
+      <button class="share-option" onclick="generateShareImage()">
+        <span class="share-option-icon">🖼️</span>
         <div>
-          <div>导出 PDF 报告</div>
-          <div style="font-size:12px;color:var(--muted)">保存后分享到微信</div>
+          <div>生成分享图</div>
+          <div style="font-size:12px;color:var(--muted)">生成图片发微信/朋友圈</div>
         </div>
       </button>
     </div>
@@ -2022,6 +2034,92 @@ function shareViaWebAPI(){
   }else{
     copyReportText();
   }
+}
+
+async function generateShareImage(){
+  const container=document.getElementById('reportContent');
+  if(!container || !container.innerHTML.trim()){
+    alert('请先生成报告');
+    return;
+  }
+  const btn=document.getElementById('shareCopied');
+  if(btn){
+    btn.textContent='⏳ 正在生成分享图片...';
+    btn.classList.add('show');
+  }
+  try{
+    // Build a shareable image wrapper
+    const wrapper=document.createElement('div');
+    wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:375px;background:#f6f7f4;padding:24px 20px;font-size:14px;line-height:1.65;color:#2c2c2c;z-index:-1;';
+    const dateStr=new Date().toLocaleDateString('zh-CN');
+    wrapper.innerHTML=`<div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:20px;font-weight:700;color:#5a7d3a;margin-bottom:4px;">🏠 安心住 · 居家安全报告</div>
+      <div style="font-size:12px;color:#888;">${dateStr}</div>
+    </div>`+renderChildReport()+renderParentReport()+`<div style="margin-top:20px;padding:12px;background:#eef3e6;border-radius:10px;font-size:12px;color:#5a7d3a;text-align:center;">用「安心住」AI 自查家中老人安全隐患</div>`;
+    document.body.appendChild(wrapper);
+
+    const canvas=await html2canvas(wrapper,{
+      scale:3,
+      useCORS:true,
+      backgroundColor:'#f6f7f4',
+      width:375,
+      height:wrapper.scrollHeight,
+      windowWidth:375,
+      windowHeight:wrapper.scrollHeight
+    });
+    document.body.removeChild(wrapper);
+
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    const file=new File([blob],`安心住安全报告_${dateStr}.png`,{type:'image/png'});
+
+    // Try native system share (shows WeChat on supported devices)
+    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
+      await navigator.share({
+        title:'安心住·居家安全报告',
+        text:'这是家里的安全检查结果，一起看看怎么改。',
+        files:[file]
+      });
+      if(btn){
+        btn.textContent='✅ 已唤起系统分享，选择微信即可发送';
+        setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+      }
+      return;
+    }
+
+    // Fallback: show image preview and save hint
+    const url=URL.createObjectURL(blob);
+    showShareImagePreview(url);
+    if(btn){
+      btn.textContent='✅ 分享图已生成，长按图片保存后发送到微信';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},4000);
+    }
+  }catch(e){
+    console.error('Share image failed:',e);
+    if(btn){
+      btn.textContent='❌ 分享图生成失败：'+e.message;
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+    }
+  }
+}
+
+function showShareImagePreview(url){
+  // Remove existing preview
+  const existing=document.getElementById('shareImagePreview');
+  if(existing) existing.remove();
+
+  const overlay=document.createElement('div');
+  overlay.id='shareImagePreview';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML=`<div style="color:#fff;font-size:16px;font-weight:600;margin-bottom:12px;text-align:center;">长按图片保存，然后发给微信</div>
+    <img src="${url}" style="max-width:100%;max-height:70vh;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.3);" />
+    <div style="display:flex;gap:12px;margin-top:16px;">
+      <button id="closeSharePreview" style="padding:10px 24px;border-radius:24px;border:none;background:#fff;color:#333;font-size:14px;font-weight:500;">关闭</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('closeSharePreview').onclick=()=>{
+    URL.revokeObjectURL(url);
+    overlay.remove();
+  };
 }
 
 async function exportReportPDF(){
