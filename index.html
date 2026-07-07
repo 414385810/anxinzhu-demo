@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>安心住 · 居家安全AI自查Demo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 /* ===== Reset & Base ===== */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -561,6 +563,13 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
           <div style="font-size:12px;color:var(--muted)">粘贴到任何地方</div>
         </div>
       </button>
+      <button class="share-option" onclick="exportReportPDF()">
+        <span class="share-option-icon">📄</span>
+        <div>
+          <div>导出 PDF 报告</div>
+          <div style="font-size:12px;color:var(--muted)">保存后分享到微信</div>
+        </div>
+      </button>
     </div>
     <div class="share-copied" id="shareCopied">✅ 已复制到剪贴板，去微信粘贴吧</div>
     <button class="share-option" style="justify-content:center;margin-top:10px;color:var(--muted)" onclick="closeShareModal()">关闭</button>
@@ -637,13 +646,21 @@ function generateDynamicBudgetPlans(){
   const mediumRisks = allRisks.filter(r => r.severity === 'medium');
   const lowRisks = allRisks.filter(r => r.severity === 'low');
 
-  // Split risks into free (cost=0) and paid (cost>0)
+  // Split risks into free (cost=0 or labor-only) and paid
   function splitItems(risks){
     const free=[];
     const paid=[];
     risks.forEach(r=>{
       const areaTag=r.areaName?`[${r.areaName}] `:'';
-      if(r.cost>0){
+      const suggestion=String(r.suggestion||'');
+      const title=String(r.title||'');
+      const combined=(title+suggestion).toLowerCase();
+      // Labor-only actions don't need money: 清理, 整理, 收拾, 移动, 归置, 移除, 调整, 保持, 避免, 注意, 检查, 测量, 固定
+      const laborOnlyKeywords=['清理','整理','收拾','移动','归置','移除','调整','摆放','保持','避免','注意','检查','测量','固定','扎紧','归位','收起','挪开','移开','清空','减少','规范'];
+      const isLaborOnly=laborOnlyKeywords.some(k=>combined.includes(k));
+      // Also free if AI explicitly set cost to 0
+      const isFree=!(r.cost>0) || isLaborOnly;
+      if(!isFree){
         paid.push({
           name:r.title,
           spec:'',
@@ -2004,6 +2021,72 @@ function shareViaWebAPI(){
     }).catch(()=>{});
   }else{
     copyReportText();
+  }
+}
+
+async function exportReportPDF(){
+  const container=document.getElementById('reportContent');
+  if(!container || !container.innerHTML.trim()){
+    alert('请先生成报告');
+    return;
+  }
+  const btn=document.getElementById('shareCopied');
+  if(btn){
+    btn.textContent='⏳ 正在生成 PDF，请稍候...';
+    btn.classList.add('show');
+  }
+  try{
+    // Create a clean clone for PDF rendering
+    const wrapper=document.createElement('div');
+    wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:750px;background:#fff;padding:40px;font-size:14px;line-height:1.6;color:#333;z-index:-1;';
+    // Build report HTML for PDF (combine child + parent versions)
+    const titleHTML=`<h1 style="font-size:24px;margin-bottom:8px;color:#5a7d3a;">安心住 · 居家安全报告</h1>`;
+    const childHTML=renderChildReport();
+    const parentHTML=renderParentReport();
+    wrapper.innerHTML=titleHTML+childHTML+'<div style="page-break-before:always;"></div>'+parentHTML;
+    document.body.appendChild(wrapper);
+
+    const canvas=await html2canvas(wrapper,{
+      scale:2,
+      useCORS:true,
+      backgroundColor:'#ffffff',
+      width:750,
+      height:wrapper.scrollHeight,
+      windowWidth:750,
+      windowHeight:wrapper.scrollHeight
+    });
+    document.body.removeChild(wrapper);
+
+    const { jsPDF }=window.jspdf;
+    const imgData=canvas.toDataURL('image/jpeg',0.92);
+    const imgProps=jsPDF.getImageProperties(imgData);
+    const pdfWidth=210; // A4 width mm
+    const pdfHeight=(imgProps.height*pdfWidth)/imgProps.width;
+    const pdf=new jsPDF('p','mm','a4');
+
+    let heightLeft=pdfHeight;
+    let position=0;
+    pdf.addImage(imgData,'JPEG',0,position,pdfWidth,pdfHeight);
+    heightLeft-=297;
+    while(heightLeft>0){
+      position=heightLeft-pdfHeight;
+      pdf.addPage();
+      pdf.addImage(imgData,'JPEG',0,position,pdfWidth,pdfHeight);
+      heightLeft-=297;
+    }
+
+    const dateStr=new Date().toLocaleDateString('zh-CN');
+    pdf.save(`安心住安全报告_${dateStr}.pdf`);
+    if(btn){
+      btn.textContent='✅ PDF 已保存，可到微信中发送文件';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+    }
+  }catch(e){
+    console.error('PDF export failed:',e);
+    if(btn){
+      btn.textContent='❌ PDF 生成失败：'+e.message;
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+    }
   }
 }
 
