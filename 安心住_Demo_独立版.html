@@ -98,6 +98,8 @@ button{touch-action:manipulation;cursor:pointer}
 .upload-header{padding:24px 24px 8px}
 .upload-h-title{font-size:20px;font-weight:700;color:var(--ink)}
 .upload-h-desc{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
+.upload-h-tip{font-size:12px;color:var(--accent2);margin-top:10px;line-height:1.5;padding:10px 12px;background:var(--soft);border-radius:var(--radius-sm)}
+.upload-h-tip strong{font-weight:700}
 
 .upload-areas{padding:16px 24px;display:flex;flex-direction:column;gap:16px}
 .upload-area{background:var(--bg2);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s}
@@ -406,6 +408,7 @@ button{touch-action:manipulation;cursor:pointer}
     <div class="upload-header">
       <div class="upload-h-title">上传路线照片</div>
       <div class="upload-h-desc">每个家庭格局不同，请分别拍下三个关键区域。至少上传1张即可分析，建议3张都拍。</div>
+      <div class="upload-h-tip">💡 建议使用<strong>超广角/0.5x</strong>拍摄，单张照片能覆盖床边、通道和卫生间更多区域，AI 识别更完整。</div>
     </div>
 
     <div class="upload-areas">
@@ -1898,26 +1901,43 @@ async function renderReport(){
     switchReport('child');
     return;
   }
-  // Show loading state first
-  renderReportLoading();
+
   document.querySelectorAll('.report-tab').forEach((t,i)=>{
     t.classList.toggle('active',i===0);
   });
-  // Generate LLM report if not yet
+
+  // If report already generated, render immediately without loading
+  if(llmReport){
+    switchReport('child');
+    return;
+  }
+
+  // Show loading state only when we really need to generate
+  renderReportLoading();
+
+  // Generate LLM report with a timeout guard to prevent infinite spinning
+  const REPORT_TIMEOUT_MS=30000; // 30s max wait, then use fallback
+  let reportPromise=generateLLMReport().catch(e=>{
+    console.error('LLM report generation failed:',e);
+    return null;
+  });
+
+  let timeoutPromise=new Promise(resolve=>setTimeout(()=>resolve('timeout'),REPORT_TIMEOUT_MS));
+  let result=await Promise.race([reportPromise,timeoutPromise]);
+
   if(!llmReport){
-    try{
-      await generateLLMReport();
-    }catch(e){
-      console.error('LLM report generation failed:',e);
-      llmReport=null; // fall back to static content
-      const container=document.getElementById('reportContent');
-      container.innerHTML=`
-      <div style="padding:24px;margin:16px;background:#fef2f0;border-radius:14px;font-size:13px;color:var(--danger);line-height:1.6">
-        ⚠️ AI 报告生成失败：${(e&&e.message)?e.message:'未知错误'}。<br>已为您展示标准报告内容。
-      </div>`;
-      await new Promise(r=>setTimeout(r,1500));
+    // Generation failed or timed out: use fallback
+    const hazardsData=analysisResults.map(r=>({
+      area:getAreaName(r.photo.area),
+      summary:r.summary,
+      hazards:r.risks.map(rk=>({title:rk.title,description:rk.desc,severity:rk.severity,suggestion:rk.suggestion,cost:rk.cost}))
+    }));
+    llmReport=getFallbackReport(hazardsData);
+    if(result==='timeout'){
+      console.warn('Report generation timed out, using fallback');
     }
   }
+
   switchReport('child');
 }
 
