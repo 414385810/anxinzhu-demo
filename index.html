@@ -233,6 +233,7 @@ button{touch-action:manipulation;cursor:pointer}
 .report-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100}
 .report-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .2s}
 .report-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
+.report-subtitle{font-size:13px;color:var(--muted);text-align:center;padding:12px 20px;line-height:1.5;background:var(--soft);border-bottom:1px solid var(--rule)}
 .share-btn-top{background:var(--accent2);color:#fff;border:none;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .share-btn-top:active{transform:scale(.97)}
 .report-bottom-actions{display:flex;gap:10px;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:50}
@@ -551,6 +552,7 @@ button{touch-action:manipulation;cursor:pointer}
     <button class="report-tab active" onclick="switchReport('child')">子女版</button>
     <button class="report-tab" onclick="switchReport('parent')">父母版</button>
   </div>
+  <div class="report-subtitle">同一份风险结果，生成两种表达方式：一份给子女判断，一份给爸妈沟通。</div>
   <div id="reportContent"></div>
   <div class="report-bottom-actions">
     <button class="btn-share" onclick="shareReport()">📤 分享报告</button>
