@@ -988,7 +988,7 @@ async function analyzePhotoWithLLM(photo, imgW, imgH){
   // Call Zhipu GLM-5V-Turbo directly from browser
   updateProgress(10,'正在用 AI 分析照片...','视觉大模型直接看图识别隐患');
 
-  const analyzePrompt='你是居家安全评估专家，专注老年人跌倒预防。请仔细观察这张'+areaName+'的照片，分析所有可能导致老人（特别是夜间起夜时）跌倒或受伤的安全隐患。\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明',severity:'high/medium/low',location:{x:0.0,y:0.0,width:0.0,height:0.0},suggestion:'整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['物品']}).replace(/"/g,'\"')+'\n\n坐标说明：location中的x,y是隐患区域中心点位置（0.0=最左/最上，1.0=最右/最下），width和height是隐患区域占图片的比例（0.0-1.0）。\n\n【专业评估标准（请严格按照以下标准判断）】\n\n一、床与睡眠安全：\n1. 床面高度：床垫上表面距地面理想高度40-50厘米（45厘米为最佳中间值）。老人使用轮椅时宜接近轮椅坐高（50-55厘米）。判断方法：老人自然坐在床沿，双脚平稳着地，膝关节呈100°-110°为安全。过低（<35cm）起身困难，过高（>55cm）上下床有跌落风险。\n2. 床脚/床腿：高床脚向外突出易踢到导致绊倒。建议更换为悬浮床架（床脚内收，避免踢到脚，更美观，不影响扫地机器人进出）。若暂无法更换，须粘贴反光警示条。\n3. 床边支撑：床边应设置助力扶手（床尾板式或可折叠式），床头柜高度宜略高于床面方便起坐借力。无支撑=高风险。\n4. 床垫硬度：床架和床垫边缘应有一定硬度，过软会导致起坐时身体下陷、增加起身难度。\n\n二、通行与通道：\n1. 常规通道净宽≥900mm为安全。<750mm为高风险（手杖通行最低要求），<600mm为极高风险。\n2. 轮椅90°转弯需1400mm×1700mm空间，180°转弯需1500mm×1350mm空间。\n3. 床侧护理/通行空间≥600mm，双人间床间通道≥900mm。\n4. U型交通布局比T型布局风险更高。\n\n三、地面安全：\n1. 地面材质：瓷砖防滑性差，适老木地板或防滑塑胶为佳。不同材质衔接处避免产生高差。\n2. 地毯：必须牢固固定在地面，边缘卷起=高风险。松动地毯=极高风险。\n3. 门槛/高差：任何高差都是绊倒隐患，应加装坡道。\n\n四、照明：\n1. 基础照明：主灯照度应≥200lx（250lx为佳），主灯避免直射床头。\n2. 起夜路线夜灯：应沿床沿、床尾、转角、卧室入口设置低位感应夜灯，距地300-400mm，采用漫反射脚灯避免眩光。无夜灯=高风险。\n3. 阅读灯：床头阅读区照度应达400lx。\n\n五、家具与防撞：\n1. 优先圆角家具，木质锐角突出处须安装防撞条（上置/下置、两面/三面防护样式）。\n2. 动线清障：通行路线上不应有任何障碍物（杂物、电线、低矮家具）。\n3. 储物：常用物品应放在650mm-1350mm高度区间（易取区），过高或过低取物有跌倒风险。\n\n六、插座与电线：\n1. 床头应设置0.6-0.8m高的插座，方便手机、设备充电。\n2. 电线必须梳理固定，外露电线=高风险。\n3. 床头两侧应有多点控制开关，方便上床后控制灯光。\n\n【重点排查清单】请特别关注以上标准，逐项检查照片中是否存在不符合的情况。\n\n【重要】如果对某个识别结果不确定（例如不确定地上是电线还是绳子、不确定床的高度是否超标、不确定某个物品是什么，或者描述中用了"目测"等不确定词），请设置 needs_verification 为 true，并在 verification_question 中写一个向用户核实的问题，verification_type 指定问题类型：\n- verification_type="confirm"：是非型问题，用户只需回答"是"或"否"。例如verification_question="地上的是不是电线？"\n- verification_type="measure"：测量型问题，需要用户输入一个数值。例如verification_question="床面（含床垫）距离地面的实际高度大约是多少厘米？"\n\n【核实问题方向规则（非常重要）】所有核实问题必须统一从"确认风险存在"的角度提问，让用户回答"是"=确认有这个隐患，"否"=排除这个隐患：\n   - 核实问题必须跟隐患标题直接相关，不能问其他维度的问题。例如标题是"床脚突出易绊"，问题就应该问"床脚是否明显向外突出于床体边缘？"，不能问"床面离地高度是否超过50厘米"（这是另一个隐患的维度）。如果需要核实多个维度，应该拆成多个隐患。\n   - 【关键】所有问题必须从"确认风险存在"的角度提问，让用户回答"是"=确认有隐患，"否"=排除隐患\n     错误示例：隐患是"缺乏照明"→问题="是否安装了夜灯？"（答是=已安装=风险不存在，跟按钮语义冲突）\n     正确示例：隐患是"缺乏照明"→问题="床边是否没有安装夜灯或感应灯？"（答是=确实没装=确认风险）\n     正确示例：隐患是"电线杂乱"→问题="地上的是不是电线？"（答是=是电线=确认风险）\n   - 如果不便用"是否没有"句式，可以直接问"这个隐患是否确实存在？"或"这个区域是否确实存在XXX问题？"\n   - 每个隐患的核实问题只能针对该隐患标题描述的具体问题，不要混合多个不相关的维度\n\n建议：能用是非问法就用confirm类型（如"床面高度是否超过了50厘米？"），只有在必须让用户提供具体数值时才用measure类型（如"床面离地高度大约是多少厘米？"）。对于确定的隐患，needs_verification 设为 false。';
+  const analyzePrompt='你是居家安全评估专家，专注老年人跌倒预防。请仔细观察这张'+areaName+'的照片，分析所有可能导致老人（特别是夜间起夜时）跌倒或受伤的安全隐患。\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明',severity:'high/medium/low',location:{x:0.0,y:0.0,width:0.0,height:0.0},suggestion:'整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['物品']}).replace(/"/g,'\"')+'\n\n【坐标说明（非常重要！必须准确！）】\nlocation中的x,y是隐患区域**中心点**在照片中的相对位置：\n- x: 水平方向，0.0=照片最左边，0.5=正中间，1.0=照片最右边\n- y: 垂直方向，0.0=照片最上方，0.5=正中间，1.0=照片最下方\n- width: 隐患区域宽度占照片宽度的比例（0.0-1.0）\n- height: 隐患区域高度占照片高度的比例（0.0-1.0）\n\n【坐标必须与隐患位置匹配！】\n- 如果隐患是"床脚突出"，坐标必须标在**床脚/床腿**所在位置（通常在照片下方）\n- 如果隐患是"缺乏夜灯"，坐标应标在**床沿下方或墙脚**位置（夜灯应安装的地方）\n- 如果隐患是"床面高度"，坐标必须标在**床垫表面**位置\n- 如果隐患是"电线杂乱"，坐标必须标在**电线实际所在位置**\n- 如果隐患是"地面湿滑"，坐标必须标在**地面**位置（通常y>0.6）\n- 如果隐患是"通道狭窄"，坐标必须标在**通道最窄处**\n- 如果隐患是"扶手缺失"，坐标应标在**应装扶手的位置**（如马桶旁墙壁）\n- 绝对不能把地面隐患标在天花板上，也不能把天花板隐患标在地面\n- 坐标偏离会导致用户误解，请务必对照照片中实际位置填写\n\n【专业评估标准（请严格按照以下标准判断）】\n\n一、床与睡眠安全：\n1. 床面高度：床垫上表面距地面理想高度40-50厘米（45厘米为最佳中间值）。老人使用轮椅时宜接近轮椅坐高（50-55厘米）。判断方法：老人自然坐在床沿，双脚平稳着地，膝关节呈100°-110°为安全。过低（<35cm）起身困难，过高（>55cm）上下床有跌落风险。\n2. 床脚/床腿：高床脚向外突出易踢到导致绊倒。建议更换为悬浮床架（床脚内收，避免踢到脚，更美观，不影响扫地机器人进出）。若暂无法更换，须粘贴反光警示条。\n3. 床边支撑：床边应设置助力扶手（床尾板式或可折叠式），床头柜高度宜略高于床面方便起坐借力。无支撑=高风险。\n4. 床垫硬度：床架和床垫边缘应有一定硬度，过软会导致起坐时身体下陷、增加起身难度。\n\n二、通行与通道：\n1. 常规通道净宽≥900mm为安全。<750mm为高风险（手杖通行最低要求），<600mm为极高风险。\n2. 轮椅90°转弯需1400mm×1700mm空间，180°转弯需1500mm×1350mm空间。\n3. 床侧护理/通行空间≥600mm，双人间床间通道≥900mm。\n4. U型交通布局比T型布局风险更高。\n\n三、地面安全：\n1. 地面材质：瓷砖防滑性差，适老木地板或防滑塑胶为佳。不同材质衔接处避免产生高差。\n2. 地毯：必须牢固固定在地面，边缘卷起=高风险。松动地毯=极高风险。\n3. 门槛/高差：任何高差都是绊倒隐患，应加装坡道。\n\n四、照明：\n1. 基础照明：主灯照度应≥200lx（250lx为佳），主灯避免直射床头。\n2. 起夜路线夜灯：应沿床沿、床尾、转角、卧室入口设置低位感应夜灯，距地300-400mm，采用漫反射脚灯避免眩光。无夜灯=高风险。\n3. 阅读灯：床头阅读区照度应达400lx。\n\n五、家具与防撞：\n1. 优先圆角家具，木质锐角突出处须安装防撞条（上置/下置、两面/三面防护样式）。\n2. 动线清障：通行路线上不应有任何障碍物（杂物、电线、低矮家具）。\n3. 储物：常用物品应放在650mm-1350mm高度区间（易取区），过高或过低取物有跌倒风险。\n\n六、插座与电线：\n1. 床头应设置0.6-0.8m高的插座，方便手机、设备充电。\n2. 电线必须梳理固定，外露电线=高风险。\n3. 床头两侧应有多点控制开关，方便上床后控制灯光。\n\n【重点排查清单】请特别关注以上标准，逐项检查照片中是否存在不符合的情况。\n\n【重要】如果对某个识别结果不确定（例如不确定地上是电线还是绳子、不确定床的高度是否超标、不确定某个物品是什么，或者描述中用了"目测"等不确定词），请设置 needs_verification 为 true，并在 verification_question 中写一个向用户核实的问题，verification_type 指定问题类型：\n- verification_type="confirm"：是非型问题，用户只需回答"是"或"否"。例如verification_question="地上的是不是电线？"\n- verification_type="measure"：测量型问题，需要用户输入一个数值。例如verification_question="床面（含床垫）距离地面的实际高度大约是多少厘米？"\n\n【核实问题方向规则（非常重要）】所有核实问题必须统一从"确认风险存在"的角度提问，让用户回答"是"=确认有这个隐患，"否"=排除这个隐患：\n   - 核实问题必须跟隐患标题直接相关，不能问其他维度的问题。例如标题是"床脚突出易绊"，问题就应该问"床脚是否明显向外突出于床体边缘？"，不能问"床面离地高度是否超过50厘米"（这是另一个隐患的维度）。如果需要核实多个维度，应该拆成多个隐患。\n   - 【关键】所有问题必须从"确认风险存在"的角度提问，让用户回答"是"=确认有隐患，"否"=排除隐患\n     错误示例：隐患是"缺乏照明"→问题="是否安装了夜灯？"（答是=已安装=风险不存在，跟按钮语义冲突）\n     正确示例：隐患是"缺乏照明"→问题="床边是否没有安装夜灯或感应灯？"（答是=确实没装=确认风险）\n     正确示例：隐患是"电线杂乱"→问题="地上的是不是电线？"（答是=是电线=确认风险）\n   - 如果不便用"是否没有"句式，可以直接问"这个隐患是否确实存在？"或"这个区域是否确实存在XXX问题？"\n   - 每个隐患的核实问题只能针对该隐患标题描述的具体问题，不要混合多个不相关的维度\n\n建议：能用是非问法就用confirm类型（如"床面高度是否超过了50厘米？"），只有在必须让用户提供具体数值时才用measure类型（如"床面离地高度大约是多少厘米？"）。对于确定的隐患，needs_verification 设为 false。';
 
   let resp;
   let usedFallback=false;
@@ -1088,10 +1088,45 @@ async function analyzePhotoWithLLM(photo, imgW, imgH){
       // location exists, try to extract bbox
       // GLM may return 0-1 decimals OR 0-100 percentages — normalize to 0-1
       const to01=(v)=>(typeof v==='number')?(v>1?v/100:v):0.15;
-      const cx_pct=to01(h.location.x);
-      const cy_pct=to01(h.location.y);
+      let cx_pct=to01(h.location.x);
+      let cy_pct=to01(h.location.y);
       const w_pct=to01(h.location.width);
       const h_pct=to01(h.location.height);
+
+      // Smart coordinate validation: fix mismatched locations based on hazard title
+      const title=String(h.title||'').toLowerCase();
+      const desc=String(h.description||'').toLowerCase();
+      const combined=title+desc;
+      
+      // Ground-level hazards should be in lower portion of photo (y > 0.5)
+      if(combined.includes('床脚')||combined.includes('床腿')||combined.includes('地面')||combined.includes('地毯')||combined.includes('门槛')||combined.includes('电线')||combined.includes('杂乱')||combined.includes('湿滑')){
+        if(cy_pct<0.4){
+          console.warn('Fixing ground hazard location: y was',cy_pct,'-> 0.75');
+          cy_pct=0.75;
+        }
+      }
+      // Bed surface hazards should be in middle portion (0.3 < y < 0.7)
+      if(combined.includes('床面')||combined.includes('床垫')||combined.includes('床高')){
+        if(cy_pct<0.2||cy_pct>0.8){
+          console.warn('Fixing bed surface location: y was',cy_pct,'-> 0.45');
+          cy_pct=0.45;
+        }
+      }
+      // Lighting hazards: nightlight should be lower, ceiling light should be upper
+      if(combined.includes('夜灯')||combined.includes('低位灯')){
+        if(cy_pct<0.4){
+          console.warn('Fixing nightlight location: y was',cy_pct,'-> 0.7');
+          cy_pct=0.7;
+        }
+      }
+      // Wall-mounted items (handrails, switches) should be mid-height
+      if(combined.includes('扶手')||combined.includes('开关')||combined.includes('插座')){
+        if(cy_pct<0.2||cy_pct>0.8){
+          console.warn('Fixing wall item location: y was',cy_pct,'-> 0.5');
+          cy_pct=0.5;
+        }
+      }
+
       // Convert to pixel bbox [x, y, w, h] (center-based)
       const cx=cx_pct*imgW;
       const cy=cy_pct*imgH;

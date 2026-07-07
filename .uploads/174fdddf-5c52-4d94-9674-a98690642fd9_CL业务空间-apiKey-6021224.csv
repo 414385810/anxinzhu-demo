@@ -1,0 +1,8 @@
+﻿id,6021224
+apiKey,sk-ws-H.EMHDHHL.CF4J.MEUCIGOFeVBxVatJx5yNPIZw3basqzQIA4FMbIp-NxM2Gu5TAiEAuCJ3D48rbCmj_HECWPDS-TTVt8imKgEY4Gq4v3KskAg
+apiHost,llm-3ictjf20i1m7rqpw.cn-beijing.maas.aliyuncs.com
+openAiCompatible,https://llm-3ictjf20i1m7rqpw.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+dashScope,https://llm-3ictjf20i1m7rqpw.cn-beijing.maas.aliyuncs.com/api/v1
+description,demo
+workspaceName,CL业务空间
+workspaceId,llm-3ictjf20i1m7rqpw

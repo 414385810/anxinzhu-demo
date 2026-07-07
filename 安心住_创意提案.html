@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安心住 - 老人夜间起夜安全 AI 体检工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #FAF8F5;
+            color: #3D3D3D;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 48px 24px;
+            background: linear-gradient(135deg, #F5F0E8 0%, #E8F0E8 100%);
+            border-radius: 24px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 120px;
+            height: 120px;
+            background: rgba(214, 168, 120, 0.15);
+            border-radius: 50%;
+        }
+        
+        .hero::after {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 100px;
+            height: 100px;
+            background: rgba(160, 190, 160, 0.2);
+            border-radius: 50%;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            color: #2C3E2C;
+            margin-bottom: 12px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero .subtitle {
+            font-size: 18px;
+            color: #6B7B6B;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero .tag {
+            display: inline-block;
+            background: #D6A878;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Section Styles */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+        }
+        
+        .section h2 {
+            font-size: 22px;
+            color: #2C3E2C;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #E8F0E8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h2 .icon {
+            width: 32px;
+            height: 32px;
+            background: #E8F0E8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .section p {
+            margin-bottom: 14px;
+            color: #4A4A4A;
+        }
+        
+        /* Highlight Box */
+        .highlight-box {
+            background: #FFF8F0;
+            border-left: 4px solid #D6A878;
+            padding: 20px 24px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+        
+        .highlight-box p {
+            margin: 0;
+            color: #5A4A3A;
+            font-size: 15px;
+        }
+        
+        /* Feature Cards */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: #FAFAF8;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #F0EDE8;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h3 {
+            font-size: 17px;
+            color: #2C3E2C;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-card h3 .num {
+            width: 28px;
+            height: 28px;
+            background: #D6A878;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .feature-card p {
+            margin: 0;
+            color: #5A5A5A;
+            font-size: 15px;
+        }
+        
+        /* User Tags */
+        .user-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        
+        .user-tag {
+            background: #E8F0E8;
+            color: #4A6B4A;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Pain Points */
+        .pain-points {
+            list-style: none;
+            padding: 0;
+            margin-top: 16px;
+        }
+        
+        .pain-points li {
+            padding: 12px 0 12px 36px;
+            position: relative;
+            border-bottom: 1px solid #F5F0E8;
+            color: #4A4A4A;
+        }
+        
+        .pain-points li:last-child {
+            border-bottom: none;
+        }
+        
+        .pain-points li::before {
+            content: "•";
+            position: absolute;
+            left: 12px;
+            color: #D6A878;
+            font-size: 20px;
+            line-height: 1;
+        }
+        
+        /* Value Section */
+        .value-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .value-item {
+            background: #F8FAF8;
+            border-radius: 14px;
+            padding: 22px;
+            border-left: 3px solid #A0BEA0;
+        }
+        
+        .value-item h4 {
+            font-size: 16px;
+            color: #2C3E2C;
+            margin-bottom: 8px;
+        }
+        
+        .value-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #5A5A5A;
+        }
+        
+        /* Demo Section */
+        .demo-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 20px;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .flow-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 52px;
+            width: 2px;
+            height: calc(100% - 32px);
+            background: #E8F0E8;
+        }
+        
+        .flow-step .step-num {
+            width: 40px;
+            height: 40px;
+            background: #D6A878;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 15px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .flow-step .step-content h4 {
+            font-size: 16px;
+            color: #2C3E2C;
+            margin-bottom: 4px;
+        }
+        
+        .flow-step .step-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #5A5A5A;
+        }
+        
+        /* Roadmap */
+        .roadmap {
+            background: #F5F0E8;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+        
+        .roadmap h4 {
+            font-size: 16px;
+            color: #2C3E2C;
+            margin-bottom: 14px;
+        }
+        
+        .roadmap ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .roadmap ul li {
+            padding: 8px 0 8px 28px;
+            position: relative;
+            font-size: 14px;
+            color: #4A4A4A;
+        }
+        
+        .roadmap ul li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #D6A878;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px;
+            color: #8A8A8A;
+            font-size: 14px;
+        }
+        
+        .footer .divider {
+            width: 40px;
+            height: 3px;
+            background: #D6A878;
+            margin: 0 auto 20px;
+            border-radius: 2px;
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .features {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .value-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 42px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h1>安心住</h1>
+            <p class="subtitle">帮爸妈检查夜间起夜路上有没有跌倒风险</p>
+            <span class="tag">社会服务赛道 · 社会公益（智慧助老）</span>
+        </div>
+        
+        <!-- 核心定位 -->
+        <div class="section">
+            <h2><span class="icon">💡</span>项目一句话</h2>
+            <div class="highlight-box">
+                <p>在老人摔倒发生之前，帮家人看见家里那几米路上的风险。</p>
+            </div>
+            <p>现在很多面向老人的 AI 产品，更多是陪伴聊天、用药提醒、跌倒后报警，或者做全屋适老化改造。但我觉得，很多普通家庭真正缺少的不是这些，而是一次简单的<strong>预防</strong>，一次<strong>事前检查</strong>——在老人真正摔倒之前，先帮子女看见家里那条最常走、也最容易被忽视的动线里，藏着哪些风险。</p>
+            <p>安心住的切入点不是“老人摔倒后通知家人”，而是“在摔倒发生之前，帮家人发现那几米路上可能存在的问题”。</p>
+        </div>
+        
+        <!-- 核心场景 -->
+        <div class="section">
+            <h2><span class="icon">🏠</span>核心场景</h2>
+            <p>很多老人家里看起来没什么大问题，但一到晚上，从<strong>床边起身 → 摸黑经过地毯 → 绕过家具边角 → 走进卫生间</strong>，每一步都可能变成隐患。</p>
+            <div class="features">
+                <div class="feature-card">
+                    <h3><span class="num">1</span>床边起身</h3>
+                    <p>没有支撑点，老人夜间半睡半醒时起身困难</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">2</span>夜间照明</h3>
+                    <p>光线不足，老人不愿开大灯怕刺眼或吵醒家人</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">3</span>地面障碍</h3>
+                    <p>地毯边缘、拖鞋、杂物可能成为绊倒隐患</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">4</span>转角碰撞</h3>
+                    <p>家具边角靠近夜间动线，半梦半醒时容易磕碰</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">5</span>卫生间湿滑</h3>
+                    <p>入口处湿滑，是夜间跌倒的高发位置</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 目标用户 -->
+        <div class="section">
+            <h2><span class="icon">👨‍👩‍👧</span>目标用户</h2>
+            <div class="user-tags">
+                <span class="user-tag">不与父母同住的成年子女</span>
+                <span class="user-tag">有老人同住的家庭</span>
+                <span class="user-tag">社区养老服务人员</span>
+                <span class="user-tag">适老化改造设计师</span>
+            </div>
+            <ul class="pain-points" style="margin-top: 20px;">
+                <li>子女关心父母，但不知道怎么判断家里哪里危险</li>
+                <li>想劝父母调整家具和动线，但老人可能觉得小题大做</li>
+                <li>普通家庭很难负担全屋适老化改造的费用和精力</li>
+                <li>很多隐患白天看不出来，只有夜间才变成风险</li>
+                <li>设计师做旧房改造或适老化改造时，也需要更具体的动线风险参考</li>
+            </ul>
+        </div>
+        
+        <!-- 核心功能 -->
+        <div class="section">
+            <h2><span class="icon">⚙️</span>核心功能</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <h3><span class="num">1</span>夜间动线体检</h3>
+                    <p>围绕"床到卫生间"这条路径，引导用户确认 5 个关键环节的安全隐患</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">2</span>风险优先级排序</h3>
+                    <p>不是罗列所有问题，而是告诉用户在有限预算里，哪些风险应该先处理</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">3</span>预算内改造方案</h3>
+                    <p>用户选择预算范围，系统生成优先处理最高风险、同时尽量不打扰父母原有生活习惯的改善建议</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span class="num">4</span>家庭沟通辅助</h3>
+                    <p>生成适合子女与父母沟通的温和表达方式，让建议不只是冷冰冰的改造方案</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 价值与意义 -->
+        <div class="section">
+            <h2><span class="icon">💚</span>价值与意义</h2>
+            <div class="value-grid">
+                <div class="value-item">
+                    <h4>社会价值</h4>
+                    <p>老人居家跌倒往往会带来严重后果，而很多风险可以通过提前发现和简单调整来降低</p>
+                </div>
+                <div class="value-item">
+                    <h4>家庭关系</h4>
+                    <p>低打扰、低成本、带有温度的家庭空间自查，让适老化改造更容易被父母接受</p>
+                </div>
+                <div class="value-item">
+                    <h4>落地可能</h4>
+                    <p>不需要佩戴设备，不需要安装摄像头，也不需要一开始就做全屋大改造</p>
+                </div>
+                <div class="value-item">
+                    <h4>持续扩展</h4>
+                    <p>从夜间起夜动线开始，逐步覆盖更多家庭生活场景的空间风险预防</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo 计划 -->
+        <div class="section">
+            <h2><span class="icon">📱</span>初赛 Demo 计划</h2>
+            <p>手机端 H5 网页，用户可以像使用小程序一样，先围绕“床到卫生间”这条夜间动线完成家庭空间自查。</p>
+            <div class="demo-flow">
+                <div class="flow-step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <h4>选择场景</h4>
+                        <p>进入"夜间起夜安全体检"</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <h4>确认风险</h4>
+                        <p>围绕起身支撑、夜间照明、地面障碍、转角碰撞、卫生间入口湿滑等情况逐项确认</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <h4>选择预算</h4>
+                        <p>设定预算范围，系统按风险优先级生成方案</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <h4>查看报告</h4>
+                        <p>获得优先处理建议、预算范围参考和家庭沟通辅助</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="roadmap">
+                <h4>后续扩展方向</h4>
+                <ul>
+                    <li>卫生间防滑场景</li>
+                    <li>客厅通行场景</li>
+                    <li>厨房拿取场景</li>
+                    <li>入户换鞋场景</li>
+                    <li>完善改造项价格库</li>
+                    <li>报告分享与社区服务对接</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 团队背景 -->
+        <div class="section">
+            <h2><span class="icon">🙋</span>为什么是我</h2>
+            <p>我大学学的是<strong>产品造型设计</strong>，后来做过<strong>设计软件培训</strong>，现在在家具行业从事<strong>新媒体工作</strong>。</p>
+            <p>这段经历让我既能理解家具尺寸、空间动线，也能理解普通用户怎么表达需求、怎么接受建议。安心住不是纯医疗项目，也不是纯装修项目，它更像是把家具空间经验转化成一次有温度的家庭安全体验。</p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="divider"></div>
+            <p>安心住 · TRAE AI 创造力大赛参赛作品</p>
+            <p>社会服务赛道 · 社会公益（智慧助老）</p>
+        </div>
+    </div>
+</body>
+</html>
