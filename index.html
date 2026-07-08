@@ -151,6 +151,18 @@ button{touch-action:manipulation;cursor:pointer}
 .scan-overlay{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(to bottom,transparent,var(--accent2),transparent);animation:scanMove 1.5s ease-in-out infinite}
 @keyframes scanMove{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
 
+/* ===== Analysis Questions ===== */
+.analyze-questions{margin-top:24px;padding:0 24px 24px;max-width:430px;margin-left:auto;margin-right:auto}
+.analyze-questions-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center}
+.analyze-questions-sub{font-size:12px;color:var(--muted);margin-bottom:16px;text-align:center;line-height:1.5}
+.analyze-question{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.analyze-question-num{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--accent2);font-size:12px;font-weight:700;text-align:center;line-height:22px;margin-right:8px}
+.analyze-question-text{font-size:14px;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:12px}
+.analyze-options{display:flex;flex-wrap:wrap;gap:8px}
+.analyze-option{flex:1;min-width:80px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:var(--radius-sm);background:var(--bg);font-size:13px;color:var(--ink);text-align:center;cursor:pointer;transition:all .15s}
+.analyze-option:active{transform:scale(.97)}
+.analyze-option.selected{border-color:var(--accent2);background:var(--soft);color:var(--accent2);font-weight:600}
+
 /* ===== Results Screen ===== */
 .results-screen{padding-bottom:100px}
 .results-header{padding:24px 24px 8px}
@@ -492,6 +504,12 @@ button{touch-action:manipulation;cursor:pointer}
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-text" id="progressText">0%</div>
     <div class="analyze-photos" id="analyzeThumbs"></div>
+
+    <div class="analyze-questions" id="analyzeQuestions">
+      <div class="analyze-questions-title">边分析边回答</div>
+      <div class="analyze-questions-sub">这几个问题照片看不出来，但对报告很重要，选完即可</div>
+      <div id="questionsList"></div>
+    </div>
   </div>
 </div>
 
@@ -611,6 +629,83 @@ let selectedBudget = null;
 let currentScreen = 'screen-welcome';
 let historyStack = [];
 let llmReport = null; // LLM 生成的报告内容（child_report + parent_report）
+let surveyAnswers = {}; // key: questionId -> option value
+
+// ===== Survey Questions (photo-invisible but report-critical) =====
+const surveyQuestions=[
+  {
+    id:'q1_sleep', order:1, stage:'scene',
+    text:'老人夜里通常是自己睡，还是和老伴一起睡？',
+    options:[
+      {value:'alone', label:'自己睡', riskBoost:1.2},
+      {value:'together', label:'和老伴一起', riskBoost:1.0},
+      {value:'caregiver', label:'有人陪护', riskBoost:0.9}
+    ]
+  },
+  {
+    id:'q2_nearfall', order:2, stage:'highrisk',
+    text:'最近 3 个月，老人有没有“差点摔倒”但没太当回事？',
+    options:[
+      {value:'yes', label:'有过', riskBoost:1.3, severityShift:'up'},
+      {value:'no', label:'没有', riskBoost:1.0},
+      {value:'unsure', label:'不清楚', riskBoost:1.1}
+    ]
+  },
+  {
+    id:'q3_awake', order:3, stage:'behavior',
+    text:'老人夜里起床后，是清醒了再走，还是半睡半醒就走？',
+    options:[
+      {value:'groggy', label:'半睡半醒就走', riskBoost:1.3, severityShift:'up'},
+      {value:'awake', label:'清醒了再走', riskBoost:1.0},
+      {value:'sometimes', label:'不一定', riskBoost:1.15}
+    ]
+  },
+  {
+    id:'q4_light', order:4, stage:'behavior',
+    text:'老人是不是因为怕麻烦、怕吵醒别人或省电，经常不开灯？',
+    options:[
+      {value:'often', label:'经常不开灯', riskBoost:1.4, severityShift:'up'},
+      {value:'sometimes', label:'偶尔', riskBoost:1.15},
+      {value:'no', label:'会开灯', riskBoost:1.0}
+    ]
+  },
+  {
+    id:'q5_urgent', order:5, stage:'behavior',
+    text:'老人夜里去卫生间时，会不会憋不住、赶着走？',
+    options:[
+      {value:'yes', label:'会，比较急', riskBoost:1.3, severityShift:'up'},
+      {value:'sometimes', label:'偶尔', riskBoost:1.1},
+      {value:'no', label:'不会', riskBoost:1.0}
+    ]
+  },
+  {
+    id:'q6_slippers', order:6, stage:'behavior',
+    text:'老人起床第一步，通常是直接踩拖鞋，还是要找拖鞋？',
+    options:[
+      {value:'find', label:'要找/找不到', riskBoost:1.2},
+      {value:'ready', label:'拖鞋固定放好', riskBoost:1.0},
+      {value:'barefoot', label:'光脚/穿袜子', riskBoost:1.25}
+    ]
+  },
+  {
+    id:'q7_unstable', order:7, stage:'behavior',
+    text:'老人夜里走路时，是不是会扶一些不太稳定的东西？',
+    options:[
+      {value:'yes', label:'会扶椅子/柜子等', riskBoost:1.3, severityShift:'up'},
+      {value:'no', label:'扶墙或扶手', riskBoost:1.0},
+      {value:'none', label:'不扶东西', riskBoost:1.1}
+    ]
+  },
+  {
+    id:'q8_resistance', order:8, stage:'resistance',
+    text:'家里人以前有没有劝过老人调整，但老人不愿意？',
+    options:[
+      {value:'yes', label:'劝过，不听', tone:'soft'},
+      {value:'little', label:'劝过，还行', tone:'neutral'},
+      {value:'no', label:'没劝过', tone:'neutral'}
+    ]
+  }
+];
 
 // ===== Budget Plans =====
 const budgetPlans = {
@@ -1364,10 +1459,12 @@ async function startAnalysis(){
   goTo('screen-analyze');
   updateProgress(0,'正在用 AI 并行分析所有照片...','同时分析'+uploadedPhotos.length+'张照片');
   renderAnalyzeThumbs();
+  renderSurveyQuestions();
 
   analysisResults=[];
   dynamicBudgetPlans=null; // reset dynamic plans
   selectedBudget=null; // reset selection
+  surveyAnswers={}; // reset survey answers
   const photos=uploadedPhotos.slice();
 
   // Pre-load all images to get dimensions
@@ -1465,6 +1562,9 @@ async function startAnalysis(){
     }
   }
 
+  // Apply survey-based risk adjustments before rendering
+  applySurveyAdjustments();
+
   // If all photos failed
   if(failCount===photos.length){
     var lastErr=analysisResults.length>0&&analysisResults[analysisResults.length-1].risks[0]
@@ -1511,6 +1611,125 @@ function updateProgress(pct,status,sub){
       ring.style.opacity='1';
     }
   }
+}
+
+function renderSurveyQuestions(){
+  const list=document.getElementById('questionsList');
+  if(!list) return;
+  list.innerHTML=surveyQuestions.map(q=>{
+    const opts=q.options.map(opt=>{
+      const selected=(surveyAnswers[q.id]===opt.value)?'selected':'';
+      return `<button class="analyze-option ${selected}" onclick="selectSurveyOption('${q.id}','${opt.value}')">${opt.label}</button>`;
+    }).join('');
+    const stageText={scene:'场景',highrisk:'高风险',behavior:'行为习惯',resistance:'沟通阻力'}[q.stage]||'';
+    return `<div class="analyze-question" data-qid="${q.id}">
+      <div class="analyze-question-text"><span class="analyze-question-num">${q.order}</span><span class="analyze-question-stage" style="font-size:11px;color:var(--muted);margin-left:6px;">[${stageText}]</span><br>${q.text}</div>
+      <div class="analyze-options">${opts}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectSurveyOption(qid,value){
+  surveyAnswers[qid]=value;
+  renderSurveyQuestions();
+  // Re-apply dynamic adjustments if results already exist
+  if(analysisResults.length>0){
+    applySurveyAdjustments();
+    renderResults();
+    renderBudgetCards();
+    if(llmReport) generateLLMReport();
+  }
+}
+
+function getSelectedOption(qid){
+  const q=surveyQuestions.find(x=>x.id===qid);
+  if(!q) return null;
+  return q.options.find(o=>o.value===surveyAnswers[qid])||null;
+}
+
+function applySurveyAdjustments(){
+  if(!analysisResults.length) return;
+
+  // 1. Compute global risk multiplier from survey answers
+  let totalBoost=1.0;
+  surveyQuestions.forEach(q=>{
+    const opt=getSelectedOption(q.id);
+    if(opt && opt.riskBoost) totalBoost*=opt.riskBoost;
+  });
+
+  // 2. Compute severity shifts (high-risk answers)
+  let severityShiftCount=0;
+  surveyQuestions.forEach(q=>{
+    const opt=getSelectedOption(q.id);
+    if(opt && opt.severityShift==='up') severityShiftCount++;
+  });
+
+  // 3. Specific category weights derived from answers
+  const lightAnswer=surveyAnswers['q4_light'];
+  const urgentAnswer=surveyAnswers['q5_urgent'];
+  const awakeAnswer=surveyAnswers['q3_awake'];
+  const unstableAnswer=surveyAnswers['q7_unstable'];
+  const slipperAnswer=surveyAnswers['q6_slippers'];
+
+  analysisResults.forEach(result=>{
+    result.risks.forEach(r=>{
+      const lowerTitle=(r.title||'').toLowerCase();
+      const lowerDesc=(r.desc||'').toLowerCase();
+      const combined=lowerTitle+lowerDesc;
+
+      // Base boost from overall survey
+      let boost=totalBoost;
+
+      // Category-specific boosts
+      if(combined.includes('灯')||combined.includes('照明')){
+        if(lightAnswer==='often') boost*=1.4;
+        else if(lightAnswer==='sometimes') boost*=1.15;
+      }
+      if(combined.includes('地面')||combined.includes('湿滑')||combined.includes('地毯')||combined.includes('门槛')){
+        if(awakeAnswer==='groggy') boost*=1.25;
+        if(urgentAnswer==='yes') boost*=1.25;
+        if(slipperAnswer==='find'||slipperAnswer==='barefoot') boost*=1.2;
+      }
+      if(combined.includes('扶手')||combined.includes('支撑')){
+        if(unstableAnswer==='yes') boost*=1.3;
+        if(awakeAnswer==='groggy') boost*=1.15;
+      }
+      if(combined.includes('电线')||combined.includes('杂物')||combined.includes('杂乱')){
+        if(urgentAnswer==='yes') boost*=1.2;
+      }
+
+      // Apply boost to severity level
+      const sevOrder={low:0,medium:1,high:2};
+      const order=sevOrder[r.severity]||1;
+      // Each boost tier raises severity by one step
+      let newOrder=order;
+      if(boost>=1.5) newOrder=Math.min(2,order+2);
+      else if(boost>=1.2) newOrder=Math.min(2,order+1);
+      // Additional shift from high-risk answers
+      newOrder=Math.min(2,newOrder+severityShiftCount);
+      const newSev=['low','medium','high'][newOrder];
+      if(newSev!==r.severity) r.severity=newSev;
+
+      // Mark high-priority for action plan if boost is significant
+      r.surveyPriority=boost>=1.3;
+    });
+
+    // Re-sort: high > medium > low, and survey-priority first within same severity
+    result.risks.sort((a,b)=>{
+      const sevOrder={high:0,medium:1,low:2};
+      if(sevOrder[a.severity]!==sevOrder[b.severity]){
+        return sevOrder[a.severity]-sevOrder[b.severity];
+      }
+      return (b.surveyPriority?1:0)-(a.surveyPriority?1:0);
+    });
+
+    // Re-number visible bbox risks
+    let n=0;
+    result.risks.forEach(r=>{
+      if(r.bbox && r.verified!==false) r.number=++n;
+      else r.number=null;
+    });
+  });
 }
 
 function renderResults(){
@@ -1846,10 +2065,22 @@ async function generateLLMReport(){
       description:rk.desc,
       severity:rk.severity,
       suggestion:rk.suggestion,
-      cost:rk.cost
+      cost:rk.cost,
+      survey_priority:!!rk.surveyPriority
     }))
   }));
-  const reportPrompt='你是一个懂中国家庭代际关系的居家安全顾问。\n\n背景：一个成年子女用AI检查了父母（或即将搬来同住的老人）家里的安全隐患，现在需要一份"与父母沟通指南"，帮助子女说服老人接受必要的适老化改造。\n\n以下是AI分析出的实际隐患：\n'+JSON.stringify(hazardsData)+'\n\n请生成一份沟通指南，包含以下内容，以严格JSON格式返回（不要markdown代码块）：\n{\n  "child_report": {\n    "comm_tips": ["技巧1","技巧2",...],\n    "qa_list": [{"q":"老人说的话","a":"建议回答"},...],\n    "action_plan": "整体建议"\n  },\n  "parent_report": {\n    "encouragement": "鼓励语",\n    "shopping_note": "购物建议"\n  }\n}\n\n=== 沟通技巧写作要求（非常重要，必须严格遵守）===\n- 你写的是【成年子女如何跟自己的老年父母沟通】的技巧，不是父母跟小孩说安全须知\n- 每条技巧必须包含具体的"话术示范"，给出子女实际该怎么说\n- 语气要像一个有经验的朋友在分享实战经验，不要像教科书\n- 禁止使用"宝贝""小朋友""孩子"等称呼，这个场景里没有小孩\n- 禁止使用"建议您""应当""需要注意"等书面语，用"你可以跟老人说""别急着""先这样"这类口语\n- 至少写7条技巧，每条针对一个不同的沟通难点\n- 【关键】每条技巧中，把具体的话术示范用「」包裹起来，例如：别正儿八经地谈，找个自然的机会，顺嘴提一句「妈，我最近看到个东西觉得挺适合咱家的」，比专门坐下来谈轻松多了。\n\n=== Q&A写作要求（非常重要，必须严格遵守）===\n- 每个问题必须是【老年父母真实会说的话】，要带情绪、带口语、带抵触心理\n- 典型例子："我这身子骨好着呢，不用折腾""花那冤枉钱干啥""我住了几十年了，好好的""装这些乱七八糟的家里跟医院似的""我不想给你们添麻烦""这些东西放了几十年了，你别动我的东西""扶手？我又不是残疾人"\n- 回答要有同理心，先认同老人的感受（不能正面反驳），再给出理由和话术\n- 回答里要有具体的话术示范，让子女知道怎么开口\n- 禁止出现"数据显示""统计表明"这类引用\n- 至少写7组问答\n- 【关键】回答中把具体的话术示范用「」包裹起来，例如：先认同再说。「可不是嘛，您这身子骨确实好。就是人上了年纪，眼睛不如以前亮了…」\n\n=== 父母版要求 ===\n- encouragement 要温暖但不说教，像自家孩子跟老人说话的语气\n- shopping_note 要让老人觉得简单，用聊天的方式说\n\n请基于上面分析出的实际隐患来写，不要泛泛而谈。每个技巧和问答都要跟具体的隐患关联。';
+
+  // Build survey summary for report
+  const surveySummary=surveyQuestions.map(q=>{
+    const opt=getSelectedOption(q.id);
+    return {question:q.text, answer:opt?opt.label:'未回答'};
+  });
+  const resistanceAnswer=surveyAnswers['q8_resistance'];
+  const parentTone=resistanceAnswer==='yes'?'老人比较抵触，沟通要非常柔和、从最小改变开始':
+                   resistanceAnswer==='little'?'老人态度还行，可以逐步推进':
+                   '老人还没被正式劝过，沟通可以正常展开';
+
+  const reportPrompt='你是一个懂中国家庭代际关系的居家安全顾问。\n\n背景：一个成年子女用AI检查了父母（或即将搬来同住的老人）家里的安全隐患，现在需要一份"与父母沟通指南"，帮助子女说服老人接受必要的适老化改造。\n\n以下是AI分析出的实际隐患（已根据用户回答的行为问卷调整了风险等级和优先级）：\n'+JSON.stringify(hazardsData)+'\n\n以下是用户回答的关于老人夜间行为习惯的问题（这些问题照片看不出来，但对报告很重要）：\n'+JSON.stringify(surveySummary)+'\n\n老人沟通阻力判断：'+parentTone+'\n\n请生成一份沟通指南，包含以下内容，以严格JSON格式返回（不要markdown代码块）：\n{\n  "child_report": {\n    "comm_tips": ["技巧1","技巧2",...],\n    "qa_list": [{"q":"老人说的话","a":"建议回答"},...],\n    "action_plan": "整体建议"\n  },\n  "parent_report": {\n    "encouragement": "鼓励语",\n    "shopping_note": "购物建议"\n  }\n}\n\n=== 沟通技巧写作要求（非常重要，必须严格遵守）===\n- 你写的是【成年子女如何跟自己的老年父母沟通】的技巧，不是父母跟小孩说安全须知\n- 每条技巧必须包含具体的"话术示范"，给出子女实际该怎么说\n- 语气要像一个有经验的朋友在分享实战经验，不要像教科书\n- 禁止使用"宝贝""小朋友""孩子"等称呼，这个场景里没有小孩\n- 禁止使用"建议您""应当""需要注意"等书面语，用"你可以跟老人说""别急着""先这样"这类口语\n- 至少写7条技巧，每条针对一个不同的沟通难点\n- 【关键】每条技巧中，把具体的话术示范用「」包裹起来，例如：别正儿八经地谈，找个自然的机会，顺嘴提一句「妈，我最近看到个东西觉得挺适合咱家的」，比专门坐下来谈轻松多了。\n- 必须结合用户的问卷答案来写：如果老人"半睡半醒就走""经常不开灯""起夜急""扶不稳的东西"，要在技巧和 Q&A 中体现这些真实场景\n- 如果老人比较抵触（q8选"劝过，不听"），话术要更加温和、小步推进、强调"先试试""不好用再退"\n\n=== Q&A写作要求（非常重要，必须严格遵守）===\n- 每个问题必须是【老年父母真实会说的话】，要带情绪、带口语、带抵触心理\n- 典型例子："我这身子骨好着呢，不用折腾""花那冤枉钱干啥""我住了几十年了，好好的""装这些乱七八糟的家里跟医院似的""我不想给你们添麻烦""这些东西放了几十年了，你别动我的东西""扶手？我又不是残疾人"\n- 回答要有同理心，先认同老人的感受（不能正面反驳），再给出理由和话术\n- 回答里要有具体的话术示范，让子女知道怎么开口\n- 禁止出现"数据显示""统计表明"这类引用\n- 至少写7组问答\n- 【关键】回答中把具体的话术示范用「」包裹起来，例如：先认同再说。「可不是嘛，您这身子骨确实好。就是人上了年纪，眼睛不如以前亮了…」\n\n=== 父母版要求 ===\n- encouragement 要温暖但不说教，像自家孩子跟老人说话的语气\n- shopping_note 要让老人觉得简单，用聊天的方式说\n\n请基于上面分析出的实际隐患和问卷答案来写，不要泛泛而谈。每个技巧、问答、父母版内容都要跟具体的隐患和老人的行为习惯关联。';
 
   let resp;
 
