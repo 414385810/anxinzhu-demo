@@ -552,8 +552,8 @@ button{touch-action:manipulation;cursor:pointer}
   </div>
   <div class="results-screen">
     <div class="results-header">
-      <div class="results-h-title">隐患标注报告</div>
-      <div class="results-h-desc">AI在您的照片中检测到以下安全隐患，标注圈对应下方编号说明</div>
+      <div class="results-h-title">隐患分析报告</div>
+      <div class="results-h-desc">AI在您的照片中检测到以下安全隐患，结合问卷信息综合分析</div>
     </div>
     <div id="photoResults"></div>
     <div id="summarySection"></div>
@@ -1026,33 +1026,33 @@ function getFallbackAnalysis(photo, imgW, imgH){
   const fallbacks={
     bedside:{
       risks:[
-        {title:'床脚突出易绊',description:'床采用高脚设计，床脚向外突出，夜间起夜时极易踢到导致绊倒。',severity:'high',suggestion:'更换为悬浮床架（床脚内收，避免踢到脚，更美观，不影响扫地机器人进出），若暂无法更换，需粘贴反光警示条。',cost:800,needs_verification:false},
-        {title:'缺乏夜间照明',description:'床边到卫生间的路线上没有安装夜灯或感应灯，老人起夜时需摸黑行走，极易摔倒。',severity:'high',suggestion:'沿起夜路线安装人体感应夜灯2-3个，距地300-400mm，采用漫反射脚灯避免眩光。',cost:60,needs_verification:false},
-        {title:'床面偏高',description:'床面含床垫距地面目测偏高，老人上下床时需跳跃式下床，增加跌落风险。',severity:'medium',suggestion:'理想床面高度40-50厘米，如超过55厘米建议更换矮床或在床边增设助力扶手。',cost:0,needs_verification:true,verification_question:'床面（含床垫）距离地面的实际高度是否超过了50厘米？',verification_type:'confirm'},
-        {title:'地面电线杂乱',description:'床边地面有外露电线，老人起夜时可能绊倒。',severity:'medium',suggestion:'用电线收纳槽或理线管固定，沿墙角走线，保持地面无障碍。',cost:15,needs_verification:false}
+        {title:'床边落脚区有杂物',description:'照片中床边第一步落脚区域可见杂物（需人工确认具体物品），夜间起夜时可能绊倒。',severity:'high',suggestion:'清理床边地面杂物，保持落脚区干净无障碍。',cost:0,needs_verification:true,verification_question:'床边地面是否有拖鞋、杂物或电线？',verification_type:'confirm'},
+        {title:'床边无可见支撑',description:'照片中未看到稳定的床边支撑点（扶手或固定家具），老人起身时缺少借力点。',severity:'high',suggestion:'在床边安装固定扶手或确保床头柜稳固可借力。',cost:300,needs_verification:true,verification_question:'床边是否有稳固的支撑点（如固定扶手、床头柜）？',verification_type:'confirm'},
+        {title:'床边无明显夜灯',description:'照片中未看到床头灯、小夜灯或感应灯，夜间起夜时可能摸黑行走。',severity:'high',suggestion:'在床边安装人体感应夜灯，距地30-40cm。',cost:60,needs_verification:false},
+        {title:'床边尖角风险',description:'照片中可见家具尖角（需确认具体位置），老人起夜时可能磕碰。',severity:'medium',suggestion:'在家具尖角处粘贴防撞条或防撞角。',cost:15,needs_verification:true,verification_question:'床边是否有家具尖角或突出物？',verification_type:'confirm'}
       ],
-      summary:'床边区域存在多处安全隐患，床脚突出和缺乏夜灯为最高优先级。',
-      objects_detected:['床','床头柜','电线','地板']
+      summary:'床边区域需关注落脚区杂物、支撑点和照明问题。',
+      objects_detected:['床','床头柜','地面']
     },
     hallway:{
       risks:[
-        {title:'通道狭窄',description:'走廊通道宽度不足，影响老人正常行走，紧急情况下影响救援通行。',severity:'medium',suggestion:'调整走廊两侧家具，确保通道净宽≥900mm（手杖通行最低750mm）。',cost:0,needs_verification:true,verification_question:'走廊通道宽度是否不足90厘米？',verification_type:'confirm'},
-        {title:'地面不平整',description:'走廊地面有门槛或高差，老人行走时可能绊倒。',severity:'high',suggestion:'加装橡胶坡道消除高差，或更换为无门槛设计。',cost:50,needs_verification:false},
-        {title:'缺乏走廊照明',description:'走廊没有感应夜灯，夜间起夜时无法看清路面。',severity:'high',suggestion:'安装人体感应夜灯，距地300-400mm，确保走廊全程有照明。',cost:40,needs_verification:false},
-        {title:'墙边无扶手',description:'走廊墙壁没有安装扶手，老人行走时无处借力。',severity:'low',suggestion:'如预算允许，安装墙面扶手，高度80-85cm。',cost:120,needs_verification:false}
+        {title:'通道有绊倒物',description:'照片中通道地面可见疑似杂物或障碍物，夜间行走可能绊倒。',severity:'high',suggestion:'清理通道地面所有杂物、电线、拖鞋，保持行走路线畅通。',cost:0,needs_verification:true,verification_question:'通道地面是否有杂物、电线或拖鞋？',verification_type:'confirm'},
+        {title:'通道照明不足',description:'照片中未看到沿路线的连续照明设施，夜间起夜时存在暗角。',severity:'high',suggestion:'沿行走路线安装感应夜灯，确保全程有照明。',cost:40,needs_verification:false},
+        {title:'通道有高差',description:'照片中疑似存在门槛或地面高低差，需人工确认。',severity:'high',suggestion:'如有高差，加装橡胶坡道消除。',cost:50,needs_verification:true,verification_question:'通道中是否有门槛或地面高低差？',verification_type:'confirm'},
+        {title:'家具边角靠近通道',description:'照片中可见家具边角靠近行走路线，夜间可能磕碰。',severity:'medium',suggestion:'将家具移开行走路线，或在尖角处粘贴防撞条。',cost:15,needs_verification:false}
       ],
-      summary:'走廊通道存在高差和照明问题，建议优先消除地面高差并安装夜灯。',
-      objects_detected:['墙面','地面','门槛']
+      summary:'行走通道需关注地面障碍物、照明和地面高差。',
+      objects_detected:['地面','墙面','家具']
     },
     bathroom:{
       risks:[
-        {title:'地面湿滑',description:'卫生间地面瓷砖无防滑处理，沾水后极易滑倒。',severity:'high',suggestion:'铺设防滑地垫+瓷砖防滑贴，或更换为防滑地胶。',cost:70,needs_verification:false},
-        {title:'无起身扶手',description:'马桶旁没有安装扶手，老人起身困难易摔倒。',severity:'high',suggestion:'安装免打孔吸壁式起身扶手，或打孔固定L型折叠扶手。',cost:200,needs_verification:false},
-        {title:'无夜灯照明',description:'卫生间没有夜灯，老人起夜如厕时摸黑进出。',severity:'medium',suggestion:'安装防水人体感应夜灯，确保夜间自动照明。',cost:30,needs_verification:false},
-        {title:'门槛有高差',description:'卫生间门口门槛有高差，进出时可能绊倒。',severity:'medium',suggestion:'加装橡胶坡道消除高差。',cost:50,needs_verification:false}
+        {title:'入口门槛高差',description:'照片中卫生间入口疑似有门槛或挡水条，进出时可能绊倒。',severity:'high',suggestion:'加装橡胶坡道消除高差。',cost:50,needs_verification:true,verification_question:'卫生间门口是否有门槛或挡水条？',verification_type:'confirm'},
+        {title:'地面疑似湿滑',description:'照片中地面看起来光滑或反光，若有水渍会增加滑倒风险。',severity:'high',suggestion:'铺设防滑地垫，或在地砖上贴防滑贴。',cost:70,needs_verification:true,verification_question:'卫生间地面是否看起来光滑或有水渍？',verification_type:'confirm'},
+        {title:'入口无扶手',description:'照片中未看到卫生间入口附近的扶手或稳定支撑点。',severity:'high',suggestion:'在入口墙面安装固定扶手。',cost:200,needs_verification:false},
+        {title:'入口空间拥挤',description:'照片中门口疑似有拖鞋、盆等物品占用入口空间。',severity:'medium',suggestion:'清理门口物品，保持入口宽敞。',cost:0,needs_verification:true,verification_question:'卫生间门口是否有拖鞋、盆等物品占用空间？',verification_type:'confirm'}
       ],
-      summary:'卫生间防滑和扶手是最高优先级，地面湿滑对老人威胁最大。',
-      objects_detected:['马桶','地砖','洗手台','门']
+      summary:'卫生间入口需关注门槛、地面湿滑、扶手和入口拥挤问题。',
+      objects_detected:['门','地面','门槛']
     }
   };
 
@@ -1105,7 +1105,7 @@ function getFallbackReport(hazardsData){
 }
 
 // ===== Analysis =====
-// Shared prompt builder for vision analysis
+// Shared prompt builder for vision analysis — area-specific per user's guide
 function buildAnalyzePrompt(areaName){
   // Collect survey answers to include in prompt
   const surveySummary=surveyQuestions.map(q=>{
@@ -1113,7 +1113,16 @@ function buildAnalyzePrompt(areaName){
     return '- '+q.text+' → '+(opt?opt.label:'未回答');
   }).join('\n');
 
-  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张'+areaName+'的照片，结合下方老人行为习惯信息，分析所有可能导致老人（特别是夜间起夜时）跌倒或受伤的安全隐患。\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须具体描述照片中看到的实际情况（如"照片中床脚向外突出约10cm"），不能泛泛而谈\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"')+'\n\n【老人居家安全隐患重点排查方向】\n1. 床面高度：床垫上表面距地面理想40-50cm。>55cm有跌落风险，<35cm起身困难\n2. 床脚突出：高床脚向外突出，夜间行走易踢到绊倒\n3. 床边无扶手/支撑：老人起坐无借力点=高风险\n4. 夜灯缺失：起夜路线无感应夜灯=高风险（尤其老人习惯不开灯时）\n5. 地面湿滑/不平/有高差/有门槛=高风险\n6. 电线外露/杂物堆积/通道狭窄=绊倒隐患\n7. 尖角家具无防撞条=碰撞隐患\n8. 床头柜高度不适/物品摆放不当=取物不便\n9. 插座位置过低/电线杂乱=电气隐患\n\n【核实问题】如果对某个识别结果不确定（如不确定床的高度、不确定地上是否电线），设置 needs_verification=true，verification_question 从"确认风险存在"角度提问，verification_type 为 confirm（是非题）或 measure（数值题）。';
+  // Area-specific identification rules
+  const areaRules={
+    '床边起身区域':'【这张图的作用】\n判断老人从床上坐起、下床、第一脚落地时有没有风险。重点是"起身第一步是否安全"。\n\n【必须识别以下内容】\n1. 床边第一步落脚区是否干净：是否有拖鞋、地毯、杂物、电线、小凳子、垃圾桶、收纳箱等\n2. 床边是否有可见支撑点：如床头柜、墙面、固定家具、扶手\n3. 支撑点是否看起来可能不稳定：如小椅子、轻便桌、移动柜\n4. 床边是否有尖角或磕碰点：如床角、柜角、桌角\n5. 床边是否可见照明：如床头灯、小夜灯、感应灯、开关位置，或明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人会不会头晕\n2. 不判断老人平时是否一定会摔倒\n3. 不判断床垫软硬\n4. 不判断家具真实承重能力\n5. 不判断老人夜里一定会不会开灯\n6. 不判断老人实际起身习惯，这部分由问答题补充',
+    '行走通道':'【这张图的作用】\n判断老人从床边走到卫生间这段路是否顺畅，有没有绊倒、绕行、磕碰、照明断点。重点是"这几米路能不能顺着走"。\n\n【必须识别以下内容】\n1. 通道是否被占用：如椅子、凳子、收纳箱、垃圾桶、家具伸入通道\n2. 地面是否有绊倒物：如拖鞋、地毯、地垫、电线、杂物\n3. 是否存在门槛、高低差或地面边缘变化\n4. 家具边角是否靠近行走路线：如茶几角、柜角、桌角、床角、门框突出\n5. 通道是否明显狭窄或需要绕行\n6. 路线上是否可见连续照明，或者存在明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人走路速度\n2. 不判断老人视力好不好\n3. 不判断老人夜里是否会开灯\n4. 不判断宠物夜里是否会经过\n5. 不精确估算通道宽度是多少厘米，除非照片里有明确参照物\n6. 不凭空判断"这里一定会摔倒"',
+    '卫生间入口':'【这张图的作用】\n判断老人进入卫生间前后最容易出事的位置。重点是"门槛、湿滑、防滑、支撑和入口是否拥挤"。\n\n【必须识别以下内容】\n1. 是否可见门槛、挡水条、台阶或地面高低差\n2. 地面是否看起来光滑、反光，或有疑似水渍、湿滑迹象\n3. 是否有地垫、防滑垫，地垫是否可能移动、卷边或占据入口\n4. 是否可见扶手或稳定支撑点：如墙面扶手、马桶扶手、固定支撑\n5. 是否只有门把手、毛巾架、洗手台边缘等不适合作为主要支撑的借力点\n6. 门口是否有拖鞋、盆、垃圾桶、洗浴用品等占用入口空间\n\n【不许识别 / 不许乱猜】\n1. 不判断墙体能不能承重\n2. 不判断地面一定湿滑，只能说"疑似湿滑"或"若有水渍会增加风险"\n3. 不判断扶手一定安全，除非能明确看到是专用扶手\n4. 不判断老人一定会跌倒\n5. 不判断卫生间内部完整安全状况，因为这张图主要看入口\n6. 不替代人工确认门槛高度、防滑垫是否固定、地面是否真的有水'
+  };
+
+  const rules=areaRules[areaName]||areaRules['床边起身区域'];
+
+  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张「'+areaName+'」的照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须具体描述照片中看到的实际情况（如"照片中床边地面有双拖鞋"），不能泛泛而谈\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
 }
 
 // Smart positioning: assign (x, y, sz) based on hazard TITLE only.
@@ -1742,8 +1751,7 @@ function updateSurveyWaitingUI(){
   const unanswered=getUnansweredQuestions();
   if(unanswered.length===0) return false; // all done, no need to wait
 
-  const names=unanswered.map(q=>q.text.substring(0,q.text.indexOf('？')+1||q.text.substring(0,12))).join('；');
-  updateProgress(95, '请先完成下方问卷', `已回答 ${answered}/${total} 题 · 待回答：${names}`);
+  updateProgress(90, '请先完成下方问卷', `已回答 ${answered}/${total} 题，还剩 ${unanswered.length} 题`);
   return true; // still waiting
 }
 
