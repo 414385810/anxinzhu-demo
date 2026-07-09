@@ -33,13 +33,27 @@ body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica N
 }
 
 /* ===== App Container ===== */
-.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden}
+.app{width:100%;max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden}
 
 /* ===== Mobile Adaptation ===== */
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
-body{-webkit-overflow-scrolling:touch}
+body{-webkit-overflow-scrolling:touch;background:var(--bg)}
 button,input,select,textarea{font-family:inherit;-webkit-appearance:none}
 button{touch-action:manipulation;cursor:pointer}
+
+/* ===== Desktop Phone Mockup ===== */
+@media (min-width:900px){
+  body{background:#1f1f24;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px}
+  .phone-frame{display:block;width:402px;height:820px;background:#111;border-radius:54px;padding:14px;box-shadow:0 25px 80px rgba(0,0,0,.55), inset 0 0 0 2px #333;position:relative}
+  .phone-notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:160px;height:32px;background:#111;border-radius:0 0 20px 20px;z-index:10}
+  .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);position:relative}
+  .phone-button{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:140px;height:5px;background:rgba(255,255,255,.25);border-radius:3px}
+  .app{max-width:none;height:100%;min-height:auto;border-radius:42px;overflow-y:auto;overflow-x:hidden}
+}
+@media (max-width:899px){
+  .phone-frame{display:contents}
+  .phone-notch,.phone-button{display:none}
+}
 
 /* ===== Screen System ===== */
 .screen{display:none;min-height:100vh;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);animation:screenIn .4s ease}
@@ -156,12 +170,18 @@ button{touch-action:manipulation;cursor:pointer}
 .analyze-questions-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center}
 .analyze-questions-sub{font-size:12px;color:var(--muted);margin-bottom:16px;text-align:center;line-height:1.5}
 .analyze-question{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
-.analyze-question-num{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--accent2);font-size:12px;font-weight:700;text-align:center;line-height:22px;margin-right:8px}
-.analyze-question-text{font-size:14px;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:12px}
-.analyze-options{display:flex;flex-wrap:wrap;gap:8px}
-.analyze-option{flex:1;min-width:80px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:var(--radius-sm);background:var(--bg);font-size:13px;color:var(--ink);text-align:center;cursor:pointer;transition:all .15s}
+.analyze-question-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--accent2);font-size:13px;font-weight:700;margin-right:8px;vertical-align:middle}
+.analyze-question-stage{font-size:13px;color:#d9534f;font-weight:700;vertical-align:middle;margin-left:6px}
+.analyze-question-text{font-size:15px;font-weight:600;color:var(--ink);line-height:1.55;margin-bottom:14px;text-align:left}
+.analyze-options{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+.analyze-option{flex:0 1 auto;min-width:80px;padding:10px 14px;border:1.5px solid var(--rule);border-radius:var(--radius-sm);background:var(--bg);font-size:13px;color:var(--ink);text-align:center;cursor:pointer;transition:all .15s}
 .analyze-option:active{transform:scale(.97)}
 .analyze-option.selected{border-color:var(--accent2);background:var(--soft);color:var(--accent2);font-weight:600}
+.skip-analysis-wrap{margin-top:24px;padding:0 24px 32px;text-align:center}
+.skip-analysis-hint{font-size:12px;color:var(--muted);margin-bottom:8px}
+.skip-analysis-btn{background:transparent;border:1.5px solid var(--rule);color:var(--muted);padding:10px 18px;border-radius:22px;font-size:13px;cursor:pointer;transition:all .15s}
+.skip-analysis-btn:active{transform:scale(.97)}
+.skip-analysis-btn:hover{border-color:var(--accent2);color:var(--accent2)}
 
 /* ===== Results Screen ===== */
 .results-screen{padding-bottom:100px}
@@ -245,7 +265,7 @@ button{touch-action:manipulation;cursor:pointer}
 .report-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100}
 .report-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .2s}
 .report-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
-.report-subtitle{font-size:13px;color:var(--muted);text-align:center;padding:12px 20px;line-height:1.5;background:var(--soft);border-bottom:1px solid var(--rule)}
+.report-subtitle{font-size:13px;color:var(--muted);text-align:left;padding:12px 20px;line-height:1.5;background:var(--soft);border-bottom:1px solid var(--rule)}
 .share-btn-top{background:var(--accent2);color:#fff;border:none;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .share-btn-top:active{transform:scale(.97)}
 .report-bottom-actions{display:flex;gap:10px;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:50}
@@ -360,7 +380,10 @@ button{touch-action:manipulation;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="phone-frame">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
+    <div class="app">
 
 <!-- ===== Screen 1: Welcome ===== -->
 <div class="screen active" id="screen-welcome">
@@ -510,6 +533,11 @@ button{touch-action:manipulation;cursor:pointer}
       <div class="analyze-questions-sub">这几个问题照片看不出来，但对报告很重要，选完即可</div>
       <div id="questionsList"></div>
     </div>
+
+    <div class="skip-analysis-wrap" id="skipAnalysisWrap" style="display:none">
+      <div class="skip-analysis-hint">分析太久？可能是网络较慢</div>
+      <button class="skip-analysis-btn" onclick="skipAnalysis()">跳过 AI 分析，看示例结果</button>
+    </div>
   </div>
 </div>
 
@@ -570,7 +598,7 @@ button{touch-action:manipulation;cursor:pointer}
     <button class="report-tab active" onclick="switchReport('child')">子女版</button>
     <button class="report-tab" onclick="switchReport('parent')">父母版</button>
   </div>
-  <div class="report-subtitle">同一份风险结果，生成两种表达方式：一份给子女判断，一份给爸妈沟通。</div>
+  <div class="report-subtitle">同一份风险结果，两种表达方式：一份给子女判断，一份给爸妈沟通。</div>
   <div id="reportContent"></div>
   <div class="report-bottom-actions">
     <button class="btn-share" onclick="shareReport()">📤 分享报告</button>
@@ -922,7 +950,7 @@ function handleUpload(e,area){
 
       // Remove existing photo for this area
       uploadedPhotos=uploadedPhotos.filter(p=>p.area!==area);
-      uploadedPhotos.push({area,dataUrl});
+      uploadedPhotos.push({area,dataUrl,naturalWidth:w,naturalHeight:h});
       // Update UI
       const area_el=document.querySelector(`.upload-area[data-area="${area}"]`);
       const preview=area_el.querySelector('.upload-preview');
@@ -963,48 +991,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ===== Global API Queue (prevents 429 rate limit) =====
-const apiQueue = {
-  running: 0,
-  maxConcurrent: 3,
-  lastCallTime: 0,
-  minInterval: 500, // 0.5s between starts
-  queue: [],
-
-  async acquire() {
-    return new Promise(resolve => {
-      this.queue.push(resolve);
-      this._tryNext();
-    });
-  },
-
-  release() {
-    this.running--;
-    this._tryNext();
-  },
-
-  _tryNext() {
-    if (this.queue.length === 0 || this.running >= this.maxConcurrent) return;
-    const now = Date.now();
-    const elapsed = now - this.lastCallTime;
-    const wait = Math.max(0, this.minInterval - elapsed);
-    setTimeout(() => {
-      if (this.running >= this.maxConcurrent) return;
-      const resolve = this.queue.shift();
-      if (resolve) {
-        this.running++;
-        this.lastCallTime = Date.now();
-        resolve();
-      }
-    }, wait);
-  }
-};
-
 // Fetch with timeout and 429 retry. timeout/maxRetries are tunable per call.
-async function fetchWithRetry(url, options, maxRetries = 1, timeout = 45000) {
+async function fetchWithRetry(url, options, maxRetries = 1, timeout = 20000) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    await apiQueue.acquire();
     const internalController = new AbortController();
-    const internalTimer = setTimeout(() => internalController.abort(), timeout);
+    const internalTimer = setTimeout(() => {
+      try{ internalController.abort(); }catch(e){}
+    }, timeout);
     try {
       const resp = await fetch(url, { ...options, signal: internalController.signal });
       clearTimeout(internalTimer);
@@ -1016,13 +1009,13 @@ async function fetchWithRetry(url, options, maxRetries = 1, timeout = 45000) {
       return resp;
     } catch(err) {
       clearTimeout(internalTimer);
-      // Don't retry on AbortError (timeout) — it'll just time out again
+      if (err.name === 'AbortError') {
+        throw new Error(`请求超时（${timeout}ms）`);
+      }
       throw err;
-    } finally {
-      apiQueue.release();
     }
   }
-  return fetch(url, options);
+  throw new Error('所有重试均失败');
 }
 
 // ===== Fallback analysis for demo (used when API fails) =====
@@ -1033,30 +1026,30 @@ function getFallbackAnalysis(photo, imgW, imgH){
   const fallbacks={
     bedside:{
       risks:[
-        {number:1,title:'床脚突出易绊',description:'床采用高脚设计，床脚向外突出，夜间起夜时极易踢到导致绊倒。',severity:'high',bbox:{x:0.15,y:0.85,w:0.2,h:0.1},suggestion:'更换为悬浮床架（床脚内收，避免踢到脚，更美观，不影响扫地机器人进出），若暂无法更换，需粘贴反光警示条。',cost:800,needs_verification:false},
-        {number:2,title:'缺乏夜间照明',description:'床边到卫生间的路线上没有安装夜灯或感应灯，老人起夜时需摸黑行走，极易摔倒。',severity:'high',bbox:{x:0.4,y:0.5,w:0.3,h:0.3},suggestion:'沿起夜路线安装人体感应夜灯2-3个，距地300-400mm，采用漫反射脚灯避免眩光。',cost:60,needs_verification:false},
-        {number:3,title:'床面偏高',description:'床面含床垫距地面目测偏高，老人上下床时需跳跃式下床，增加跌落风险。',severity:'medium',bbox:{x:0.2,y:0.3,w:0.4,h:0.4},suggestion:'理想床面高度40-50厘米，如超过55厘米建议更换矮床或在床边增设助力扶手。',cost:0,needs_verification:true,verification_question:'床面（含床垫）距离地面的实际高度是否超过了50厘米？',verification_type:'confirm'},
-        {number:4,title:'地面电线杂乱',description:'床边地面有外露电线，老人起夜时可能绊倒。',severity:'medium',bbox:{x:0.6,y:0.9,w:0.2,h:0.05},suggestion:'用电线收纳槽或理线管固定，沿墙角走线，保持地面无障碍。',cost:15,needs_verification:false}
+        {title:'床脚突出易绊',description:'床采用高脚设计，床脚向外突出，夜间起夜时极易踢到导致绊倒。',severity:'high',suggestion:'更换为悬浮床架（床脚内收，避免踢到脚，更美观，不影响扫地机器人进出），若暂无法更换，需粘贴反光警示条。',cost:800,needs_verification:false},
+        {title:'缺乏夜间照明',description:'床边到卫生间的路线上没有安装夜灯或感应灯，老人起夜时需摸黑行走，极易摔倒。',severity:'high',suggestion:'沿起夜路线安装人体感应夜灯2-3个，距地300-400mm，采用漫反射脚灯避免眩光。',cost:60,needs_verification:false},
+        {title:'床面偏高',description:'床面含床垫距地面目测偏高，老人上下床时需跳跃式下床，增加跌落风险。',severity:'medium',suggestion:'理想床面高度40-50厘米，如超过55厘米建议更换矮床或在床边增设助力扶手。',cost:0,needs_verification:true,verification_question:'床面（含床垫）距离地面的实际高度是否超过了50厘米？',verification_type:'confirm'},
+        {title:'地面电线杂乱',description:'床边地面有外露电线，老人起夜时可能绊倒。',severity:'medium',suggestion:'用电线收纳槽或理线管固定，沿墙角走线，保持地面无障碍。',cost:15,needs_verification:false}
       ],
       summary:'床边区域存在多处安全隐患，床脚突出和缺乏夜灯为最高优先级。',
       objects_detected:['床','床头柜','电线','地板']
     },
     hallway:{
       risks:[
-        {number:1,title:'通道狭窄',description:'走廊通道宽度不足，影响老人正常行走，紧急情况下影响救援通行。',severity:'medium',bbox:{x:0.5,y:0.2,w:0.3,h:0.6},suggestion:'调整走廊两侧家具，确保通道净宽≥900mm（手杖通行最低750mm）。',cost:0,needs_verification:true,verification_question:'走廊通道宽度是否不足90厘米？',verification_type:'confirm'},
-        {number:2,title:'地面不平整',description:'走廊地面有门槛或高差，老人行走时可能绊倒。',severity:'high',bbox:{x:0.3,y:0.7,w:0.4,h:0.1},suggestion:'加装橡胶坡道消除高差，或更换为无门槛设计。',cost:50,needs_verification:false},
-        {number:3,title:'缺乏走廊照明',description:'走廊没有感应夜灯，夜间起夜时无法看清路面。',severity:'high',bbox:{x:0.5,y:0.1,w:0.3,h:0.2},suggestion:'安装人体感应夜灯，距地300-400mm，确保走廊全程有照明。',cost:40,needs_verification:false},
-        {number:4,title:'墙边无扶手',description:'走廊墙壁没有安装扶手，老人行走时无处借力。',severity:'low',bbox:{x:0.1,y:0.3,w:0.05,h:0.5},suggestion:'如预算允许，安装墙面扶手，高度80-85cm。',cost:120,needs_verification:false}
+        {title:'通道狭窄',description:'走廊通道宽度不足，影响老人正常行走，紧急情况下影响救援通行。',severity:'medium',suggestion:'调整走廊两侧家具，确保通道净宽≥900mm（手杖通行最低750mm）。',cost:0,needs_verification:true,verification_question:'走廊通道宽度是否不足90厘米？',verification_type:'confirm'},
+        {title:'地面不平整',description:'走廊地面有门槛或高差，老人行走时可能绊倒。',severity:'high',suggestion:'加装橡胶坡道消除高差，或更换为无门槛设计。',cost:50,needs_verification:false},
+        {title:'缺乏走廊照明',description:'走廊没有感应夜灯，夜间起夜时无法看清路面。',severity:'high',suggestion:'安装人体感应夜灯，距地300-400mm，确保走廊全程有照明。',cost:40,needs_verification:false},
+        {title:'墙边无扶手',description:'走廊墙壁没有安装扶手，老人行走时无处借力。',severity:'low',suggestion:'如预算允许，安装墙面扶手，高度80-85cm。',cost:120,needs_verification:false}
       ],
       summary:'走廊通道存在高差和照明问题，建议优先消除地面高差并安装夜灯。',
       objects_detected:['墙面','地面','门槛']
     },
     bathroom:{
       risks:[
-        {number:1,title:'地面湿滑',description:'卫生间地面瓷砖无防滑处理，沾水后极易滑倒。',severity:'high',bbox:{x:0.2,y:0.6,w:0.6,h:0.3},suggestion:'铺设防滑地垫+瓷砖防滑贴，或更换为防滑地胶。',cost:70,needs_verification:false},
-        {number:2,title:'无起身扶手',description:'马桶旁没有安装扶手，老人起身困难易摔倒。',severity:'high',bbox:{x:0.1,y:0.3,w:0.15,h:0.4},suggestion:'安装免打孔吸壁式起身扶手，或打孔固定L型折叠扶手。',cost:200,needs_verification:false},
-        {number:3,title:'无夜灯照明',description:'卫生间没有夜灯，老人起夜如厕时摸黑进出。',severity:'medium',bbox:{x:0.5,y:0.1,w:0.3,h:0.15},suggestion:'安装防水人体感应夜灯，确保夜间自动照明。',cost:30,needs_verification:false},
-        {number:4,title:'门槛有高差',description:'卫生间门口门槛有高差，进出时可能绊倒。',severity:'medium',bbox:{x:0.4,y:0.5,w:0.2,h:0.1},suggestion:'加装橡胶坡道消除高差。',cost:50,needs_verification:false}
+        {title:'地面湿滑',description:'卫生间地面瓷砖无防滑处理，沾水后极易滑倒。',severity:'high',suggestion:'铺设防滑地垫+瓷砖防滑贴，或更换为防滑地胶。',cost:70,needs_verification:false},
+        {title:'无起身扶手',description:'马桶旁没有安装扶手，老人起身困难易摔倒。',severity:'high',suggestion:'安装免打孔吸壁式起身扶手，或打孔固定L型折叠扶手。',cost:200,needs_verification:false},
+        {title:'无夜灯照明',description:'卫生间没有夜灯，老人起夜如厕时摸黑进出。',severity:'medium',suggestion:'安装防水人体感应夜灯，确保夜间自动照明。',cost:30,needs_verification:false},
+        {title:'门槛有高差',description:'卫生间门口门槛有高差，进出时可能绊倒。',severity:'medium',suggestion:'加装橡胶坡道消除高差。',cost:50,needs_verification:false}
       ],
       summary:'卫生间防滑和扶手是最高优先级，地面湿滑对老人威胁最大。',
       objects_detected:['马桶','地砖','洗手台','门']
@@ -1064,15 +1057,16 @@ function getFallbackAnalysis(photo, imgW, imgH){
   };
 
   const fb=fallbacks[area]||fallbacks.bedside;
-  // Normalize bbox to location format
-  fb.risks=fb.risks.map(h=>{
-    if(h.bbox){
-      h.location={x:h.bbox.x+h.bbox.w/2, y:h.bbox.y+h.bbox.h/2, width:h.bbox.w, height:h.bbox.h};
-    }
-    return h;
+  // Fallback data: NO bbox (don't draw circles on photo with fake positions)
+  fb.risks=fb.risks.map((rk,idx)=>{
+    return {
+      ...rk,
+      number:idx+1,
+      bbox:null // no annotation circle for fallback data
+    };
   });
 
-  console.log('Using fallback analysis for', area);
+  console.log('Using fallback analysis (NO annotations) for', area);
   return fb;
 }
 
@@ -1113,17 +1107,66 @@ function getFallbackReport(hazardsData){
 // ===== Analysis =====
 // Shared prompt builder for vision analysis
 function buildAnalyzePrompt(areaName){
-  return '你是居家安全评估专家，专注老年人跌倒预防。请仔细观察这张'+areaName+'的照片，分析所有可能导致老人（特别是夜间起夜时）跌倒或受伤的安全隐患。\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明',severity:'high/medium/low',location:{x:0.0,y:0.0,width:0.0,height:0.0},suggestion:'整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['物品']}).replace(/"/g,'\"')+'\n\n【坐标说明（非常重要！必须准确！）】\nlocation中的x,y是隐患区域**中心点**在照片中的相对位置：\n- x: 水平方向，0.0=照片最左边，0.5=正中间，1.0=照片最右边\n- y: 垂直方向，0.0=照片最上方，0.5=正中间，1.0=照片最下方\n- width: 隐患区域宽度占照片宽度的比例（0.0-1.0）\n- height: 隐患区域高度占照片高度的比例（0.0-1.0）\n\n【坐标必须与隐患位置匹配！】\n- 如果隐患是"床脚突出"，坐标必须标在**床脚/床腿**所在位置（通常在照片下方）\n- 如果隐患是"缺乏夜灯"，坐标应标在**床沿下方或墙脚**位置（夜灯应安装的地方）\n- 如果隐患是"床面高度"，坐标必须标在**床垫表面**位置\n- 如果隐患是"电线杂乱"，坐标必须标在**电线实际所在位置**\n- 如果隐患是"地面湿滑"，坐标必须标在**地面**位置（通常y>0.6）\n- 如果隐患是"通道狭窄"，坐标必须标在**通道最窄处**\n- 如果隐患是"扶手缺失"，坐标应标在**应装扶手的位置**（如马桶旁墙壁）\n- 绝对不能把地面隐患标在天花板上，也不能把天花板隐患标在地面\n- 坐标偏离会导致用户误解，请务必对照照片中实际位置填写\n\n【专业评估标准（请严格按照以下标准判断）】\n\n一、床与睡眠安全：\n1. 床面高度：床垫上表面距地面理想高度40-50厘米（45厘米为最佳中间值）。老人使用轮椅时宜接近轮椅坐高（50-55厘米）。判断方法：老人自然坐在床沿，双脚平稳着地，膝关节呈100°-110°为安全。过低（<35cm）起身困难，过高（>55cm）上下床有跌落风险。\n2. 床脚/床腿：高床脚向外突出易踢到导致绊倒。建议更换为悬浮床架（床脚内收，避免踢到脚，更美观，不影响扫地机器人进出）。若暂无法更换，须粘贴反光警示条。\n3. 床边支撑：床边应设置助力扶手（床尾板式或可折叠式），床头柜高度宜略高于床面方便起坐借力。无支撑=高风险。\n4. 床垫硬度：床架和床垫边缘应有一定硬度，过软会导致起坐时身体下陷、增加起身难度。\n\n二、通行与通道：\n1. 常规通道净宽≥900mm为安全。<750mm为高风险（手杖通行最低要求），<600mm为极高风险。\n2. 轮椅90°转弯需1400mm×1700mm空间，180°转弯需1500mm×1350mm空间。\n3. 床侧护理/通行空间≥600mm，双人间床间通道≥900mm。\n4. U型交通布局比T型布局风险更高。\n\n三、地面安全：\n1. 地面材质：瓷砖防滑性差，适老木地板或防滑塑胶为佳。不同材质衔接处避免产生高差。\n2. 地毯：必须牢固固定在地面，边缘卷起=高风险。松动地毯=极高风险。\n3. 门槛/高差：任何高差都是绊倒隐患，应加装坡道。\n\n四、照明：\n1. 基础照明：主灯照度应≥200lx（250lx为佳），主灯避免直射床头。\n2. 起夜路线夜灯：应沿床沿、床尾、转角、卧室入口设置低位感应夜灯，距地300-400mm，采用漫反射脚灯避免眩光。无夜灯=高风险。\n3. 阅读灯：床头阅读区照度应达400lx。\n\n五、家具与防撞：\n1. 优先圆角家具，木质锐角突出处须安装防撞条（上置/下置、两面/三面防护样式）。\n2. 动线清障：通行路线上不应有任何障碍物（杂物、电线、低矮家具）。\n3. 储物：常用物品应放在650mm-1350mm高度区间（易取区），过高或过低取物有跌倒风险。\n\n六、插座与电线：\n1. 床头应设置0.6-0.8m高的插座，方便手机、设备充电。\n2. 电线必须梳理固定，外露电线=高风险。\n3. 床头两侧应有多点控制开关，方便上床后控制灯光。\n\n【重点排查清单】请特别关注以上标准，逐项检查照片中是否存在不符合的情况。\n\n【重要】如果对某个识别结果不确定（例如不确定地上是电线还是绳子、不确定床的高度是否超标、不确定某个物品是什么，或者描述中用了"目测"等不确定词），请设置 needs_verification 为 true，并在 verification_question 中写一个向用户核实的问题，verification_type 指定问题类型：\n- verification_type="confirm"：是非型问题，用户只需回答"是"或"否"。例如verification_question="地上的是不是电线？"\n- verification_type="measure"：测量型问题，需要用户输入一个数值。例如verification_question="床面（含床垫）距离地面的实际高度大约是多少厘米？"\n\n【核实问题方向规则（非常重要）】所有核实问题必须统一从"确认风险存在"的角度提问，让用户回答"是"=确认有这个隐患，"否"=排除这个隐患：\n   - 核实问题必须跟隐患标题直接相关，不能问其他维度的问题。例如标题是"床脚突出易绊"，问题就应该问"床脚是否明显向外突出于床体边缘？"，不能问"床面离地高度是否超过50厘米"（这是另一个隐患的维度）。如果需要核实多个维度，应该拆成多个隐患。\n   - 【关键】所有问题必须从"确认风险存在"的角度提问，让用户回答"是"=确认有隐患，"否"=排除隐患\n     错误示例：隐患是"缺乏照明"→问题="是否安装了夜灯？"（答是=已安装=风险不存在，跟按钮语义冲突）\n     正确示例：隐患是"缺乏照明"→问题="床边是否没有安装夜灯或感应灯？"（答是=确实没装=确认风险）\n     正确示例：隐患是"电线杂乱"→问题="地上的是不是电线？"（答是=是电线=确认风险）\n   - 如果不便用"是否没有"句式，可以直接问"这个隐患是否确实存在？"或"这个区域是否确实存在XXX问题？"\n   - 每个隐患的核实问题只能针对该隐患标题描述的具体问题，不要混合多个不相关的维度\n\n建议：能用是非问法就用confirm类型（如"床面高度是否超过了50厘米？"），只有在必须让用户提供具体数值时才用measure类型（如"床面离地高度大约是多少厘米？"）。对于确定的隐患，needs_verification 设为 false。';
+  // Collect survey answers to include in prompt
+  const surveySummary=surveyQuestions.map(q=>{
+    const opt=getSelectedOption(q.id);
+    return '- '+q.text+' → '+(opt?opt.label:'未回答');
+  }).join('\n');
+
+  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张'+areaName+'的照片，结合下方老人行为习惯信息，分析所有可能导致老人（特别是夜间起夜时）跌倒或受伤的安全隐患。\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须具体描述照片中看到的实际情况（如"照片中床脚向外突出约10cm"），不能泛泛而谈\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"')+'\n\n【老人居家安全隐患重点排查方向】\n1. 床面高度：床垫上表面距地面理想40-50cm。>55cm有跌落风险，<35cm起身困难\n2. 床脚突出：高床脚向外突出，夜间行走易踢到绊倒\n3. 床边无扶手/支撑：老人起坐无借力点=高风险\n4. 夜灯缺失：起夜路线无感应夜灯=高风险（尤其老人习惯不开灯时）\n5. 地面湿滑/不平/有高差/有门槛=高风险\n6. 电线外露/杂物堆积/通道狭窄=绊倒隐患\n7. 尖角家具无防撞条=碰撞隐患\n8. 床头柜高度不适/物品摆放不当=取物不便\n9. 插座位置过低/电线杂乱=电气隐患\n\n【核实问题】如果对某个识别结果不确定（如不确定床的高度、不确定地上是否电线），设置 needs_verification=true，verification_question 从"确认风险存在"角度提问，verification_type 为 confirm（是非题）或 measure（数值题）。';
+}
+
+// Smart positioning: assign (x, y, sz) based on hazard TITLE only.
+// Uses scoring: longer keyword = higher score, pick best zone.
+// Completely ignores model's location coordinates (unreliable).
+function getSmartPosition(title, idx, total){
+  const t=String(title||'').toLowerCase();
+  
+  // Each zone: keywords + base position
+  // Score = length of matched keyword (longer = more specific = higher priority)
+  const zones=[
+    {kw:['床脚','床腿','地面','地板','地毯','门槛','电线','湿滑','防滑','杂物','杂乱','堆放','堆积','通道','动线','过道','狭窄','线缆','管路','水管','踢脚','拖鞋','障碍','收纳'], x:0.5, y:0.80, sz:0.16},
+    {kw:['床面','床垫','床高','床品','床单','被子','枕头'], x:0.5, y:0.45, sz:0.20},
+    {kw:['床头柜','柜子','抽屉','衣架','挂衣','衣物','衣服','晾衣','架子','立架','收纳架'], x:0.75, y:0.35, sz:0.15},
+    {kw:['夜灯','照明','光线','亮度','昏暗'], x:0.20, y:0.70, sz:0.12},
+    {kw:['扶手','护栏','助力','支撑','拉手','栏杆','借力','起身','辅助'], x:0.15, y:0.45, sz:0.13},
+    {kw:['开关','插座','插头','面板'], x:0.80, y:0.50, sz:0.10},
+    {kw:['尖角','撞角','桌角','柜角','直角','锐角','棱角'], x:0.65, y:0.55, sz:0.14},
+    {kw:['门框','门扇','门缝','门把手','门帘','门边'], x:0.88, y:0.35, sz:0.13},
+    {kw:['马桶','卫生间','厕所','浴室','浴缸','淋浴','洗手台'], x:0.90, y:0.60, sz:0.13},
+    {kw:['床架','床框','床沿'], x:0.5, y:0.58, sz:0.18},
+  ];
+  
+  // Score each zone: find longest matching keyword
+  let bestZone=null, bestScore=0;
+  for(const z of zones){
+    for(const k of z.kw){
+      if(t.includes(k)){
+        if(k.length>bestScore){
+          bestScore=k.length;
+          bestZone=z;
+        }
+      }
+    }
+  }
+  if(!bestZone) bestZone={x:0.5, y:0.50, sz:0.15}; // default center
+  
+  // Circular spread: distribute hazards evenly around the zone center
+  const angle=(idx/Math.max(total,1))*Math.PI*2;
+  const radius=0.06; // small radius to avoid overlap without drifting too far
+  const x=Math.max(0.10, Math.min(0.90, bestZone.x+Math.cos(angle)*radius));
+  const y=Math.max(0.10, Math.min(0.90, bestZone.y+Math.sin(angle)*radius));
+  
+  return {x, y, sz:bestZone.sz};
 }
 
 // Parse vision model response into normalized risks
+// NOTE: We ignore model's location coordinates (unreliable) and use smart positioning
 function parseVisionResponse(respData, imgW, imgH){
   let resultText=respData.choices&&respData.choices[0]&&respData.choices[0].message&&(respData.choices[0].message.content||respData.choices[0].message.reasoning_content)||'';
-  // Parse JSON from response
   let parsed;
   try{
     let s=resultText.trim();
-    // Remove markdown code fences
     var m=s.indexOf('```');
     if(m>=0){
       s=s.substring(s.indexOf('{',m));
@@ -1140,74 +1183,39 @@ function parseVisionResponse(respData, imgW, imgH){
     throw new Error('照片分析结果解析失败');
   }
 
-  // Normalize hazards
   const hazards=Array.isArray(parsed.hazards)?parsed.hazards:[];
-  const risks=hazards.map(h=>{
+  const risks=hazards.map((h,idx)=>{
+    const title=String(h.title||'').slice(0,20);
+
+    // Use model's location coordinates directly (trust the model)
     let bbox=null;
     if(h.location && typeof h.location.x==='number' && typeof h.location.y==='number'){
-      // location exists, try to extract bbox
-      // GLM may return 0-1 decimals OR 0-100 percentages — normalize to 0-1
-      const to01=(v)=>(typeof v==='number')?(v>1?v/100:v):0.15;
-      let cx_pct=to01(h.location.x);
-      let cy_pct=to01(h.location.y);
-      const w_pct=to01(h.location.width);
-      const h_pct=to01(h.location.height);
-
-      // Smart coordinate validation: fix mismatched locations based on hazard title
-      const title=String(h.title||'').toLowerCase();
-      const desc=String(h.description||'').toLowerCase();
-      const combined=title+desc;
-
-      // Ground-level hazards should be in lower portion of photo (y > 0.5)
-      if(combined.includes('床脚')||combined.includes('床腿')||combined.includes('地面')||combined.includes('地毯')||combined.includes('门槛')||combined.includes('电线')||combined.includes('杂乱')||combined.includes('湿滑')){
-        if(cy_pct<0.4){
-          console.warn('Fixing ground hazard location: y was',cy_pct,'-> 0.75');
-          cy_pct=0.75;
-        }
-      }
-      // Bed surface hazards should be in middle portion (0.3 < y < 0.7)
-      if(combined.includes('床面')||combined.includes('床垫')||combined.includes('床高')){
-        if(cy_pct<0.2||cy_pct>0.8){
-          console.warn('Fixing bed surface location: y was',cy_pct,'-> 0.45');
-          cy_pct=0.45;
-        }
-      }
-      // Lighting hazards: nightlight should be lower, ceiling light should be upper
-      if(combined.includes('夜灯')||combined.includes('低位灯')){
-        if(cy_pct<0.4){
-          console.warn('Fixing nightlight location: y was',cy_pct,'-> 0.7');
-          cy_pct=0.7;
-        }
-      }
-      // Wall-mounted items (handrails, switches) should be mid-height
-      if(combined.includes('扶手')||combined.includes('开关')||combined.includes('插座')){
-        if(cy_pct<0.2||cy_pct>0.8){
-          console.warn('Fixing wall item location: y was',cy_pct,'-> 0.5');
-          cy_pct=0.5;
-        }
-      }
-
-      // Convert to pixel bbox [x, y, w, h] (center-based)
+      const to01=(v)=>(v>1?v/100:v);
+      const cx_pct=to01(h.location.x);
+      const cy_pct=to01(h.location.y);
+      const w_pct=Math.max(0.08, to01(h.location.width||0.15));
+      const h_pct=Math.max(0.08, to01(h.location.height||0.15));
       const cx=cx_pct*imgW;
       const cy=cy_pct*imgH;
-      const w=Math.max(40,w_pct*imgW);
-      const hgt=Math.max(40,h_pct*imgH);
-      bbox=[Math.max(0,cx-w/2), Math.max(0,cy-hgt/2), w, hgt];
+      const w=Math.max(40, Math.min(w_pct*imgW, imgW*0.3));
+      const hgt=Math.max(40, Math.min(h_pct*imgH, imgH*0.3));
+      bbox=[Math.max(0,cx-w/2), Math.max(0,cy-hgt/2), Math.min(w,imgW), Math.min(hgt,imgH)];
     }
+
     let sev=(h.severity||'medium').toLowerCase();
     if(sev!=='high' && sev!=='medium' && sev!=='low') sev='medium';
     return {
-      number:null, // assigned later
+      number:null,
       severity:sev,
       bbox:bbox,
-      title:String(h.title||'隐患').slice(0,20),
+      title:title,
       desc:String(h.description||''),
       suggestion:String(h.suggestion||''),
       cost:Number(h.cost)||0,
       needsVerification:!!h.needs_verification,
       verificationQuestion:String(h.verification_question||''),
       verificationType:String(h.verification_type||'confirm'),
-      verified:null // null=pending, true=confirmed, false=dismissed
+      verified:null
     };
   });
 
@@ -1226,55 +1234,57 @@ function parseVisionResponse(respData, imgW, imgH){
   return {risks, objects_detected:objectsDetected, summary};
 }
 
-async function analyzePhotoWithLLM(photo, imgW, imgH){
+async function callQwenVision(photo, modelName, timeoutMs){
   const areaName=getAreaName(photo.area);
-  updateProgress(10,'正在用 AI 分析照片...','视觉大模型直接看图识别隐患');
   const analyzePrompt=buildAnalyzePrompt(areaName);
-
-  let resp;
-  // Primary: Qwen-VL-Plus via Alibaba Cloud Bailian (fast ~0.6s)
-  try{
-    resp=await fetchWithRetry('https://llm-3ictjf20i1m7rqpw.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions',{
-      method:'POST',
-      headers:{
-        'Authorization':'Bearer sk-ws-H.EMHDHHL.CF4J.MEUCIGOFeVBxVatJx5yNPIZw3basqzQIA4FMbIp-NxM2Gu5TAiEAuCJ3D48rbCmj_HECWPDS-TTVt8imKgEY4Gq4v3KskAg',
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        model:'qwen-vl-plus',
-        messages:[{
-          role:'user',
-          content:[
-            {type:'image_url',image_url:{url:photo.dataUrl}},
-            {type:'text',text:analyzePrompt}
-          ]
-        }],
-        max_tokens:8192,
-        temperature:0.1,
-        stream:false
-      })
-    }, 1, 30000); // 1 retry, 30s timeout
-  }catch(e){
-    console.warn('Primary vision model (Qwen-VL) error:', e.message);
-    resp=null;
+  console.log(`[Vision] Calling ${modelName} for area:`, areaName);
+  const resp=await fetchWithRetry('https://llm-3ictjf20i1m7rqpw.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Authorization':'Bearer sk-ws-H.EMHDHHL.CF4J.MEUCIGOFeVBxVatJx5yNPIZw3basqzQIA4FMbIp-NxM2Gu5TAiEAuCJ3D48rbCmj_HECWPDS-TTVt8imKgEY4Gq4v3KskAg',
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({
+      model:modelName,
+      messages:[{
+        role:'user',
+        content:[
+          {type:'image_url',image_url:{url:photo.dataUrl}},
+          {type:'text',text:analyzePrompt}
+        ]
+      }],
+      max_tokens:8192,
+      temperature:0.1,
+      stream:false
+    })
+  }, 1, timeoutMs);
+  if(!resp.ok){
+    const errText=await resp.text().catch(()=>'');
+    throw new Error(`${modelName} API 错误 ${resp.status}: ${errText.slice(0,200)}`);
   }
-
-  if(!resp || !resp.ok){
-    const errMsg=resp?('Qwen-VL API 错误 '+resp.status):'请求失败';
-    throw new Error(errMsg);
-  }
-
   const respData=await resp.json();
-  const parsed=parseVisionResponse(respData, imgW, imgH);
+  return parseVisionResponse(respData, photo.imgW||800, photo.imgH||600);
+}
 
-  // Cross-validation
+async function analyzePhotoWithLLM(photo, imgW, imgH){
+  updateProgress(10,'正在用 AI 分析照片...','视觉大模型直接看图识别隐患');
+
+  // Tier 1: qwen-vl-plus (fast & stable)
   try{
-    const validated=await crossValidateWithGLM4(areaName, parsed.risks, parsed.objects_detected, imgW, imgH);
-    if(validated) return validated;
-  }catch(e){
-    console.warn('Cross-validation failed, using raw results:', e);
+    return await callQwenVision(photo, 'qwen-vl-plus', 45000);
+  }catch(e1){
+    console.warn('Tier 1 (qwen-vl-plus) failed:', e1.message);
   }
-  return parsed;
+
+  // Tier 2: qwen-vl-max (more capable but slower)
+  updateProgress(12,'正在尝试备选视觉模型...','qwen-vl-plus 不可用，切换 qwen-vl-max');
+  try{
+    return await callQwenVision(photo, 'qwen-vl-max', 45000);
+  }catch(e2){
+    console.warn('Tier 2 (qwen-vl-max) failed:', e2.message);
+  }
+
+  throw new Error('所有千问视觉模型均不可用');
 }
 
 async function analyzePhotoWithFallbackLLM(photo, imgW, imgH){
@@ -1301,7 +1311,7 @@ async function analyzePhotoWithFallbackLLM(photo, imgW, imgH){
       temperature:0.1,
       stream:false
     })
-  }, 1, 60000);
+  }, 1, 45000);
 
   if(!resp.ok){
     const errText=await resp.text().catch(()=>'');
@@ -1310,14 +1320,6 @@ async function analyzePhotoWithFallbackLLM(photo, imgW, imgH){
 
   const respData=await resp.json();
   const parsed=parseVisionResponse(respData, imgW, imgH);
-
-  // Cross-validation
-  try{
-    const validated=await crossValidateWithGLM4(areaName, parsed.risks, parsed.objects_detected, imgW, imgH);
-    if(validated) return validated;
-  }catch(e){
-    console.warn('Cross-validation failed, using raw results:', e);
-  }
   return parsed;
 }
 
@@ -1460,12 +1462,34 @@ async function startAnalysis(){
   updateProgress(0,'正在用 AI 并行分析所有照片...','同时分析'+uploadedPhotos.length+'张照片');
   renderAnalyzeThumbs();
   renderSurveyQuestions();
+  showSkipAnalysisButton(true);
+  startAnalysisPageGuard();
 
   analysisResults=[];
   dynamicBudgetPlans=null; // reset dynamic plans
   selectedBudget=null; // reset selection
   surveyAnswers={}; // reset survey answers
   const photos=uploadedPhotos.slice();
+
+  // Global safety timeout: if whole analysis takes too long, force fallback
+  const GLOBAL_TIMEOUT_MS=120000; // 2 minutes max for everything
+
+  const startGlobalTimeout=()=>{
+    if(analysisGlobalTimeoutId) clearTimeout(analysisGlobalTimeoutId);
+    analysisGlobalTimeoutId=setTimeout(()=>{
+      console.warn('Global analysis timeout reached, forcing fallback');
+      skipAnalysis();
+    }, GLOBAL_TIMEOUT_MS);
+  };
+  const clearGlobalTimeout=()=>{
+    if(analysisGlobalTimeoutId) clearTimeout(analysisGlobalTimeoutId);
+    analysisGlobalTimeoutId=null;
+  };
+
+  startGlobalTimeout();
+
+  // Step 1: Compress images
+  updateProgress(5, '正在压缩图片，提升分析速度', '优化图片尺寸以加快AI识别');
 
   // Pre-load all images to get dimensions
   const photoData=[];
@@ -1482,45 +1506,84 @@ async function startAnalysis(){
     });
   }
 
-  // Update progress to show all started
-  updateProgress(20,'正在用 AI 分析所有照片...','3张照片同时识别+审查，请稍候');
+  // Step 2: AI recognition
+  updateProgress(15, '正在进行AI图片识别', `${photos.length}张照片同时分析中...`);
 
   // Analyze photos IN PARALLEL using primary model (Qwen-VL supports concurrency)
   const results=new Array(photoData.length);
   let usedFallbackDemo=false;
   let completedCount=0;
+  let failCount=0;
+
+  // Human-friendly step messages that cycle through analysis stages
+  const stepMessages=[
+    {progress:30, title:'正在检查地面障碍', sub:'排查绊倒、湿滑、高差等隐患'},
+    {progress:45, title:'正在检查家具边角', sub:'排查尖角、突出物、稳固性等隐患'},
+    {progress:60, title:'正在检查照明设施', sub:'排查夜灯、开关、光线不足等隐患'},
+    {progress:75, title:'正在检查床铺安全', sub:'排查床高、扶手、床脚等隐患'},
+  ];
+  let stepIdx=0;
+  const stepTimer=setInterval(()=>{
+    if(stepIdx<stepMessages.length){
+      const s=stepMessages[stepIdx];
+      updateProgress(s.progress, s.title, s.sub);
+      stepIdx++;
+    }else{
+      clearInterval(stepTimer);
+    }
+  }, 4000);
+
+  // Per-photo hard timeout: if analysis takes longer than this, use built-in fallback
+  const PER_PHOTO_TIMEOUT_MS=90000;
 
   const analysisPromises=photoData.map(async (pd)=>{
-    try{
-      const result=await analyzePhotoWithLLM(pd.photo, pd.imgW, pd.imgH);
-      return {success:true, result, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH};
-    }catch(e){
-      console.error('Primary parallel analysis failed for photo',pd.index,e.message);
-      // Try fallback serially for this single photo (Doubao has stricter rate limits)
+    const photoPromise=(async ()=>{
       try{
-        const fbResult=await analyzePhotoWithFallbackLLM(pd.photo, pd.imgW, pd.imgH);
-        return {success:true, result:fbResult, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH, fallback:true};
-      }catch(e2){
-        console.error('Fallback analysis also failed, using built-in fallback:',e2.message);
-        const fbResult=getFallbackAnalysis(pd.photo, pd.imgW, pd.imgH);
-        return {success:true, result:fbResult, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH, fallback:true};
+        const result=await analyzePhotoWithLLM(pd.photo, pd.imgW, pd.imgH);
+        return {success:true, result, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH};
+      }catch(e){
+        console.error('Primary parallel analysis failed for photo',pd.index,e.message);
+        // Try fallback serially for this single photo (Doubao has stricter rate limits)
+        try{
+          const fbResult=await analyzePhotoWithFallbackLLM(pd.photo, pd.imgW, pd.imgH);
+          return {success:true, result:fbResult, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH, fallback:true};
+        }catch(e2){
+          console.error('Fallback analysis also failed, using built-in fallback:',e2.message);
+          const fbResult=getFallbackAnalysis(pd.photo, pd.imgW, pd.imgH);
+          return {success:true, result:fbResult, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH, fallback:true};
+        }
       }
-    }
+    })();
+
+    const timeoutPromise=new Promise(resolve=>{
+      setTimeout(()=>{
+        console.warn(`Photo ${pd.index} analysis timed out after ${PER_PHOTO_TIMEOUT_MS}ms, using fallback`);
+        const fbResult=getFallbackAnalysis(pd.photo, pd.imgW, pd.imgH);
+        resolve({success:true, result:fbResult, index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH, fallback:true, timedOut:true});
+      }, PER_PHOTO_TIMEOUT_MS);
+    });
+
+    return Promise.race([photoPromise, timeoutPromise]);
   });
 
   // Track progress as promises resolve
   await Promise.all(analysisPromises.map(async (p)=>{
-    const r=await p;
+    let r;
+    try{
+      r=await p;
+    }catch(e){
+      console.error('Unexpected error in analysis promise:',e);
+      r={success:false, result:getFallbackAnalysis(pd.photo, pd.imgW, pd.imgH), index:pd.index, photo:pd.photo, imgW:pd.imgW, imgH:pd.imgH, fallback:true, error:e.message};
+    }
     results[r.index]=r;
     completedCount++;
     if(r.success){
       const thumb=document.getElementById('thumb-'+r.index);
       if(thumb) thumb.classList.add('done');
-      updateProgress(
-        20+Math.round((completedCount/photos.length)*70),
-        `视觉+审查 ${completedCount}/${photos.length} 张完成`,
-        `第${r.index+1}张 · ${getAreaName(r.photo.area)} · 识别+审查完成`
-      );
+      // Don't override the cycling step messages with per-photo progress
+      // Only update the subtitle briefly
+    }else{
+      failCount++;
     }
   }));
 
@@ -1564,6 +1627,24 @@ async function startAnalysis(){
 
   // Apply survey-based risk adjustments before rendering
   applySurveyAdjustments();
+  clearGlobalTimeout();
+  clearInterval(stepTimer);
+  stopAnalysisPageGuard();
+
+  // Step: Check if survey is complete
+  if(getUnansweredQuestions().length>0){
+    // Step: Reading user's survey answers
+    updateProgress(90, '正在读取您补充的信息', '请先完成下方问答题');
+    await waitForSurveyComplete();
+    // Re-apply survey adjustments after user completes survey
+    applySurveyAdjustments();
+  }
+
+  // Step: Generate risk scores
+  updateProgress(92, '正在生成风险评分', '根据识别结果+问卷信息综合评分');
+  await new Promise(r=>setTimeout(r,800));
+
+  showSkipAnalysisButton(false);
 
   // If all photos failed
   if(failCount===photos.length){
@@ -1572,7 +1653,7 @@ async function startAnalysis(){
     updateProgress(100,'分析失败',lastErr.substring(0,80));
     await new Promise(r=>setTimeout(r,2500));
   }else{
-    updateProgress(100,'分析完成','正在生成报告...');
+    updateProgress(100,'分析完成','正在跳转到结果页...');
     await new Promise(r=>setTimeout(r,600));
   }
 
@@ -1623,7 +1704,7 @@ function renderSurveyQuestions(){
     }).join('');
     const stageText={scene:'场景',highrisk:'高风险',behavior:'行为习惯',resistance:'沟通阻力'}[q.stage]||'';
     return `<div class="analyze-question" data-qid="${q.id}">
-      <div class="analyze-question-text"><span class="analyze-question-num">${q.order}</span><span class="analyze-question-stage" style="font-size:11px;color:var(--muted);margin-left:6px;">[${stageText}]</span><br>${q.text}</div>
+      <div class="analyze-question-text"><span class="analyze-question-num">${q.order}</span><span class="analyze-question-stage">[${stageText}]</span><br>${q.text}</div>
       <div class="analyze-options">${opts}</div>
     </div>`;
   }).join('');
@@ -1645,6 +1726,96 @@ function getSelectedOption(qid){
   const q=surveyQuestions.find(x=>x.id===qid);
   if(!q) return null;
   return q.options.find(o=>o.value===surveyAnswers[qid])||null;
+}
+
+function getAnsweredCount(){
+  return surveyQuestions.filter(q=>surveyAnswers[q.id]).length;
+}
+
+function getUnansweredQuestions(){
+  return surveyQuestions.filter(q=>!surveyAnswers[q.id]);
+}
+
+function updateSurveyWaitingUI(){
+  const total=surveyQuestions.length;
+  const answered=getAnsweredCount();
+  const unanswered=getUnansweredQuestions();
+  if(unanswered.length===0) return false; // all done, no need to wait
+
+  const names=unanswered.map(q=>q.text.substring(0,q.text.indexOf('？')+1||q.text.substring(0,12))).join('；');
+  updateProgress(95, '请先完成下方问卷', `已回答 ${answered}/${total} 题 · 待回答：${names}`);
+  return true; // still waiting
+}
+
+// Wait for user to complete survey, polling every 1.5s
+async function waitForSurveyComplete(){
+  return new Promise(resolve=>{
+    const check=()=>{
+      if(getUnansweredQuestions().length===0){
+        resolve();
+        return;
+      }
+      updateSurveyWaitingUI();
+      setTimeout(check, 1500);
+    };
+    check();
+  });
+}
+
+let analysisSkipped=false;
+let analysisGlobalTimeoutId=null;
+let analysisPageGuardId=null;
+function showSkipAnalysisButton(show){
+  const el=document.getElementById('skipAnalysisWrap');
+  if(el) el.style.display=show?'block':'none';
+}
+
+function startAnalysisPageGuard(){
+  if(analysisPageGuardId) clearTimeout(analysisPageGuardId);
+  // If user is still on analyze screen after 60s, force skip
+  analysisPageGuardId=setTimeout(()=>{
+    const screen=document.getElementById('screen-analyze');
+    if(screen && screen.classList.contains('active')){
+      console.warn('Analysis page guard triggered after 60s, forcing skip');
+      skipAnalysis();
+    }
+  }, 60000);
+}
+
+function stopAnalysisPageGuard(){
+  if(analysisPageGuardId){
+    clearTimeout(analysisPageGuardId);
+    analysisPageGuardId=null;
+  }
+}
+
+function skipAnalysis(){
+  analysisSkipped=true;
+  // Clear any pending global timeout
+  if(analysisGlobalTimeoutId){
+    clearTimeout(analysisGlobalTimeoutId);
+    analysisGlobalTimeoutId=null;
+  }
+  // Force use fallback for all photos
+  const photos=uploadedPhotos.slice();
+  analysisResults=photos.map((photo,i)=>{
+    const w=photo.naturalWidth||800;
+    const h=photo.naturalHeight||600;
+    return {
+      photo:photo,
+      risks:getFallbackAnalysis(photo, w, h).risks,
+      objects_detected:[],
+      summary:'已跳过 AI 分析，使用示例隐患数据',
+      imgW:w,
+      imgH:h
+    };
+  });
+  applySurveyAdjustments();
+  stopAnalysisPageGuard();
+  updateProgress(100,'已跳过 AI 分析','展示示例结果');
+  showSkipAnalysisButton(false);
+  goTo('screen-results');
+  renderResults();
 }
 
 function applySurveyAdjustments(){
@@ -1749,8 +1920,6 @@ function renderResults(){
     const photo=result.photo;
     const risks=result.risks;
     const visibleRisks=risks.filter(r=>r.verified!==false);
-    const annotatedRisks=risks.filter(r=>r.bbox && r.verified!==false);
-    const globalRisks=risks.filter(r=>!r.bbox && r.verified!==false);
 
     return `
     <div class="photo-result">
@@ -1761,7 +1930,6 @@ function renderResults(){
       </div>
       <div class="photo-annotation-wrap">
         <img src="${photo.dataUrl}" alt="${getAreaName(photo.area)}">
-        ${generateAnnotationSVG(risks,result.imgW,result.imgH)}
       </div>
       ${result.objects_detected && result.objects_detected.length>0?`
       <div class="detected-objects">
@@ -1769,7 +1937,7 @@ function renderResults(){
         ${result.objects_detected.slice(0,10).map(name=>`<span class="detected-obj-tag">${name}</span>`).join('')}
       </div>`:''}
       <div class="risk-list">
-        <div class="risk-list-title">隐患详情（编号对应照片标注圈）</div>
+        <div class="risk-list-title">隐患详情</div>
         ${risks.length===0?'<div class="no-risk-note">✅ 未检测到明显安全隐患，请仍注意日常安全。</div>':''}
         ${risks.map((r,ri)=>{
           r._riskIdx=ri;
@@ -1830,44 +1998,39 @@ function generateAnnotationSVG(risks,imgW,imgH){
   let svg='';
   const maskId='dm-'+Math.random().toString(36).slice(2,8);
 
-  // --- Spotlight: darken everything EXCEPT hazard areas ---
-  if(bboxRisks.length>0){
-    svg+=`<defs><mask id="${maskId}"><rect x="0" y="0" width="${imgW}" height="${imgH}" fill="white"/>`;
-    bboxRisks.forEach(risk=>{
-      const [x,y,w,h]=risk.bbox;
-      const cx=x+w/2, cy=y+h/2;
-      const rx=Math.max(w/2+15*sf,32*sf), ry=Math.max(h/2+15*sf,32*sf);
-      // Use ellipse to "cut out" (keep bright) the hazard area
-      svg+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx+8*sf}" ry="${ry+8*sf}" fill="black"/>`;
-    });
-    svg+=`</mask></defs>`;
-    // Dark overlay: 55% opacity black, but holes cut out for hazard areas
-    svg+=`<rect x="0" y="0" width="${imgW}" height="${imgH}" fill="rgba(0,0,0,0.55)" mask="url(#${maskId})"/>`;
-  }
-
-  // --- Draw red circles around each hazard ---
+  // --- Draw subtle highlight circles around each hazard (no dark overlay) ---
   bboxRisks.forEach(risk=>{
     const [x,y,w,h]=risk.bbox;
     const cx=x+w/2, cy=y+h/2;
-    const rx=Math.max(w/2+15*sf,32*sf), ry=Math.max(h/2+15*sf,32*sf);
+    // Clamp radius to keep circles reasonably sized and avoid overlap
+    const rx=Math.min(Math.max(w/2+8*sf, 22*sf), imgW*0.16);
+    const ry=Math.min(Math.max(h/2+8*sf, 22*sf), imgH*0.16);
     const color=colors[risk.severity]||colors.low;
 
-    // Circle (ellipse) with solid stroke
+    // Soft fill glow
+    svg+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${color}" fill-opacity="0.12"/>`;
+    // Solid stroke circle
     svg+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${color}" stroke-width="${sw}"/>`;
   });
 
-  // --- Draw number badges: placed at top-right of each circle ---
-  // To avoid overlap, offset each badge along the circle's edge
+  // --- Draw number badges with small connecting line ---
   bboxRisks.forEach((risk,idx)=>{
     const [x,y,w,h]=risk.bbox;
     const cx=x+w/2, cy=y+h/2;
-    const rx=Math.max(w/2+15*sf,32*sf), ry=Math.max(h/2+15*sf,32*sf);
+    const rx=Math.min(Math.max(w/2+8*sf, 22*sf), imgW*0.16);
+    const ry=Math.min(Math.max(h/2+8*sf, 22*sf), imgH*0.16);
     const color=colors[risk.severity]||colors.low;
 
-    // Place badge at top-right of circle, with small offset
-    const bx=cx+rx*0.7;
-    const by=cy-ry*0.7;
+    // Spread badges at different angles to reduce overlap
+    const angles=[-45, 45, 135, -135, 0, 90];
+    const angleDeg=angles[idx%angles.length];
+    const rad=angleDeg*Math.PI/180;
+    const lineLen=Math.max(rx,ry)+br+4*sf;
+    const bx=cx+Math.cos(rad)*lineLen;
+    const by=cy+Math.sin(rad)*lineLen;
 
+    // Small connecting line
+    svg+=`<line x1="${cx+Math.cos(rad)*rx}" y1="${cy+Math.sin(rad)*ry}" x2="${bx}" y2="${by}" stroke="${color}" stroke-width="${1.5*sf}"/>`;
     // White circle background for the number
     svg+=`<circle cx="${bx}" cy="${by}" r="${br}" fill="white" stroke="${color}" stroke-width="${2*sf}"/>`;
     // Number text
@@ -2054,8 +2217,10 @@ function pickRiskIcon(title){
   return '🏠';
 }
 
+// Template-based report + LLM personalization
 async function generateLLMReport(){
   if(llmReport) return llmReport;
+
   // Build hazards JSON from analysisResults
   const hazardsData=analysisResults.map(r=>({
     area:getAreaName(r.photo.area),
@@ -2070,6 +2235,10 @@ async function generateLLMReport(){
     }))
   }));
 
+  const allHazards=hazardsData.flatMap(h=>h.hazards);
+  const highRisks=allHazards.filter(h=>h.severity==='high');
+  const totalCost=allHazards.reduce((s,h)=>s+(h.cost||0),0);
+
   // Build survey summary for report
   const surveySummary=surveyQuestions.map(q=>{
     const opt=getSelectedOption(q.id);
@@ -2080,55 +2249,101 @@ async function generateLLMReport(){
                    resistanceAnswer==='little'?'老人态度还行，可以逐步推进':
                    '老人还没被正式劝过，沟通可以正常展开';
 
-  const reportPrompt='你是一个懂中国家庭代际关系的居家安全顾问。\n\n背景：一个成年子女用AI检查了父母（或即将搬来同住的老人）家里的安全隐患，现在需要一份"与父母沟通指南"，帮助子女说服老人接受必要的适老化改造。\n\n以下是AI分析出的实际隐患（已根据用户回答的行为问卷调整了风险等级和优先级）：\n'+JSON.stringify(hazardsData)+'\n\n以下是用户回答的关于老人夜间行为习惯的问题（这些问题照片看不出来，但对报告很重要）：\n'+JSON.stringify(surveySummary)+'\n\n老人沟通阻力判断：'+parentTone+'\n\n请生成一份沟通指南，包含以下内容，以严格JSON格式返回（不要markdown代码块）：\n{\n  "child_report": {\n    "comm_tips": ["技巧1","技巧2",...],\n    "qa_list": [{"q":"老人说的话","a":"建议回答"},...],\n    "action_plan": "整体建议"\n  },\n  "parent_report": {\n    "encouragement": "鼓励语",\n    "shopping_note": "购物建议"\n  }\n}\n\n=== 沟通技巧写作要求（非常重要，必须严格遵守）===\n- 你写的是【成年子女如何跟自己的老年父母沟通】的技巧，不是父母跟小孩说安全须知\n- 每条技巧必须包含具体的"话术示范"，给出子女实际该怎么说\n- 语气要像一个有经验的朋友在分享实战经验，不要像教科书\n- 禁止使用"宝贝""小朋友""孩子"等称呼，这个场景里没有小孩\n- 禁止使用"建议您""应当""需要注意"等书面语，用"你可以跟老人说""别急着""先这样"这类口语\n- 至少写7条技巧，每条针对一个不同的沟通难点\n- 【关键】每条技巧中，把具体的话术示范用「」包裹起来，例如：别正儿八经地谈，找个自然的机会，顺嘴提一句「妈，我最近看到个东西觉得挺适合咱家的」，比专门坐下来谈轻松多了。\n- 必须结合用户的问卷答案来写：如果老人"半睡半醒就走""经常不开灯""起夜急""扶不稳的东西"，要在技巧和 Q&A 中体现这些真实场景\n- 如果老人比较抵触（q8选"劝过，不听"），话术要更加温和、小步推进、强调"先试试""不好用再退"\n\n=== Q&A写作要求（非常重要，必须严格遵守）===\n- 每个问题必须是【老年父母真实会说的话】，要带情绪、带口语、带抵触心理\n- 典型例子："我这身子骨好着呢，不用折腾""花那冤枉钱干啥""我住了几十年了，好好的""装这些乱七八糟的家里跟医院似的""我不想给你们添麻烦""这些东西放了几十年了，你别动我的东西""扶手？我又不是残疾人"\n- 回答要有同理心，先认同老人的感受（不能正面反驳），再给出理由和话术\n- 回答里要有具体的话术示范，让子女知道怎么开口\n- 禁止出现"数据显示""统计表明"这类引用\n- 至少写7组问答\n- 【关键】回答中把具体的话术示范用「」包裹起来，例如：先认同再说。「可不是嘛，您这身子骨确实好。就是人上了年纪，眼睛不如以前亮了…」\n\n=== 父母版要求 ===\n- encouragement 要温暖但不说教，像自家孩子跟老人说话的语气\n- shopping_note 要让老人觉得简单，用聊天的方式说\n\n请基于上面分析出的实际隐患和问卷答案来写，不要泛泛而谈。每个技巧、问答、父母版内容都要跟具体的隐患和老人的行为习惯关联。';
+  // ===== Base templates (fast, stable) =====
+  const baseTips=[
+    '别一上来就谈改造，先顺着老人说。找个老人心情好的时候，像聊家常一样提起：「最近看到个新闻，说老人夜里起夜摔一跤的可多了，咱家要不要也看看有没有这类地方？」',
+    '把"花钱"说成"先试试"。老人最怕买了不用浪费钱，你可以说：「这个我先买回来，您用几天，不好用我退掉，不损失什么。」',
+    '让老人觉得自己有决定权。别说"您必须装这个"，改成「您看这个地方要是加个夜灯，是不是夜里起来更方便？您说了算。」',
+    '从小事开始，不要一次性改太多。先装一个夜灯、贴一条防滑条，让老人尝到甜头，再慢慢推进扶手、换床这些大改动。'
+  ];
 
-  let resp;
+  const baseQA=[
+    {q:'我住了几十年了，一直好好的，用不着这些。',a:'先认同：「是，您这房子确实住得顺。」再说现实：「就是因为住久了，有些习惯性的东西咱们没注意。比如夜里摸黑走那几步，年轻时没事，现在眼睛反应慢了，咱就加个夜灯试试，也不贵。」'},
+    {q:'花那冤枉钱干啥，我又不是不能走。',a:'先顺着说：「您现在确实能走。」再转个弯：「这不是怕您哪天夜里没看清绊一下嘛。一个夜灯几十块钱，真摔一跤去医院可就不止这个数了，您说是不是？」'},
+    {q:'装这些乱七八糟的，家里跟医院似的。',a:'先理解：「是，医院那种扶手看着是挺冷冰冰的。」再给选择：「现在有很多好看的款，木质的、隐藏的，颜色也能选。咱先挑一个您看着顺眼的试试？」'},
+    {q:'我不想给你们添麻烦。',a:'直接说心里话：「妈/爸，您不添麻烦，我就是担心您。您好好的，我们才安心。这些东西装好了，您自在，我们也少操点心。」'}
+  ];
 
-  // Report generation: Doubao
-  resp=await fetchWithRetry('https://ark.cn-beijing.volces.com/api/v3/chat/completions',{
-    method:'POST',
-    headers:{
-      'Authorization':'Bearer cc008ac6-e804-428a-8407-c788b914a906',
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify({
-      model:'doubao-seed-2-1-pro-260628',
-      messages:[{role:'user',content:reportPrompt}],
-      max_tokens:4096,
-      temperature:0.1,
-      stream:false
-    })
-  }, 1, 120000); // 1 retry, 120s timeout
-  
-  if(!resp.ok){
-    const errText=await resp.text().catch(()=>'');
-    throw new Error('报告生成失败: '+errText.slice(0,200));
-  }
-  const respData=await resp.json();
-  let resultText=respData.choices&&respData.choices[0]&&respData.choices[0].message&&(respData.choices[0].message.content||respData.choices[0].message.reasoning_content)||'';
-  let parsed;
-  try{
-    let s=resultText.trim();
-    // Remove markdown code fences: ```json ... ``` or ``` ... ```
-    s=s.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'');
-    // Find JSON object boundaries
-    var fi=s.indexOf('{');
-    var la=s.lastIndexOf('}');
-    if(fi>=0&&la>fi) s=s.substring(fi,la+1);
-    // Fix common JSON issues: trailing commas
-    s=s.replace(/,\s*}/g,'}').replace(/,\s*]/g,']');
-    parsed=JSON.parse(s);
-  }catch(e){
-    console.error('Report JSON parse failed, using fallback:', e.message);
-    // Use fallback report so demo continues
-    parsed=getFallbackReport(hazardsData);
-    console.warn('⚠️ 报告使用了兜底数据');
-  }
-  if(!parsed || (!parsed.child_report && !parsed.parent_report)){
-    console.error('Report structure incomplete, using fallback');
-    parsed=getFallbackReport(hazardsData);
-  }
-  llmReport=parsed;
+  const baseEncouragement='爸妈，家里这些小改动不是觉得您老了、不行了，是我们希望您每天起夜、走动都能更踏实、更放心。您一直把这个家收拾得很好，我们只是帮您让它更安全一点。';
+
+  // ===== Auto-generate action plan and shopping note from hazards =====
+  const topHazards=allHazards.filter(h=>h.severity==='high').slice(0,3).map(h=>h.title).join('、');
+  const midHazards=allHazards.filter(h=>h.severity==='medium').slice(0,3).map(h=>h.title).join('、');
+  const actionPlan='根据分析结果，建议分三步推进：\n\n'+
+    '第一步（本周内，先解决高风险）：优先处理 '+ (topHazards||'主要隐患') + '。这些都是夜间最容易出问题的点，先和老人商量好，从小改动开始。\n\n'+
+    '第二步（两周内，完善中风险）：再处理 '+ (midHazards||'其他隐患') + '。等老人接受了第一步的改动，再顺势推进。\n\n'+
+    '第三步（长期坚持，养成习惯）：提醒老人起夜时开灯、穿防滑拖鞋、不要着急起身。最好把常用物品放在顺手的高度，减少弯腰和攀爬。';
+
+  const shoppingItems=allHazards.slice(0,5).map(h=>{
+    if(/夜灯|照明/.test(h.title)) return '感应夜灯';
+    if(/扶手/.test(h.title)) return '起身扶手';
+    if(/防滑|湿滑/.test(h.title)) return '防滑垫/防滑贴';
+    if(/门槛|高差/.test(h.title)) return '橡胶坡道';
+    if(/电线|杂乱/.test(h.title)) return '理线器/收纳盒';
+    if(/床高|床垫/.test(h.title)) return '矮床架/薄床垫';
+    if(/防撞|尖角/.test(h.title)) return '防撞条';
+    return null;
+  }).filter(Boolean);
+  const uniqueItems=[...new Set(shoppingItems)];
+  const shoppingNote='爸妈，不用一下子买太多，先准备这几样最实用的：'+(uniqueItems.slice(0,4).join('、')||'感应夜灯、防滑垫')+'。'+
+    '\n\n这些东西网上都能买到，您可以让孩子挑，也可以一起去家居店看看，选个您看着顺眼的款式。';
+
+  // ===== Set llmReport IMMEDIATELY with template content (don't wait for LLM) =====
+  llmReport={
+    child_report:{ comm_tips:baseTips, qa_list:baseQA, action_plan:actionPlan },
+    parent_report:{ encouragement:baseEncouragement, shopping_note:shoppingNote }
+  };
+
+  // ===== Fire LLM personalization in background (don't block) =====
+  const prompt='你是懂中国家庭代际关系的居家安全顾问。\n\n背景：成年子女用AI检查了父母家里的安全隐患，现在需要生成3条个性化沟通技巧、3组个性化问答、1句鼓励语、1条购物建议。\n\n实际隐患（已按问卷调整）：\n'+JSON.stringify(allHazards.slice(0,6))+'\n\n问卷摘要：\n'+JSON.stringify(surveySummary)+'\n\n沟通阻力判断：'+parentTone+'\n\n请严格返回JSON（不要markdown代码块）：\n{\n  "personalized_tips": ["技巧1","技巧2","技巧3"],\n  "personalized_qa": [{"q":"老人说的话","a":"建议回答"},...],\n  "encouragement_addon": "一句简短鼓励语",\n  "shopping_focus": "一句简短购物建议，突出1-2个最该优先买的东西"\n}\n\n写作要求：\n- 技巧和Q&A必须结合上述具体隐患和问卷答案，不要泛泛而谈\n- 每条技巧要有具体话术示范，用「」包裹\n- 问答中老人说的话要带情绪、带口语、带抵触心理\n- 语气像有经验的朋友，不要用"建议您""应当"等书面语\n- 如果老人比较抵触，话术要更温和、强调"先试试"';
+
+  // Background async: enrich report with LLM personalization
+  (async ()=>{
+    try{
+      const resp=await fetchWithRetry('https://ark.cn-beijing.volces.com/api/v3/chat/completions',{
+        method:'POST',
+        headers:{
+          'Authorization':'Bearer cc008ac6-e804-428a-8407-c788b914a906',
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          model:'doubao-seed-2-1-pro-260628',
+          messages:[{role:'user',content:prompt}],
+          max_tokens:2048,
+          temperature:0.1,
+          stream:false
+        })
+      }, 1, 60000);
+
+      if(!resp.ok){ console.warn('Personalized report API failed:',resp.status); return; }
+      const respData=await resp.json();
+      let resultText=respData.choices&&respData.choices[0]&&respData.choices[0].message&&(respData.choices[0].message.content||respData.choices[0].message.reasoning_content)||'';
+      let s=resultText.trim();
+      s=s.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'');
+      const fi=s.indexOf('{');
+      const la=s.lastIndexOf('}');
+      if(fi<0||la<=fi){ console.warn('Personalized report: no JSON found'); return; }
+      s=s.substring(fi,la+1);
+      s=s.replace(/,\s*}/g,'}').replace(/,\s*]/g,']');
+      const personalized=JSON.parse(s);
+
+      // Merge personalized content into existing llmReport
+      const newTips=Array.isArray(personalized.personalized_tips)?personalized.personalized_tips.filter(t=>typeof t==='string'):[];
+      const newQA=Array.isArray(personalized.personalized_qa)?personalized.personalized_qa.filter(q=>q&&typeof q.q==='string'&&typeof q.a==='string'):[];
+      const addon=personalized.encouragement_addon||'';
+      const focus=personalized.shopping_focus||'';
+
+      llmReport.child_report.comm_tips=[...baseTips.slice(0,3),...newTips].slice(0,7);
+      llmReport.child_report.qa_list=[...baseQA.slice(0,3),...newQA].slice(0,7);
+      if(addon) llmReport.parent_report.encouragement=baseEncouragement+' '+addon;
+      if(focus) llmReport.parent_report.shopping_note='爸妈，不用一下子买太多，先准备这几样最实用的：'+(uniqueItems.slice(0,4).join('、')||'感应夜灯、防滑垫')+'。'+focus+'\n\n这些东西网上都能买到，您可以让孩子挑，也可以一起去家居店看看，选个您看着顺眼的款式。';
+
+      console.log('Personalized report enriched in background');
+    }catch(e){
+      console.warn('Background personalized report failed:',e.message);
+    }
+  })();
+
   return llmReport;
 }
 
@@ -2158,32 +2373,13 @@ async function renderReport(){
     return;
   }
 
-  // Show loading state only when we really need to generate
+  // Show brief loading state (report generates almost instantly now)
   renderReportLoading();
 
-  // Generate LLM report with a timeout guard to prevent infinite spinning
-  const REPORT_TIMEOUT_MS=30000; // 30s max wait, then use fallback
-  let reportPromise=generateLLMReport().catch(e=>{
-    console.error('LLM report generation failed:',e);
-    return null;
-  });
+  // Generate report (template is instant, LLM enriches in background)
+  await generateLLMReport();
 
-  let timeoutPromise=new Promise(resolve=>setTimeout(()=>resolve('timeout'),REPORT_TIMEOUT_MS));
-  let result=await Promise.race([reportPromise,timeoutPromise]);
-
-  if(!llmReport){
-    // Generation failed or timed out: use fallback
-    const hazardsData=analysisResults.map(r=>({
-      area:getAreaName(r.photo.area),
-      summary:r.summary,
-      hazards:r.risks.map(rk=>({title:rk.title,description:rk.desc,severity:rk.severity,suggestion:rk.suggestion,cost:rk.cost}))
-    }));
-    llmReport=getFallbackReport(hazardsData);
-    if(result==='timeout'){
-      console.warn('Report generation timed out, using fallback');
-    }
-  }
-
+  // Render immediately
   switchReport('child');
 }
 
@@ -2712,5 +2908,9 @@ const budgetObserver=new MutationObserver(()=>{
 budgetObserver.observe(document.getElementById('screen-budget'),{attributes:true,attributeFilter:['class']});
 
 </script>
+    </div>
+  </div>
+  <div class="phone-button"></div>
+</div>
 </body>
 </html>
