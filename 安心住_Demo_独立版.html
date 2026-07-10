@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
 <title>安心住 · 居家安全AI自查Demo</title>
 <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -40,20 +40,6 @@ html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 body{-webkit-overflow-scrolling:touch;background:var(--bg)}
 button,input,select,textarea{font-family:inherit;-webkit-appearance:none}
 button{touch-action:manipulation;cursor:pointer}
-
-/* ===== Desktop Phone Mockup ===== */
-@media (min-width:900px){
-  body{background:#1f1f24;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px}
-  .phone-frame{display:block;width:402px;height:820px;background:#111;border-radius:54px;padding:14px;box-shadow:0 25px 80px rgba(0,0,0,.55), inset 0 0 0 2px #333;position:relative}
-  .phone-notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:160px;height:32px;background:#111;border-radius:0 0 20px 20px;z-index:10}
-  .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);position:relative}
-  .phone-button{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:140px;height:5px;background:rgba(255,255,255,.25);border-radius:3px}
-  .app{max-width:none;height:100%;min-height:auto;border-radius:42px;overflow-y:auto;overflow-x:hidden}
-}
-@media (max-width:899px){
-  .phone-frame{display:contents}
-  .phone-notch,.phone-button{display:none}
-}
 
 /* ===== Screen System ===== */
 .screen{display:none;min-height:100vh;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);animation:screenIn .4s ease}
@@ -137,7 +123,7 @@ button{touch-action:manipulation;cursor:pointer}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
 .privacy-note{margin:16px 24px 0;font-size:11px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;line-height:1.5}
-.privacy-note::before{content:"🔒";flex-shrink:0}
+.privacy-note::before{content:"";display:none}
 
 /* ===== Fixed Bottom Bar ===== */
 .bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px 24px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg2);border-top:1px solid var(--rule);z-index:100}
@@ -152,7 +138,7 @@ button{touch-action:manipulation;cursor:pointer}
 .analyze-icon{width:80px;height:80px;margin:0 auto 24px;position:relative}
 .analyze-icon-ring{width:80px;height:80px;border-radius:50%;border:4px solid var(--soft);border-top:4px solid var(--accent2);animation:spin 1.2s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.analyze-icon-emoji{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px}
+.analyze-icon-emoji{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center}
 .analyze-status{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px}
 .analyze-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
 .progress-bar{width:100%;max-width:280px;height:8px;background:var(--rule);border-radius:4px;margin:0 auto 8px;overflow:hidden}
@@ -161,14 +147,20 @@ button{touch-action:manipulation;cursor:pointer}
 .analyze-photos{margin-top:32px;display:flex;justify-content:center;gap:8px}
 .analyze-thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;position:relative;border:2px solid var(--rule)}
 .analyze-thumb.done{border-color:var(--accent2)}
+.analyze-thumb.done .scan-overlay{display:none}
 .analyze-thumb img{width:100%;height:100%;object-fit:cover}
-.scan-overlay{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(to bottom,transparent,var(--accent2),transparent);animation:scanMove 1.5s ease-in-out infinite}
-@keyframes scanMove{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
+.scan-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.scan-line{position:absolute;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);box-shadow:0 0 8px var(--accent2);animation:scanMove 1.5s ease-in-out infinite}
+.scan-glow{position:absolute;inset:0;background:linear-gradient(180deg,rgba(95,139,107,0.12),transparent 40%);animation:scanGlow 1.5s ease-in-out infinite}
+@keyframes scanMove{0%{top:0}50%{top:calc(100% - 2px)}100%{top:0}}
+@keyframes scanGlow{0%,100%{opacity:0.3}50%{opacity:0.7}}
 
 /* ===== Analysis Questions ===== */
 .analyze-questions{margin-top:24px;padding:0 24px 24px;max-width:430px;margin-left:auto;margin-right:auto}
-.analyze-questions-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center}
+.analyze-questions-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
 .analyze-questions-sub{font-size:12px;color:var(--muted);margin-bottom:16px;text-align:center;line-height:1.5}
+.survey-progress-badge{background:var(--soft2);color:var(--accent);font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px}
+.survey-progress-badge.done{background:var(--soft);color:var(--accent2)}
 .analyze-question{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .analyze-question-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--accent2);font-size:13px;font-weight:700;margin-right:8px;vertical-align:middle}
 .analyze-question-stage{font-size:13px;color:#d9534f;font-weight:700;vertical-align:middle;margin-left:6px}
@@ -220,7 +212,7 @@ button{touch-action:manipulation;cursor:pointer}
 .risk-suggestion{margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--ink);line-height:1.5;border-left:3px solid var(--accent2)}
 .risk-survey-impact{margin-top:6px;padding:6px 10px;background:#fff3cd;border-radius:6px;font-size:11px;color:#856404;line-height:1.5;border-left:3px solid #ffc107}
 .risk-survey-context{margin-top:6px;padding:6px 10px;background:#e8f4fd;border-radius:6px;font-size:11px;color:#0c5460;line-height:1.5;border-left:3px solid #17a2b8}
-.survey-sum-card{margin:0 0 16px;padding:14px 16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border)}
+.survey-sum-card{margin:0 0 16px;padding:14px 16px;background:var(--bg2);border-radius:12px;border:1px solid var(--rule)}
 .survey-sum-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:10px}
 .survey-sum-list{display:flex;flex-direction:column;gap:6px}
 .survey-sum-item{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.4}
@@ -250,7 +242,9 @@ button{touch-action:manipulation;cursor:pointer}
 .budget-cards{padding:16px 24px;display:flex;flex-direction:column;gap:14px}
 .budget-card{padding:20px;border-radius:var(--radius);background:var(--bg2);box-shadow:var(--shadow);border:2px solid transparent;cursor:pointer;transition:all .2s}
 .budget-card.selected{border-color:var(--accent2);background:var(--soft)}
-.budget-card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
+.budget-card.recommended{border-color:var(--accent);position:relative}
+.budget-recommend-badge{position:absolute;top:-1px;right:16px;background:linear-gradient(135deg,var(--accent),#c47a48);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:0 0 10px 10px;letter-spacing:0.5px}
+.budget-card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;gap:8px}
 .budget-card-name{font-size:17px;font-weight:700;color:var(--ink)}
 .budget-card-price{font-size:20px;font-weight:800;color:var(--accent2)}
 .budget-card-desc{font-size:13px;color:var(--muted);margin-bottom:14px}
@@ -259,7 +253,7 @@ button{touch-action:manipulation;cursor:pointer}
 .budget-paid-label{background:#fff3e0;color:#e65100}
 .budget-free-list{list-style:none;margin-bottom:14px}
 .budget-free-list li{font-size:13px;color:var(--ink);padding:4px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.5}
-.budget-free-list li::before{content:"✓";color:#2e7d32;font-weight:700;flex-shrink:0}
+.budget-free-list li::before{content:"";display:none}
 .budget-paid-list{list-style:none}
 .budget-paid-list li{font-size:13px;color:var(--ink);padding:8px 0;border-bottom:1px solid var(--rule)}
 .budget-paid-list li:last-child{border-bottom:none}
@@ -347,7 +341,7 @@ button{touch-action:manipulation;cursor:pointer}
 .verify-btn.deny{background:var(--bg);color:var(--muted);border:1.5px solid var(--rule)}
 .verify-btn:active{transform:scale(.97)}
 .verify-measure{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.verify-input{width:80px;padding:8px 10px;border:1.5px solid var(--accent);border-radius:8px;font-size:14px;color:var(--ink);background:#fff}
+.verify-input{width:80px;padding:8px 10px;border:1.5px solid var(--accent);border-radius:8px;font-size:16px;color:var(--ink);background:#fff}
 .verify-input:focus{outline:none;border-color:var(--accent2)}
 .verify-unit{font-size:13px;color:var(--muted)}
 .verify-resolved{font-size:13px;color:var(--accent2);font-weight:600;display:flex;align-items:center;gap:6px}
@@ -363,7 +357,7 @@ button{touch-action:manipulation;cursor:pointer}
 /* Parent Report */
 .report-parent{padding:20px;display:none}
 .report-parent.active{display:block;animation:fadeIn .3s ease}
-.report-parent .report-section-title{font-size:24px;border-bottom:3px solid var(--accent2);padding-bottom:10px;margin-bottom:16px}
+.report-parent .report-section-title{font-size:20px;border-bottom:3px solid var(--accent2);padding-bottom:10px;margin-bottom:16px}
 .report-parent .report-overview{padding:24px}
 .report-parent .report-overview-label{font-size:18px}
 .report-parent .report-overview-value{font-size:20px}
@@ -375,7 +369,7 @@ button{touch-action:manipulation;cursor:pointer}
 .parent-risk-fix{background:var(--soft);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--ink);line-height:1.7}
 .parent-risk-fix-title{font-size:16px;font-weight:700;color:var(--accent2);margin-bottom:6px}
 .parent-ask-child{margin-top:10px;padding:10px 14px;background:var(--soft2);border-radius:10px;font-size:16px;color:var(--accent);line-height:1.6;display:flex;gap:8px;align-items:flex-start}
-.parent-ask-child::before{content:"👋";flex-shrink:0;font-size:20px}
+.parent-ask-child::before{content:"";display:none}
 .parent-encourage{text-align:center;padding:24px;background:var(--soft);border-radius:var(--radius);margin-top:20px}
 .parent-encourage-text{font-size:18px;color:var(--ink);line-height:1.8}
 .parent-emergency{margin-top:20px;padding:16px;background:#fef2f0;border-radius:var(--radius);text-align:center}
@@ -386,6 +380,175 @@ button{touch-action:manipulation;cursor:pointer}
 .no-risk-note{padding:20px;text-align:center;color:var(--muted);font-size:14px}
 .detected-objects{font-size:11px;color:var(--muted);padding:4px 12px 12px;display:flex;flex-wrap:wrap;gap:4px}
 .detected-obj-tag{padding:2px 8px;background:var(--soft);border-radius:8px;font-size:11px;color:var(--accent2)}
+
+/* ===== SVG Icon Helper ===== */
+.svg-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle}
+.svg-icon svg{display:block}
+
+/* ===== Welcome Hero Upgrades ===== */
+.welcome-hero{position:relative;overflow:hidden}
+.welcome-hero::before{content:"";position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(95,139,107,0.08) 0%,transparent 70%);pointer-events:none}
+.welcome-hero::after{content:"";position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(213,139,85,0.08) 0%,transparent 70%);pointer-events:none}
+.welcome-pattern{position:absolute;inset:0;opacity:0.03;background-image:radial-gradient(circle,var(--accent2) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.welcome-logo{position:relative;z-index:1}
+.welcome-logo-glow{position:absolute;inset:-8px;border-radius:24px;background:radial-gradient(circle,rgba(95,139,107,0.25) 0%,transparent 70%);animation:logoGlow 3s ease-in-out infinite;z-index:-1}
+@keyframes logoGlow{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.welcome-value-prop{display:inline-block;background:linear-gradient(135deg,rgba(95,139,107,0.1),rgba(213,139,85,0.1));border:1px solid rgba(95,139,107,0.15);border-radius:12px;padding:8px 16px;margin-top:8px;font-size:14px;font-weight:700;color:var(--accent2)}
+.welcome-value-prop strong{color:var(--accent)}
+
+/* CTA Pulse */
+.btn-pulse{position:relative;overflow:visible}
+.btn-pulse::after{content:"";position:absolute;inset:-3px;border-radius:21px;border:2px solid var(--accent);animation:ctaPulse 2s ease-out infinite;pointer-events:none}
+@keyframes ctaPulse{0%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
+.btn-demo{position:relative;background:linear-gradient(135deg,var(--accent),#e8956a)!important;box-shadow:0 6px 24px rgba(213,139,85,0.4)!important;font-size:16px!important;padding:17px!important}
+.demo-btn-icon{display:inline-flex;align-items:center;gap:8px}
+
+/* ===== Demo Mode Badge ===== */
+.demo-badge{position:fixed;top:12px;right:12px;z-index:999;background:linear-gradient(135deg,var(--accent),#c47a48);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;box-shadow:0 4px 12px rgba(213,139,85,0.35);display:none;align-items:center;gap:4px;animation:demoBadgePulse 2s ease-in-out infinite;letter-spacing:0.5px}
+.demo-badge.show{display:inline-flex}
+@keyframes demoBadgePulse{0%,100%{box-shadow:0 4px 12px rgba(213,139,85,0.35)}50%{box-shadow:0 4px 20px rgba(213,139,85,0.55)}}
+
+/* ===== Safety Score Circular Progress ===== */
+.score-circle-wrap{position:relative;width:120px;height:120px;margin:0 auto 16px}
+.score-circle-svg{transform:rotate(-90deg)}
+.score-circle-bg{fill:none;stroke:var(--rule);stroke-width:8}
+.score-circle-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease}
+.score-circle-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.score-circle-num{font-size:32px;font-weight:800;line-height:1}
+.score-circle-label{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ===== Risk Heat Map ===== */
+.risk-heatmap{display:flex;gap:8px;margin:16px 0 4px;justify-content:center}
+.heatmap-item{flex:1;text-align:center;padding:10px 6px;border-radius:12px;background:var(--bg)}
+.heatmap-item.hot{background:#fef2f0;border:1px solid rgba(231,76,60,0.15)}
+.heatmap-item.warm{background:var(--soft2);border:1px solid rgba(213,139,85,0.15)}
+.heatmap-item.cool{background:var(--soft);border:1px solid rgba(95,139,107,0.15)}
+.heatmap-area{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px}
+.heatmap-count{font-size:20px;font-weight:800}
+.heatmap-item.hot .heatmap-count{color:var(--danger)}
+.heatmap-item.warm .heatmap-count{color:var(--accent)}
+.heatmap-item.cool .heatmap-count{color:var(--accent2)}
+
+/* ===== High Risk Card Pulse Border ===== */
+.risk-card.high{position:relative;background:#fef2f0;animation:cardIn .3s ease, highRiskPulse 2.5s ease-in-out infinite}
+@keyframes highRiskPulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0)}50%{box-shadow:0 0 0 3px rgba(231,76,60,0.12)}}
+
+/* ===== Stat Number Count Up ===== */
+.stat-num{display:inline-block;min-width:1.2em}
+.stat-num.animate{animation:countUp .6s ease}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== Analysis Screen Improvements ===== */
+.analyze-step-list{margin-top:20px;display:flex;flex-direction:column;gap:8px;max-width:260px;margin-left:auto;margin-right:auto}
+.analyze-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);padding:6px 0;transition:all .3s}
+.analyze-step.active{color:var(--ink);font-weight:600}
+.analyze-step.done{color:var(--accent2)}
+.analyze-step-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--rule);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;transition:all .3s}
+.analyze-step.active .analyze-step-dot{border-color:var(--accent2);background:var(--soft)}
+.analyze-step.done .analyze-step-dot{border-color:var(--accent2);background:var(--accent2);color:#fff}
+.analyze-thumb.done::after{content:"";position:absolute;inset:0;background:rgba(95,139,107,0.2);display:flex;align-items:center;justify-content:center}
+
+/* ===== Report Child - Professional Header ===== */
+.report-child-header{background:linear-gradient(135deg,var(--accent2),#4a7a58);color:#fff;padding:20px 24px;margin:-24px -24px 20px;border-radius:0}
+.report-child-header-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.report-child-header-meta{font-size:12px;opacity:0.85;display:flex;gap:16px;flex-wrap:wrap}
+.report-child-header-meta span{display:flex;align-items:center;gap:4px}
+
+/* ===== Report Parent - Warm Design ===== */
+.report-parent{background:linear-gradient(180deg,#fdf6ee 0%,var(--bg) 100%)}
+.parent-warm-msg{background:linear-gradient(135deg,var(--soft2),#fef9f3);border-radius:var(--radius);padding:20px;margin-bottom:20px;border:1px solid rgba(213,139,85,0.12);text-align:center}
+.parent-warm-msg-greeting{font-size:22px;font-weight:700;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.parent-warm-msg-text{font-size:15px;color:var(--ink);line-height:1.7}
+.parent-risk-card{position:relative;overflow:hidden}
+.parent-risk-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%}
+.parent-risk-card.high::before{background:var(--danger)}
+.parent-risk-card.medium::before{background:var(--accent)}
+.parent-risk-card.low::before{background:var(--accent2)}
+.parent-risk-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.parent-risk-icon.high{background:#fef2f0;color:var(--danger)}
+.parent-risk-icon.medium{background:var(--soft2);color:var(--accent)}
+.parent-risk-icon.low{background:var(--soft);color:var(--accent2)}
+.parent-risk-num{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.parent-risk-card.high .parent-risk-num{background:#fef2f0;color:var(--danger)}
+.parent-risk-card.medium .parent-risk-num{background:var(--soft2);color:var(--accent)}
+
+/* ===== Demo Mode Try-It CTA ===== */
+.demo-try-banner{display:none;margin:16px 20px 0;padding:16px 20px;background:linear-gradient(135deg,var(--accent),#c47a48);border-radius:var(--radius);color:#fff;text-align:center;box-shadow:0 6px 20px rgba(213,139,85,0.3)}
+.demo-try-banner.show{display:block}
+.demo-try-banner-title{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px}
+.demo-try-banner-desc{font-size:12px;opacity:0.9;margin-bottom:12px}
+.demo-try-btn{width:100%;padding:12px;border:none;border-radius:var(--radius-sm);background:#fff;color:var(--accent);font-size:15px;font-weight:700;cursor:pointer}
+.demo-try-btn:active{transform:scale(0.97)}
+
+/* ===== Budget Recommended Improvements ===== */
+.budget-card.recommended{border-color:var(--accent);background:linear-gradient(135deg,rgba(213,139,85,0.04),var(--soft2));box-shadow:0 8px 30px rgba(213,139,85,0.15)}
+.budget-recommend-badge{display:flex;align-items:center;gap:4px}
+.budget-recommend-hint{font-size:11px;color:var(--accent);margin-top:8px;display:flex;align-items:center;gap:4px;opacity:0.8;font-style:italic}
+
+/* ===== Micro-interactions ===== */
+button{transition:transform .15s ease,box-shadow .15s ease,opacity .15s ease}
+button:hover{opacity:0.92}
+button:active{transform:scale(0.97)}
+.route-card{transition:transform .2s ease,box-shadow .2s ease}
+.route-card:active{transform:scale(0.98)}
+.upload-area{transition:transform .2s ease,box-shadow .2s ease}
+.risk-card{transition:transform .2s ease}
+.budget-card{transition:transform .2s ease,box-shadow .2s ease}
+.budget-card:active{transform:scale(0.99)}
+.analyze-option{transition:all .15s ease}
+.analyze-option:hover{border-color:var(--accent2)}
+
+/* ===== Checkmark replacement for budget list ===== */
+.budget-free-list li{display:flex;align-items:flex-start;gap:8px}
+.budget-check{width:16px;height:16px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;color:#2e7d32}
+
+/* ===== Lock icon for privacy ===== */
+.privacy-lock{display:inline-flex;margin-right:6px;flex-shrink:0;vertical-align:middle;color:var(--accent2)}
+
+/* ===== Desktop Phone Mockup ===== */
+@media (min-width:700px){
+  body{background:#1f1f24;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;margin:0;overflow:auto}
+  .phone-frame{display:block;width:402px;height:min(820px,calc(100vh - 80px));background:#111;border-radius:54px;padding:14px;box-shadow:0 25px 80px rgba(0,0,0,.55), inset 0 0 0 2px #333;position:relative;flex-shrink:0}
+  .phone-notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:160px;height:32px;background:#111;border-radius:0 0 20px 20px;z-index:10}
+  .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);position:relative;display:flex;flex-direction:column}
+  .phone-button{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:140px;height:5px;background:rgba(255,255,255,.25);border-radius:3px}
+  .app{max-width:none;width:100%;height:100%;min-height:auto;border-radius:42px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  /* Each screen is a flex column filling the phone height */
+  .phone-screen .screen{display:none;flex-direction:column;height:100%;min-height:100%;padding:0;overflow:hidden}
+  .phone-screen .screen.active{display:flex}
+  /* Top bar doesn't shrink or scroll */
+  .phone-screen .topbar{flex-shrink:0;position:relative}
+  /* Scrollable content areas take remaining space */
+  .phone-screen .welcome-scroll{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
+  .phone-screen .upload-screen{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
+  .phone-screen .results-screen{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
+  .phone-screen .analyze-screen{flex:1;overflow-y:auto;min-height:0;display:flex;flex-direction:column}
+  .phone-screen .analyze-content{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .phone-screen .survey-content{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
+  .phone-screen .budget-screen{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
+  .phone-screen .report-scroll{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
+  /* Hide scrollbar for cleaner look inside phone frame */
+  .phone-screen .welcome-scroll::-webkit-scrollbar,
+  .phone-screen .upload-screen::-webkit-scrollbar,
+  .phone-screen .results-screen::-webkit-scrollbar,
+  .phone-screen .survey-content::-webkit-scrollbar,
+  .phone-screen .budget-screen::-webkit-scrollbar,
+  .phone-screen .report-scroll::-webkit-scrollbar,
+  .phone-screen .analyze-screen::-webkit-scrollbar{width:0;display:none}
+  /* Bottom bars - fixed at bottom via flex, no fixed/sticky positioning */
+  .phone-screen .bottom-bar{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 42px 42px;padding:12px 20px 14px;background:var(--bg2);border-top:1px solid var(--rule)}
+  .phone-screen .welcome-cta{position:relative;flex-shrink:0;z-index:100;border-radius:0 0 42px 42px;margin:0;padding:0 24px 16px;background:var(--bg)}
+  .phone-screen .report-bottom-actions{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 42px 42px;padding:12px 16px 14px;background:var(--bg);border-top:1px solid var(--rule)}
+  /* Reduce welcome hero padding on desktop */
+  .phone-screen .welcome-hero{padding:28px 24px 20px}
+  .demo-badge{position:absolute;top:12px;right:12px;z-index:200}
+  .demo-badge.show{display:flex}
+  .share-modal{position:absolute;inset:0;border-radius:42px;z-index:1000}
+}
+@media (max-width:699px){
+  .phone-frame{display:contents}
+  .phone-notch,.phone-button{display:none}
+}
 </style>
 </head>
 <body>
@@ -394,20 +557,25 @@ button{touch-action:manipulation;cursor:pointer}
   <div class="phone-screen">
     <div class="app">
 
+<!-- Demo Mode Badge -->
+<div class="demo-badge" id="demoBadge"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>演示模式</div>
+
 <!-- ===== Screen 1: Welcome ===== -->
 <div class="screen active" id="screen-welcome">
+  <div class="welcome-scroll">
   <div class="welcome-hero">
-    <div class="welcome-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAABFc0lEQVR42u29ebhlZXXn/1nvu/c+w52HGimgmAoFUSMxRMOgMXGKiWNBx7RTnGKiqDGSmKglDpBgnI0RNZqhtW3KtDF2SOIQRGghCogohSJlMRTUfIdzz7Snd/3+2OO5RfJ7Hgstu7tenvtw761z99lnv+td43d9Fxxbx9axdWwdW8fWsXVsHVvH1rF1bB1bx9axdWwdW8fWsXVsHVvH1rF1bB1b/9cu+Zm6F30IP5U+tDenD+UDk5FL/j8pALL1qq3mjNvPkB1n7tDtF25P/188fVu3brVnnFE+A3c0hOKnKgDbtm0zgLn00kuT1Tfhvve94EvJLX6w2BSAZb8j88zT6azI5OSEHuQgHATmgYMwNTWp0cyUAqwD9pVX28dcMl0+yEOHloR161gHLC4uy7Lfkal4svz3mZkp3QcEi8uHPYviHnZ1VqTh9wVgPG7rIWCuuD4LTEyOKUBx3eXlTnat/F6LNTU1qVE01Ccf95jYPOIR0erdvuqqq+ztt9+ul156qfu/SgBUVS7cvt1sv/DCFOCaaz7V/Obe/Y/tdQdPGETh2cNheHzikukkdU1FxaA4RBABnKCiigNVBJvrT6coKmIBh6KgoIKKiiKIFnZF888poNlFMcVvNbuaipSvkeyF+SsciAiIZL9SBTAixV2UNkIQFamOseZ3AyACoiiCEzGRZ73lpu/f2x5rfWu63fzG6Vtmb/yNn39lH2DrVVvtGbef8VMRhJ+4AFx11VX2wnzj/+wTbz+9p8nLFla6z+4MeqcM0oj+YEAUxSRJisv2NNs0kfx7UJc9flXJnmS+c9mWjBp9zX8uPpiIoJr/m5JvX83pkHyr8r/S8qEIqg4prlFsqYKIWeUdyKrvBBHBqcNAKSQGyf4zYD2PwPdpNZuMBQ3ajdau6Xb7H9eMj3/qDS9803dWP7v/EwVAtl611Wy/cHt6xaeuWN9Jum/Zu7T44qV+t31ocZHhcOiMMc6IwRgpnqCM3lmmBFTz3cOUjzn7vcvlITt2qooY0WLDKf7NVddVVdD8OqIP8jgK4creU2u/z+8Sdbl6yJWUU62EUPM7FMl/o4XqKXWPiCrqcCrqnNM0cTZoBGZ2Zpq5icl4/ezcZyY9845LXvyWndu2bTOXvu1SfQhd5J+8AKiq5BpV3/nXb3/hwW7v8vsX9m3cs/cADhLft2LUGMXhtNrW7FkVn9NQPcJMClS13AREaieYTPej5dl31F6rhWovtEAuVYZy06hrDsmuRy5k2amXStXLqienCibXNFpoDK1pEqluQsEYQXD5Z5ZcFzmXJE5F8NbMz7F+emZ5zcTYW97+ind9qPCffhIm4SEXgOJGt23b5oUb0g/v7yy9ctf99xLFcRL4vlHNFXd2rEFNqV6lPGWKFgJQnsLq1BUKQaQeO5psA0QOC94yM5C9VnG5KalLXfEgTHl6C4Gr73ihWURqDy7fbPTBYk8pX69O8+sWwqg1Q1R9boAoSlJrjHfq5hPYNDP32U0qL33lKy/t/ySEQH4SJ//KK7e17pX0czv3733arnt3Jw3fM8aKgMlPeK4qtTgY2QPPfS1QxalU9rfciPw1SPbAVSvrLZK5juXdmFJ4Mpud/X3pD5QnUlYd5kyrVO8rD/Kwqvctf1tzLsp9FhnNIBQfw4BopSO0JjiZYBjUoUmSpJs2bfA3Ts9dv64x84w/euUfLT/UQmAeSmG68MILzZVXXund7dLP/2j/3qfds/u+uNnwrRhEVXHOZfbTFXaTwknON796DKbw9/INyaxDsfGl253b2mqztH72C21SapviJFf7IiM2XhGjiDjA5U6mo+Zm1DYz/8LlX6tPfa5t8vfX3EcpX5ObsCzeyZ1Dar6EUQkC37t39/3Rrv17z903XPzi1Vd/oLFjxw4Z8ZV+VgRg27Ztdvv27ekud/dHdy3sf/Ku++6NG42Gp1SOlFGDpplNrEItg2BQDOoEdcWDpTr15eOR/IG60iQUglDtUKEhsqihdMa0ftJyc1Kqbc2vW9MuCIKp7qUWQpSCYCrhRIr70JFIpO4fll8u80OyfTSoK+5PRjSBqqPZCPz9B/ZFezoL53397oOf2L59e7rtbdvsz5QJKMKVt3982/PvXjr06R133Rk3GoGnKlTuT/3h1j1wWWWyqxPEavtO7eRT17xyWFBWRg9SqXiHKzdURHMTYUqHQvKNLK4puUmQYlNVwFQnt9JKVdRSRRFSmpNS+6iU+YPMydTaZ6j8Cy01S35FI0Rxmpx20kn+2rGp37ni1e+6cutVW+1DkUG1D8HJNwcOHOA5v/ec+fsO7v/inff+qGW8QoFnp7tw7sp0SqmaTe785OGcCnU/TstTT64D6rG9lD5DKSY1B1BEETHlvlRCmG9woVny15SHtPT4My1jjKnOc927lyrbkPkYUhNeg8vNWPG3mcDl76uKGFPzTSrxFTG50Jnsc+bpLCMiC0vL2m42L3juCy76uw89/70dwFx77bV6VE3AjjPPlEsvvdTdu/+BP97bWVgTxWlqxRopFXeeYFHKzSrDN3HlmVUnpTM3UjEZOfmSP6C691z9jY545mbEpzjMRmtlKkZiCWNKAUNNnsSRPCwtQjwp7XZlLmrmHaVBkr1OTa7BTC1cNTgtIhJX3oNgcC4XsNKBtflFjaQudQe7ncmDi3vfISK648wdclR9gG3btpntF16Y/vkn33H8Yrf7sr37DzprPavO1C6dfdBSFYrmZ6tSzNTMY2VDK+ewOJ1OKy++dCFUS11Rhoz577LMYqGCFafZifasV3iY2TVKWdDyy9ScUh3x+4tIpeYVipaugkNoS8q5jSVCNVmErzpa8JS6xRPqn1gqVZndi6vyFIHnm4WFRbfU7z7/so9fdur2C7eneX3lqGkAA7AQhS9bCQfjTjUVkSwLr6XAlx5+rswwYrOToZJboTxTVs8FyOjZFRk9ZVp5TqV2KWwoMhp5FRtvjWGl32Wxs0gURxhjawLEqhptFYaKVJrIaS2MrTsjZNFDpIZ1NuJZrUO5GZIRD6X28koLFSIu1JzamsmqiQdoujzsN/b2Fl72UOzhkaoQueaaa+xVN33h9h/uuXdLFCdpluk+zCUrizXlJim1/LvWs781P6BKoWoe85v8FLlSWOoZuJpWzzfPqWKNIY5jUpfyq485j3Wza7jh9m9yx30/Ymp8ijRNS3NThpV5JrEK7+u5vbqTWegug4ey6HxeNLaH107cw4WHHsn9SQNfHY7KK6q0VBXSitGa0yq1HFXhMGcmyKHOGmtPXLv+rqdveeKZF154YXQkCIgfW3q2XrXVAvq1HV/5hW442NLvh06yQh6FXlWVyrOq3Z66+o86klEtNj+L9LJNd87l6j83AzW/wjlXS+6MhnuqimcMg+EAD8PlL7uEt7/iTfze817Gxy95D085+3wOLhzKnLH84GlekNIi569VHC+q5MFDHrpp6eN4qiROCDTlacFB0JRnNvaxlFpsFuSOAktG0x65U2tKR7ieni7MTXYPYsJhqIMoOvW7i3c8KscVmJ+6CTjj9jMEoJ8mv9RPIhTSujEvKmmjwZ6OKIeapUBUMTisKuIcFodBsZo9PCuKl/9fSsdJq13H5bvi8hR/tvmdboc149P85R9cxhN+/nzC3iHC3gINa7jsVW/i5U+/iOWlJUZcuTJWL334/PzVkreimZevQuoMHWfpOsurxu5jix0Qpi2e19zPrzX2c8AFDNUDJ4irKQ1GcwRanID8S7RIL2S1g8KEiJEk1pTusPvLAGecccaPrcm9I/D+FaAfJ4/qD0NsfooYCX1qpZk8Ds7rJrVUbPahIgxhURdQHcm1F1qj0PNtSbClyteR51gkmHxrWVhe4udOOYPLf/dNrJ2bJ+wt4nk2T74kJMOE1/yXV3Hcmo28579/FBN4+J5PkqRldFFm8IzUcvlVksfgmJGEM/wBz2of4LH+CqF6IGCwvGt6F48frPClwRz3Ji2GakhrQa0W0Y0WVcYqp1VpsqrukaUWjIRhyHAYPRLga0fFB8hMsL7iz15z44/27z0nCqNEUFuGZDp6/rPSba7KqAojghJhOFEGnG5WSLUSgPJ1VYYERbjFTbGkAX6uv1wtVJQsZmZxeZFf+8Un8Zbffj0N3xJFA6zxyiRNFo5lJsRvTXPjd27krR9/N52oT6vZwqVplZ7WuoBVfoZVxxNaC2xt7+dhfg/UMEiDarMAI0pgQnDC1wbT/P1gPd9NJrC57+Jqn3GkGFomn+rnQAqnNm02G97xc2u/8ck/+YtfKvbipykAAug112zz/uYb+++4e9/eU12apiBGZNSyjyRfygdYK/Cokjq4svU9zrTLpFis6EgipXjyqQpWYj433Mhlw1OZ8dPcUFCGbqlLWV5Z4eXP+E1efdHLcNEg20xrauV/HQkV0jTFb09z1z138od/8U7uObCHqckpkiSpOaM6EploLXHZxrHF6/G81n7Oa3YYOA8VCDQlFvifw7V8aTDH7tgjUYOhKhnXApiR3IcgZWiaaQitJcecs8baTfNrf/i32658uIikP64jaH7M0w/Azp3tVpq6icwRQ0brWpTqP89klSpbxY2ISJCk+JrSwWcZj0UCOuKzqB6LzmNRPRacZdFZQnxaLoIkwSmkmuXMrTUSp4mEw0je+uLX8eqLfodk2MM5hxhTuQvFxy4jMMVaS9xf4tQTT+Ljf/wezj71ESwuLuB7tg7uGo3fqZzCvlpujKb5vcUt/HVvDS2TIEAsyhsXT+Ly5RO4K2mRioeVemayOPHVL0cSX4zgTMqUsUFEnSNx6cRffeGK9mr36qeWB1hZ6VunmuVMailZarXtehKFWilXqUAacao0jDJuFAP44rDqsJB50Pn3IkrDOqyAc4rJHphYY2UwHNDyAt7/2rfz3Cc9W+LhkoiIGGNEjEg9l1yFpEXSxWE9SzzoMTs+zocvuYxnnftkFpcWy/SykCVlVFfFL5qp+TFJmLEpV3aP546kTcsLuaq/jmuGc2wwMYGmkJtBI4Yxo1iRekarSiaXjn9VSZK6H4BDRVF1wf7lNOAIJOCIBGDYCEXLJFytsKH1Sl7m9CE6ArEq4m0rEAPvPzjPvaGHLzWgZblHmcA0jXJLf4xPd+Zp2wyu6RuPpc4SG2fWceUl7+ZxjzqHeLCENRYxo7GWINlCpAY+KN1yayxJHGE15a2vuIRXPfOFrKys5I6aqcm2ljmDwjqkCL4oMZZ/DteAE744WMO0SUlUsqKyCMYoAwznNQ4xK2EWOqmO5ENMoTGLi+uDVLryHxtR4+jVAoaDUNRl5QprCjVfFn8RLWr1tTg2F4iiTOQQxn3h8/15vtlvMSYpiavZXa1gfWNGuerQBDcMJqTtIcb3Wegs8tgtj+ITb3oPJx9/IvFgGWvt6KHQCiomZQxeFqgquchrAeoc8WCFlz3nxbztpW8gHoZEcYQ1ljqGpYwY83yBAwJRvhu2uHkwxv1Jg4ZV1GTvZQRSNUROeF5rP1v8PovqZ6HtKhObhcV1YBy4At4opox2DgwPHFEyz+MIl+an22ntnNWKI0oFph4BRGgtfLPCdMvQsEJaR+YUMFDNMoA4x7h1MtmwiOezsLTIc89/Gm960WvwDMSDHtazI1CvoiRdYPBKHSSmCiG1LOFKqZ1UiQdL/Np5T9M1MzP8yUevoDPoMdYaw7m0/DyS1Wny8oDguZS9scf/7M2PlK4ViB3gHC8c28Mp/oAXju/jh0mb3UkDXyhzDWUqqsA0MAqRQLUsRUwyefSKQc1WQ51zBSa+SlzkD8ehD6LKM7h0iZTJUJI4Y0EMNi/r6ojTVpVOrOejwPLSIr/7rBfxlpe9EaMJSRxh7OjmFyg/0ZFy0+j3I+Ymu59UHU4d1hjS4ZL8wiN+UT79to/IWZtPlzAKxYgpSzZlpUMRdZk97KvHjcksQQE1yL8e11jgyvnbuXjyHoYu4DRvwGfnv8vvTd7LnIlwZTSntTpBtVG27jg6fUj6iI7YBEiuBiRDMY2WL/IUaq2+gUWw+UZLreIlIpnNruHr6uGWcyp4AYk4wiTh0pe/gZc9+wUkw2XQzJOvv3eWSVPEpWXlYJWXWvs5Tzc7xXgeXmMcrzmFaTRQp+zbfx9RkvDyZ/5X1k7OZoUkEXwr+CbzY0z+lqKZd5OKyTx+pNyrW8Jp3rx4Gv/Q30jTxOxJfX5/8TT+rnsci87HFLhmlTwfkn1lqr8eCWSHxKkecTn4iE0AhRfoqIEzdCR9KjVEbRHTuDxdTC0aWKUw8sRIbgo8n2SwxGz7RP7y4iu44KxHEPeX8Kyt4uUiTVt6plI76/qgWQ/nHMZYbGMMEDrL+7nlh9/npjvvYMc9O3ng4D6iKERdhKeK7/l4nk+oQpwqTh2iSsOAn/tBWoKJtNRkokoiwj7X5IqVkzinscRfr6zjXwbzbPDCKjOhJRitTFqVjqcchmzQDp2jKwDlPZms8jbiIdWrfrIK4CGVR11Lv1elXylMBBjri+0eoL/+LF7xir/GX3cq6WAR63kjCj1zjNxoD0GhrFfdsOaNJrYxBS7ihltv5O+v/yrf+v53sdEKp083OHumxYWblI1ewpRVWiSgCaEJ6BKwLzHcPYAd3ZTvd1L2DhNUU9q+JTAiqSveRXI/wdEgoZMKn+uv5bZkgjU2ym28jlRBzYizqSNgl7KSKEee0ztyJ7CO2y8dHh3t1inSmKqramLZByqiNan/a/EhPU90eR/m4U+m9ZJPYMdmSAeLGOtVYA4tegBdDUkjqKkBaKVKuqRO8RpZ/uRLN3yVj1/9efbtv4dz5gK2nSKc3RSmdAmi3TDsQacPaVKVg0XAejzcWrA+zIyxvG6O23WGr3V8rjswZF8/pG2RprFapqpVSMTQNClfHc4yUA9Pcn2phx2pujWslbgpMYpH3wR0aida61EBFVCjLijl6Sv65mSkN4+6FywmKxqtHMSc+wraF70bNEGjLpJvfj0bUzie2WmS3Gs+/GGqgteY4oe7dvDOv/0YO354GxeeMskLzm6wPt4Hy/txiz3CFLAGYz2M8REvKK+XXSfFJSkujNCVDuNmL49vNnn82Cz7TlvDP3bG+dyehIVhzLRvM4c414YWWFY/d+pqIFTREVzCg2pcGW0JiMJIDk9v/1TDQNGyOlbz2pzqSCgoNZRtHftX2b2ajRYDLkbDPv5vXErjKZcg4TKqCVivtvGmBgdztUi/hjopiqlOs830fD75+b/lQ5//DE/a2OKL58+yvncX7N5PmArGb+A3x7M8fhgyWOkShRFJqrhUSyHzfY+g6dNotwjaYyAQxzHJwftZI7t5+eQ0z3zYKXxiYUq+uLurPpqFuVIIQSUQFX5cy5/rrSeswhBU6HI9uiYgDCPBOJHaJmeqVspUptTUpivh0hS927W4vOjXs8hwgKrQeMHHaPzC89HhQmZJ82reCJ6wHi/KCDi3et9EsUFAOBzyB+99J//75uv4s3M28OTGHnjgXsIkxXoNGoFlMIw4tP8QyysxPcaJxzeg0xthYp7UCzIBiELoHcLvHaCxsJdWej/jbWFqdpLWeAuXOqKVLmt7t/LHcxs5/2EncvldMQeimOnAZh7+6sqJrA55pda3MPrvde0XNAI9aiYgbASqSW51tZbHLjbaKSpaVr7qnmG99FlU88TzIVxBWxtpvfgT+FvOFx0cBOvV8Hc1G+Nc1UplpFLRZfRgcCnYIGBpaYmX/umbCRfu4X89YQ0bl7/D8OAKXqNBY6xBb2XArp0PsOCmcac8ER5/Lsm6Uwlbk8TGxwGpS8v6pjXQFIgGHfp77uTgD67H7PwGc+Y+Nhy/hvHJcZI4Itm/m3ObB+STW7boW+4b49tLEXMNQ6JFdOTy8k4NCFumhUdh7qOnXR6SPMARCUCjOVTt5P00MhLlladPV4XcmkuKGZFkRaxHsrgXzngYzZf8d/x1JyODg2D8VfY+FzCXhV9V4URqYVOVeja+x/LyEhdtewNz0QE+89gmjb23MIgdQbONqnLvzr3sC8dJHv1Skkc9lf74HINwQDLso50FDOBZg82DM6dKhDJwirMe9rhH0jr5HMYGL2Xh9q/QveVzzB3YzYbj1xA0AobDiHXRbfLh40/XtwZruebggFnfEGXEB6XnI/XUf4GqejBfoPSxteYDHA0NMGyKcz0Z1WRF/d+NtGWVZ18YBWCKYK1Hb98+zNlPgVe/G681B/1F8PxVDZqat83VPMwRFEX1BkVfQBxGvOzytzDT38vfnG2xu28mlAatVpNud8jOu/bRP/2p8Ku/Q6c9R3dxHxy6n4nxSWbXb2BiYpJW0MQWUYdzpC4hjEIGwwHdfpeVlWWGSx2GfpPWOb/J1KOfzt5rPsHi9/6BkzbPMDE9TjiM8PZ/n8vWw5+wjmsO9Jn2hThvU6/XKuph88hHlDq4XNBUCaOjaAIazYYSZnGelsUAHfH8R7B2UgFXVKSEXB9aXuQlT30WT37Rq0lJMOEKWE+UVe3eqqPhEqPw/Mrxywo6XqPBH7zvcpbvv5MvnNvG3/MdIjwaDY9Dhzrs2hOR/to2Bmc9maVDezH93WxYu56N6zYxNTGZFZWc4FyCc2nZl+DUp9FoMDE+yZybYxiGdLsrLC0v0lvayx6xTDz9D5g89Rx2Xn05x0eLzK+ZIYqM2H3f10vXwsHhDLd3Y8Z9yTANI47cavU/ynTiShYVNGg0jp4AFCnJQtWPQlKkzrOQQZq1CmGMMSRJQn/Q4+LnvoQX/fpv4cIV1LnM2RPKhtAa+H+0Da888HVBMbjU4bUm+PQ/fIZ/uf7LfOlX5mntv41ELUHDZ++eBXYtNvFe+BGW50+hu/duZmbnOOWERzM7M4MgJElCmsSUobZUtjmrchqUzCdoNpo0ggbj7TEWOkv0uh1WDt5HeNI5rH3Jx7jvs29A3SHWrJslCn2CQz/g0g2n85K7xgkVfAQno43oVa5HauhZqQOTqlj8aNUC0BWjqqZOpLC6SbcuxpKjxq3nEUYhSRzzzpdfwot+/YXEgw5OQYwpY/jSrpfqv2qbyjK9WtMsVZhpgwb33H0nl33mU7z7sfMc3/sBUaR4gc/CoQ53LzaQF/8FB6Y2MTi0m1NOOo2zz/p55mfnSNOEJIkAsGJK9G9R+zfGYKzBGMEai+d5JWik0WwyNzvP1NQM8/PrMb0F9gYzJC+6kvvDOQ7uXyLwLYPUsLG/kz9cP6TbS7BWHpStpvrcFUVNPbGpeuQ0AUckAFHYEHVaa3ZxVe9fUQiihrNHafg+vf4KE80xPvKGy3jq459M1F/IuoVE0FWF5Kz65WrylBNImUKo6rlFk1dk4NJPfZTzZpVnTB0g6vbxg4B+b8CuPRH2Be9lYWINafcQp5/6cLacdBoiQpSEq8xLgRuptanlwlB0GhkxmSBYCyL4vsfE+ATtVpvZ2bU00wEHTJP4ovfyQMej0+lJ4FmGg5hfbu3haZOOhW6E75mqS1h1pKm1al/Pv1dFi7ChcxQFIGiEGdWR1BO5tf62GkIAwPd9FjtLnLbhJP7qTe/h0Q87i7C/lNnaVXltzfvqVOtppDzMM/npF6khEDJghm22ufbG67jxlht482kGXdiL8Rqowj27DpI+5RIW5k9BVw5x2skP48RNJxIlKc6lWWZS65UJxUjWxSvGlI2jxlistbkQZN9ba7NCkfHwg4B2q8VYe4yZmTXYcIWD4+sYPvVN3Lt7iSRNwQ9Iuwu8elNIexAyHMZYm5fBZVU+K68BVzx2Bb5S1E07d9QEoBE08oQtJdatbv/LSpYInrUsLC9w7iMey0cvuYLj1qwj7HezRk1W8/rUs4J5i3iR2xeTq3yzihsgfyhJwgc//zmevcGwKdlNHAue77Pv/gP0T38q3Uc/jXDhfo7fdBLHb9xEHMflZhftYJkAm1KQxViMsRixWONhTCYExlqszTSBtZkWMLlW8P2ARrNBs9FkZmYeXTnA4im/xPCsZ3Ngz0ECzyNKLevSPTzvOMPefR1I0gzA+iAxfplkK4tFgnNOB+Hg6EHCFsJYUpxUHHpap/squ4INcGjhEFvPezrve+2ljDV84nBQhlajIa4UrGD6YFmyqv1r1MlwzmGDgFtuv5Wdu3bwis0G1+kg1hIOhiym48RP+l36nUPMzaxh04ZNpWdfRioFgxgGkwt0saHZz/npN16p+k2++dbY0j9p+AHW87DW0mgENBpNpianiboLhOe/jG6wXga9IdZ6pN0VnjvbZdoTOgdXkCTFGnNY7oPDEFZ1dMCPnQk+MgEYE+dI3UhgVmr/gtjAGPqDHi9+yvP4oxe/niQOSdIEYyyjpCi6ymD8Z0BXGW0Nq+GsP/2Vf+Gxk44Tgy5xKnhWOLT3ANHPPZf+5Aaa4ti04Xh8z2aquOTvyU9WYePzzTb5JpffjwhGJgwZBlHxrMdEe5xBGNLwAsabY1jPoxE0aLfHGfMMg9YM0WOfT2dhCWOEMFE2pAc4fx46kSNa6uGSNCOm0HoRa3XB7EEf3085CsiAijqSnqTWUyeGOIrYMLOWiy96KWnUxaVJnsV16OrGzlUfRkipCHTygk/WEVr2ARb1AGstKwcP8PVv38wz5xV6S4jnEQ2GLMkU/Uc8laS/xNzMGibHJ0iSdKREKGVIm3n4YkzJ4lFogeJ3xak3NtMMzinNRoskSbj0r67gNe+9hD/8y0vZ+cDdtBstjLUEQcDE+BQMVxg8/FfpN9cR9vtgDAx7PG0uxuY+Rrjcw8VphZB6sAbah4gn6gijgFjKQFlHMfOFiHrGsnDwELfs+A42mCRoj+M1W/itNn5rDM/3y0qeFG23BStvMIH6bdRv5V9tNGhB0ED8FhKMQdDGeU0kmOCWnT9Cugd5/FifZBBjjaW30iXa/DjCqY34mjA9PZuDWNPaqao7r5TUMaVfkXfuFqdfTI35BGgGTZIk5c0fv4xrbrmeMAq5454f8OG//zipc/ieh289Gs0WDQv95jT9zb9Ev7OCNZYoUR7d6LGxZQjzZxcuZ5pACq4VGWUjyfOtEg7Co5gKDn0VREUVPcwOVeW5MIq4+LI/5rRNJ2c9cQ6MZ+h0Ojz3qb/Ohc94HtFwJfeyM+QsfpvwX9+veusXRGwFlsQpeI3s5CRDUEjTFM8TbtjdZMv8GLN2iX6q+KmjN0xJTjuPNE2ZaI/RajRJU1cpUkPu8JkyV1GkqMsGVyOjhays6Q9NUwI/IIwj3vjht/Cdu77H/OwcSRQz1Zrg4NIhuoMuk+0J0jTB93xazTZL8ZDB5nNkcMcXdEqVRIVpBpw5AV895JhqWJxTws6AxmQb49ks0ypVa13WQu+OtBr8EOAByNt9U1cVgJCRRofWWJthr89N37+VNH+dZy0HFw/x2J97DBhbeuCgYA0aD0j/9yeww0Ow8REQDVAXgwngwA+yN197CpImiDg0Drltf8yj1k5CGoEY0ihk2Jgh3ngGxkWMTU5jjaAuRYwtiaIMVa+AqQtBHbdQbzCRvKnU94mThD/88Fu55QffYXZyhiSJ8IKAxeVFHn3qWayZnqc36Gc9BZ4SNBr40QrJ2tOI2/OkcTfLfCYDzmzF/It65SY7lOFKn+ZUO4sOciHQChau/dZRTAUHjaFqlGEgi3p/nTtbClCbZ2mMtWm2Wnku3eEZiwSWVqu1ypspc8yZzT3lcQQv+gR0D0Iaw+R64u1/AL0F/Bd9Eh0soDZgpbPMfW99B89Ld0EUIp4l7g+Ip7aQjM0RuIhmo7EKQiGlba9yGNXmG1Mnia7Iop1zeJ5HnKa86S/fxs0/+Dazk9NESYTvefQGPU7csIlLXnBx6VuosYhzeJ5PYA3J+BxufjPpwi14LR+SmBODEBEvx01kpgaFqDukMd7C2JxEqqoGS1SYgB8PEHRkPkCnw0grd3YjGfOVurSg+ciqXb6FwELTYls+tuVjPLuK27cqF5ePPBpA7yCEXUhCiHoQ9mDYgcECDDpIuMLiwgEGvQ7rvRhNsnkUSRzjZo5HvQDfGqzn14qIVW1BUcZaY4yPjVf8PKbi8C3MQJHKNtaSOscffXgb19/270xPTBGnMZ61dPs91kzN8eevfhfHzW8gTpIMsm4kTyNbfGvBC0inTyBNkuwNU8daGRCQd/+YukaCqDfApa4UioeKKvTIo4C8AURLWFeNO6/O6G2yRA5iUGNQMVnLtlmVBNLD3gDSJPf8AZdAEuVgk6y1zLiUpZUVIGWumWHq1eXUtJPrEJPF6VnDiasFm1k/oO8F3Hrnbdx0x7fxrIfNufqykLDwDST/XXYK/+Qv3871t93A7OQMcZLZ934UMj81x3suvozj1mygN+jjWVt1S+XpY896mWmZWFNWUVOFKRIapqCjqTGa5/WwuDdEU1fvVleWjqIPEDQGyjC/2WLjtUIA1+k8VSoWzP/wXksMfC3o8QJhYh14y1nINz4LjTEkHiLjaxDjI8aj6+5D05imb3BhdolUFW2O5ZgDW4OlV6zNxhgu/7v386V//zdIUs79ucfxzle9Fd/zSV2KzR0E5zQXIOWtV76Ta2+9nvnpWaIkwbMe3UGfualZ3v/aP2XzhhPodJfxPJ8kjbOw0lXRhfUsVg2uMSGIqGrGgdSUlCBvlpUi5Z33XAgWFSUeDPGaTYxncKk74mjwyBtDigavEpHLSIg02gNQR7SsSnfWkSNFMckG6KF7NP7KB5BhB00jpDUpHLoHifskV1+OG3QzLbKni7Ue1uX8gAUTqPXK+3F5EaUQjonmGNfddiNXf+NLzI5Pg8K13/kGf/SRt3H5q7YR+EGNIj7b/Dd/9B185VtfY256ljiJ8YylNxwwOTbF+157OScddyIr3RU865GkSc1rN0CdekYRz8sG5LhM0RlNseQCYPLn5+op9ewZuWGE17Z5VLh0dAXA5T1X1XCEwxABpceiq5y9EbjTYTlhBePByn50x5fRsAcuRYOWmmFHcI70e19GowHOWIKeT6ozhHFcypKIIC7OY3hDmiao+jkJdBaJdFaWkSRT7bHGzE3Ncf2tN/DGD76F97z+MnzrZd0/Irz1Y5fxpX+/hvnpWeI4xlrLMBoyNTbJ+1//p5x83GZ6/Uztp2nKKvqP7B5y9nEjFuvikjbekPEkJE4RK2VHc51JJAu4sv7HJBziN1ouaAZHFxCiJahbR4oWI4WdGqyraBRxqiOo4XqcnT04kzl8J/wc3gs/jvTy8VuT60g++3qle0gaL/4krncI9ZvYH+4kufxdrMRKBh7OCCS84Up54pwqURwjGHxrWemtcM4ZP88JG45n7/IBxlotwmjI7MQM/37HTfzRX2zjile/Hc96vPmj7+RL3/w35mfmiJLM4RtEQyZa47z/dZdz2vEnZ3R0xpAW8Xn2QUdYwIoKpxHBhisUaQ9yppHQgc/II6tVV/NkmyjqDC51utJsHYViUH5j/Yav1Kt+RQtjHQegujpRXAqB/gcSNVJYSEJksIwmIS6J0bCHDntI2EfjPuqy341JghqfA1E2Vyx1DmOERndv1mBS00xFd3KUxMxOzfLui9/BmskZer0unvFINGVuaoav33I9b/nIO7jsr9/DP9/45SzOTxN8axmGQ1pBi/e+9nJOO+EUwnCY8wfUmdBrswoKX6i2ud7K3hLcaQQOpZaBk7KptIB/ZcUvV00acYITAwaZGB4ZKPTIooClMgdc5qeL1qURmjetOV9SOXujcPFRxHPFjJoDTRTQFE0TUCcuxxAIiksTpltNpsbH2B1ZDEKaKliPYOV+vGSQPbBVnUpGDP1hjxPXb+I9F1/GzMQM/XCA73lEccLs5CzX3voN/ukb/8qa6TmSNMvXh3FEs9Hk/a+7nNNPPJUwCvPiTa1gU6OU03qFNCeS8NKIxsp9YGxWyQTujzziPP+g9fbKfC6BFFVQaxA5Et//IRKApaWlDOcno6zd9cSpQQ4Ddhbz9lbn4g8TBAX1mzCxFtOeRpoTmPE5pD0BzTFozyDNCVxzXNvzx3H8ps18r1PQuTjEC/A6D+B19pAaryR2SEvm0YxDuNPrsHnjCXzwDVcwPz1Lb9DHiCFxjonxccZbY8RpgjWWMA5p+gHvf+3lPPyk04niEGsMJZFUDdLtcGWJXF2WAFOXkhqPoLefYPEeVHxxOVXtnUO/Rjgh5Q5V2tNkKfCCTEKVaNg+erWAoNHTPhPU0FilfSvpjUqWQ2GE0FcOhw2OlnvTLGXbO0Ry03akt5gllsZmcZ19KmGP5MbPwGAZpwZfPH2kt8RXBw0ZqEE0JjE+3nCJ9p7vEK3dQpoMM4GqAa2cOjwvoNtb4aSNJ/K+117Oq//8jSx1lxlvj+Oyzpfc4YvwjM+7X/Muzjj5YYTRMKvd55PFtEiCFZ+7FIQsKlGUNI1Rv0l7/+2Y/gLqNRF1RHh8b+AReKbSkPlmF/yIzuQJKXWoKVzqoxwFCFkcq86VPDhlm7MyMh9AVUpAwwjX3mGoBwdeA9lwJvq9fyK9++aq908EGmPZX3z29RX+RJXHrIzxqegM/VEYyGYTMnCKFUtr59dYOes5JGmanUI1pROKKs6leNaj0+2wecMJfOD1f8brP/jHLPeWGWuOoapESYhvPf78Ne/krFPPIIzCzOaXHMauVrVOUedyXyNvJM1nDaZpiucLY7u+jskTQIEo9yUN7hz6tMcKhLWM+A2ugIGpq7XYqx7VKCBoeJpqjfNvhNZllLyySAyZOuddnW2xrg404+hp/NcP4w68AfG8kWQRLs21Sc78qUI4HLBl/z4mP/RX/Nvikv7eeiu9UDFek+YD36a9/3b6684kTUI8a3DqcLkzJc7hSDF5ZHDq8Sfxgddfzus/8Cfs3rsbQZienObdr3kHj95yFsMwO/nFppZEEC7TAC7/Kg5GUf9Ik4TENmkf2knz3m/ibIPUOW36cMNKi8XUstEKRd+UqsszpxWrapHEtqtN69EQgChMRINCVWmN1YORGXvlMMUa8gY5nLuhgkBnKV9pTeCd8thqhOzhKDnUZWrRDIbMzi9z/qNv4R+vu4eXrg9UdCAOi02GTN72OYZPO5skWsYPGjjnSE22+fVQ1OZCcNKGE/mL3383n7/2i8RJwjPOfSpbTjyVwWCANbaaelbb4IxH0NXALo5UU9Lc94jjENOaYWrH55HhMqk0IKfKvXqpRSPI0EdOXGk61Zjcl3J5xdTkMHTJ48ejnAkU0Yp/p577r0/rLDpbXK1wJA+iuXRVTiBN0DSuGYn6CC4pBzmpCF6akGrCMx//eP7h6//GtUsRT2j1WXEObJP2zq8y/sAtrGx4JH44wDTHcWmWlkmp4atyyHe332PtzDyvueh3MnlMHf3cOXQ1IopCJZeC4NKS3j5JU1yafx8PSbw2k/u+R2vH/yKRBqlLddwqtwzGuWXQZHbS4PK0s2TSWDv1FQVO0Yevqqz0g6MHCo3CuIz46hRw5eClGkfOCEXcfxb/j+QCJJ+yWPsqL+hqNNoG6zfA+pxx8mn8/Oln8pFdghofVVWnqItjpq9/P4GmhIkjTWOcyzcsP7WpS0nTpBwgEcYRnZUOK90VBsNB6S8Um6w5sVQxsyB1CWl+naT83uHSlDhJaViPqevfh+t3sr8haz7520NT4Hn4nq0mEBZDEwoTK4LBZGOWSuJKAQ4d5Wqgq7GBroJ0y6q5O2UAIKONov9Romn0jZKMO6A1hbTmkNY80poCa8FlWsIPGtigwYt+5Ve4eTjOl1faOu2lJOqI1VNv9y06f+OHsRNrCYf9fKMcSZrm1HCaC0NC6pJy5gFaqfZKAFJcWglMgTBO0yS7bpqpfqeOKOxjJ9cxd/MnsD/6BmHqkTinE5JyXW+ca3ptZlsemoNLC84cVZfXNMDLwz5nahVXdQpzR9cEFOjkCgA2SmowqullNAv4/6u8avRPrXlc7wDJD66H/T/Kfj93AvbkczAT6yHq4HkWsZZHP/wR/MZ553LZt77CuY9o4euAJFWGtkX7pr/T2TWnydIjn0+4soegOQ5eZVhsTk8jSk5qzcjsgLKNuwxzXVap1opfMCnMgHNEgx4ysZGZO/+JsZs+RTf1cS5FROkbj/fumyZo+Pi+l4eKmaOcHc0crYSQlsJQsAU6UsA/Qg3wULCEjXbo1qAWMkp4XTVdMDpI6j/dfDFgG0TXfpT03z6A7P0+pJVoJBtOwjzxdTTOfwUQ0Wo2iYZNXvkbz+JF39/Bu+5JedemIQdTxaYxAwwT11ymJhiTpYc9i2jlAaTZRvwg8wmcYm1GMOmkQAjVGkNXiSal1sg1SB7+pWlMFA6RyeOYuetqJr78ZnrdYZaMEtFJq7zvwCy3J2McP+7h8p5IUxLEUaOKKcbk5qxCkkUHosLRLwbVqlYjVDGwasr3aD4eRkmkRqWq1g1rfOJPX4z72icwJ56OefalyPzJoClu4T7cLZ/D/bfXEu66ieAFf4kXNGmNjbFu3Ube+Jzn8vsf+QiPak1y4cwCB2ILmtLtRIz/65vUizssPfrFEnYP4NIefqOdz6TWrIafN4dKLS4//DPkfoAWIaCSREMSDMH0JqZv+wztL21jeTnKwKie0THjuC2Z4GPL86yfsIjvIbYi1Kj4AOq9EibrByzK3MagDomOsBZgj+Dg87DNm5vhRPAasXZMnaqYjHN5ZFjEqopWQX5gMPR7fc7echa/cNbZpPEww+CV9D8p0pwj/sr70X+8AnP20/B/68PYk38RmVyLzByHPfExmLOeAf39uK9/FtcI8M58ClZjoiRkw+wcJCHvvvEuHj9nOcUf0E0NpClxrIztvo52uB934rkSBZMkw05J6V6e7jLMU9L69+Wpr0K9JM5IpbUxzaTvMX/j+wi+9j4WlyLi2CEm80jxPI6fAjWGb6Zr8ALLEEOKRyA6cggyjWlK7kQp5iFbI5pqz1t2H7rru3eFP25d4IgEYP3DNjcZ9y8W37Y1y4rkU+O0xhFaQZmrfEDGDjLo93jM6bkAJMMShKlOkSDALe4m+W+vRDadTuM334exFu0vZwWhJELDbiZMpz+RdM+tuNuvxjzmOdiJtXikDKOIM088mYOdDh+49X4umBFOtEN6ahB1hJHg7/k2k7u/TmN6o7i1ZxKLTxwNcEmIalpOKnN5qOdcmnn2Ls28/iTKuIBc1sfQCMaZ3X0dM19+E+lt/8xK1+W4vyxN5gce0+MBxjnOH1tmiQZDLO+YvpN1JuTGeJqmuJH5xRRmSGrgGiNCqj168Yd/tONHP7YAHJkJmK5JQ21oXwGdykczZ23WJVoob7gsR8odHv6JOrBt0h1fRRf2YJ/xZqQ1heseyIgZyxjGoHGEGZ/Fv+AVxJ/6bdLv/hP2l1+H7/vMzK5FFX7/ov9KlCRceON1fGKL4/HtFQ4kFpsmdPqGxs47mDz0Gh3fcj79R2yV3obHMvBnidMYkjDLRWha73/OijLGR7w2fqvJeNpjbN8tNG/9O9yOL7OwHBEnBpN1MasVZRgrh1aG+AIT4z5h6nPJ1L0M8ZgwIY/zl2iS8oHeZua8NC+Y1dxqOWwarsTtsaNXDDouHpe9TVNjshDq/Lh1nF/mD9R6/6Um4atLgPmYGbf7NjRoYtZuwcUD1HiM8JBoBvnSJETWngbBOHrvLVkl0FiaLZ/p6TnSVHnjf3kBgTE8/7qvcdlJht+cXWY5yeBXUSQcPBjSXLqase9/TceO20J64i9JdNxjCac3EzfncP4YLiMlwEiKTUO84SLBwR/R3HMzdvfNpHu+T29xiW5PSRNFjdK0TltWWRmmrPRSBqll596QUzYaJsYzx7NlEgYEiFNe2r6POIWPDDYz7ztUbL75riyhu2LOcJqKHM1i0DLFCFcv27QiNz5CcFSNWa36/avRcXoYbXsNEBB2M1iY9Wppz3qffA6nSZMMJWMsxMMyRDNiaI2NM0dWoHndRb/FupkZLvni1Xxz2fDmEzrMS8yiszgHvYHQD0P8xVtp3nmrBq0mk9NzyOQ6pD2N+i0RMUgyRPuLuM4+TRb30+sNCWND6rKKl0rW6zJuUjrOcvkDa7hv6PG2qbtpGiVW4e69A0493tBqGOIEjMkSPkPn8zsT9+HE8LHwJOZtmo2hltqoWlcvphzFVLDnd9XpmFqtVwDrMXNNCxSs38aM8tzof5pnfpDsfy0t7BQJWojfxPWXctvolVzbRW6/PTbOvMBBgd962q9z2sbjeP8Xvsiv33E3f7Cxy69NdbGSsqKGBCWMDcMYpBdhD+3BmN3Z3AGTIxvzqaipGtIU1Jm8QwqaVnXapCTG4/MHx/jg/RMsNqfBerxteTNvmbqHhsmqgLse6LN5Y5tWw2QdUznAJdSA3528j2TF8MlwM/M2IqnzJEotD790FAUg6PvqPEpgo6qObJEUDl0+w7ceCqrIf5j1q+Bwcji2sBQuhwnapHfdgPaXsKefS22OePWdgrFCuz3O2rXCgj3ILz7mHP7ihM38j69dw5tv+AYff2AfL1zb40nTA+ZsTKzZEMsEIXGgqamGRVORX2eEkYo1Dj9/mMvO8G/dMT51oM1O1vArv/hz3HH3HURJyL/H8/zNMOZ147tZTD2cU3bd32fzxhatpiFNtRwMFTrLxeO7iDH8bXgC815M3QvJcK0qMn00q4HtWAR/BOlTMlzgShKjLKWaN2SIycmgtTYqvtpkRUYYp/MqOln2R6tcuXMQNElu/jzp/XfQPPNJmY+g1dzXssvIKWKEZnuMNdan01zG+B4vf+ZzeOKjHsXnvn4d7/jud/ngAwd5wlSfX56OOKOdMGsdvs02JR1B+GqVoUNYdB439zy+cijgaytNOmNrOP9Rj+KNT3wSa2bXcPGHLkcDj1M04hmyQF9NmRRLU2XX/QNOPq5Ns5F1HJkcCxji84bxXcQIn42PZ86mZeHKFDjMo6kBen1fZbLgAnE51EsRvHwDXC6qBZjDrdIUskqtF7XjmjAURPJSRxEVc2kcjM8jU2uzuvlqiJkAkpb1dREIGgGzs3O0Wi2WlhZ4WODzxk3Hc9H9u7n+9h3c+IM7uXrfAzTCJTaaISc3E44LEmb8bGqZApETlhLhgchwTxxwv2vS8ydZP7+eJz9+Cxec9UhOPmEz45PThC4haPhE6phyMSfokL6a/Dlkic7EKbv29Dlp4xiNhiVJNfeRYKiGPxrbiRsY/iE5nmkb4xA8mw1rXjyaPkC8P07dhE09K7mPlmWqVOPRrZUKCaQuyU2DGTEBIg8y+FKq8FJcLlx5NkwRZNDBv+C3EeeyfkHROv14hS9QqReQsZ5He3yCoNFgMDFBp9OhMTbOSSeezPPO77J7/15+cN9ufrh3Dz86cJCbuisMwyHOJVlru/VoNRrMzExwwto1nHfcRh52/AlsWreO9tg4fhDQaLaYm52jF6cYz6NFyO6wzSeiE3hFcA/L6uczTzMWk9Qpd+/pcdLGMYKgEIJMbw7V5w9bd3F3b4w7mKEtSd4Wp5H2g/ioCcATYHitSreccKc1OsUa1VneT11NAnFajU9fPRFhVX+g1MiiyqHTWoScKdIaR7wmrrtwOD1BnjcXcTWnU0rcYtBo4PkB7bFJhoM+vX6PwXiP8ZkZTj/lNOIoJIpCojhmGIW4NMsEWuvRDAIaQZC1ezez6/hBQKs1RrvdJvADmu02w85KnhszjHspf99djyQRL2/vpaM+Jr83ayXXBD1O3tgm8L1SCGIxNEV4QWM3bxxOI37hiEh/5stfDo+GACiKXCrXJudt/tUDnrpTy9yl6oj9NiXrpVS8vyOnvjqxox0EwoPhxQu9YnLHkyRBNazy9GX9vDbBQlbXGQpARQbBNkGA53u0x8ZJpmOiKCQMh4ThkCROSNIMoFqvfRQUMb7vEzQaBEGTRqOB5wXZ9DLJE1Wa/Z0Yg/jCmlbMf+9sxAde2t7LonrYogpohCRVdt7f59TjxjIeI6d4ArEatsgKU+mQ2GbzCEnTzrWQ8GPODT4iDbD1wq1mO9vTNEp3OeVx+YiA0raNkBlJDTacu3FSoz2tuoulpJovR05p5c0XkW892Vy0z46ij6XceMldqtXxhZZ1fsk1hGTMXp5H0Gwy5iZKkIhL63xGWhJFZoyhNmc2MZUDnGs5nAOX4NIU/Cxp5bdhI8JnuptoDZTfau3lUD49RHPnLkmUXQ/0OWVjG2sNicsqk4Gm+HHEwDY18ASX6E6ArVu3mu3bt6c/VQHYv3+/ALgwvlVT9/zyhFcZ4VrIlBc2TNbyKrUPe9c9uzD42VStNPMPSFNII5I0A2zYJMGmGQCDMp6oa5Ws/p6ooCmkaQKJA5PWuIW1XsQ/TJ2NZCVrkLaCBHKEBn8kfM2HZbk0u+98pc7Rmpjh4NISyysdJuemM40XeBhpscGEfHLleLyh48L2fhZSPwN6ajZTOIqVnQ/0OXlDE7EWq9mYmeXEEojTLEsd31Tfi5+qAKxduzZ7HiHXxv1IbTuwetiIVqnawfMpYEWjSJo3XVx70ze4+iuf5+m/8uy6ewn4BE0LnoOpCZiagjhm1aSBbDOtD5FHO1AYa4BtwMQMD0nz8xGsbm+F9/zNlbl6zyDk1hi0kcVNa9Xxse6J2IHjuc2DHEr9Eu7hWUMYO360Z8im9W3aLeW6hSk6+KwHL+yGLhm6LwNc+4QnOK699sev6h0JHuSCCy6w0XHed1rz42ckSZLmg23LNrFCNYtm5AzG1IfuwqDTo7u8wjlnPobj5tZlyJokRsTH3XUtZule5Kyngg3Q1B02VgXRDCjhYtz3/hk7txlz2hNxSZiXUWtwNOVBoNQ6YkILBo6R4cCrGptEVuWoavOJChORqOPmHbdy/8E9zK6ZQzwvQy/nPlDqUlwUE/YjDvViXh/s4tf8gxxUP3dVstxF6GBtkJDMTPLyA6fjJibd2FjTdg+sfH/jp2cesZ3t7khywkckABdccIF37bXXJudsPf9PxtZNvzNRl6Bq621iI1Dv1YpXgSQjPVhaWKS71CEJ4xzyrEhrDAmaMMxo5FnFQlfOIiz8htYkkpeJdRXf/mjMWS9R6wgguZpxtMoeFHiGVUwo1Wtr1xbBWMPE5CRT05OIbxBrc0h3DfTsFBfHhP2YTjfkVd4unt44hEo2jdyiBGTDqK8YnszK5CyzM83UazS87v7Opf/70199W7EHR0UAcn3sznv2eRvSseD7wUxrPAvxMuS6q/kBkke95BQtJV5QNcuDpw6XOIbLvczWW5ONfS2yJVLjGBAZ3dkiAZSHmpTOGIfxEYxOYF81UHIEzMLouHataYf68Ktas6tKNRHNGEE8g3hZtCA5j7KRnPaFPHGliosTwl7EQi/i0W6Bx/uLrDcxoQrfdRN8NV2LazaZGg/UH2uSDOKBW+k9/Lr/cd19bMNwKe5oCQBbt26127dvT8957rlXjG+cfaODxKmz5eXrkd8oXrTuLZYPQ51jsNjFpS5rknA6kidcVQwZwSPU2TwOO5210HNEKEw5zqIsaVMzX1Ixcx+WuFp9ba0JVREpFFi+THZcjXGsgphlMLIEF0YsDhxhlGA1zYZJ+R4zLUuj5WEDP7HG+r19y++/YfvXX188+yPFdB45LnQbcu5N507pfON7jZnxDWmcODBGpYIcpeUsgWqoU0GhxqpJqOpS+gtdXKo1to+a6jcjReHDPkk5OCrXUVLvV64NsKy6cHPbbeumoa7SGbHv1EAuJXX7am+iDn4lCzWrAVEV+5jm427Tor8gStAkJc2TZdaziO9jA+OstaZ/oHsg2rdyxrfO/dYil3LENWHzEAiAbt2xVa7/p+sXw+7wNXE3FDHWqWq++Vp2BlUPL/vZFqwXq3I/xlpas+MZs5irxtJQqNYae/fq0y5iSmi62Bq4s8grCBib/VuxEcZmrCJGMkx21oxJ3o0tpUNrjCnH2GitfDU6tlBzwdJcuLVMUYtWmw/lvO2MPcwaPN/Hthp44y0ak238iTa23cL6Fs/3XBqlEg/S3/vWV791aOuOrcJDAAiwD4EAsGPHDr3gggu8G/75utvXblo7EUy0zjWeSTKmtWK2tCCaQZlHWK+lGg5Tpns164HzGj5xFJfVPDFazg8YGUVmKqbPcvONIuKNFphszr+DQbBZq72tNEbmWBbQ6+yeTYHGyd/XFRrEZKTSpswwV0Wr0ufJkS+ZnGdCiMmfBeYw6teiWmqKGQQmE3QxJlanQe/Aygf//e+vfe8FF1zgXX311elDsXcPiQAA3HPPPZkQfOn6f11z8vozWxPtszCSOKdGZHSow0iWVur9AvmY11yfWpsJQRIm1LkFZJUOG6FQzrvJsgdeG7JgK+dL1GR+pdUHqUZKrdya3Y3kLSMu1wyGQjhcOd+g7g+Y0mnMm3y0+rl0GqVOoVXnT6hVSVURaxNVDZb3Lv3DN7d//SVbt261V199tXuo9u2hIpwc8QfO/l9nW3NS+6r2/OSzTGATdZii670OCJHCptb4BKv24mxkjDFCmjgGiys5YbKpknlSbVRphfOOmgI+nUHFqr70cvNNFfaVtlsEp2DL9rUqJnD5V8GBUPAguJpKl/qkNFOjgyPvns61lKtR6Y1kFAtNmNsWY1F1Yjv7lr6w8r0DF+64fUc8Iq8/gwJQv6b8/G887gPNNZOvbky2ICVJ0zSzBPXHntOduNUVQSouQRFI44ThUj8fK1fvL5DagApFS+BmjXPA5qGnsxm23uqIk0ceohZYRRnhNcw2TGvOZTmoSgrPojBHpvJFjKmxpejh3UXGUJsNlyEnVIriRyoiftgL6S33PnTT9utee1jG6iFa5icgAGVcd9M/3vCacH/3ot6Bzh7nnCdWjGYRvyvLBnlixeSWWQqfqfKdUJfV8JvTY4g1lVNZ4xnJbLAthSI7+S77Krw6k/kBpRNXjKeT2uaP2Ja8XZvKiS3a4TUXsuIaplDhJmPzKD5gThBTcghU/kKFk8jp45wIqbHWiIi/crC7d+XgykU3bb/uYrZtk5/E5v+kNEB57aJKdfZ5Z2/QueBN/njjRa3p8UnjW5xDLSQ4pNg+dbkElDRzRX2x+uwudQyX+xRDw0ruAc376nKWMicuD+sq8InxKCuHRalaxJCiudqvP+MctZN350p5urVGh5+lbI1km14capVah59o6aUWJq+onAqmgEZaMSIuVfqdQTcJo0+tLPcu23H1t/Y+FLH+0RKAkUQRwKOecs5mb8L+tg2C53lN/+GNdlbpKh0uqSgnXZ1lJOfRU80wh2mSZuagrC3k4ZlqpoVtXl42imjm1UuNdFlzjWFyf6IK22s2v67Oc8EQBYfJI4wql6GQE2Fn8mukKnNT0xbGVM0xxdu5JCXshcTD+AdxGH9u0Ot/6vZ/uXnn6mf3f6wArNYGRRXykU8/52y/6T1RrDnbeHaLMWZahFbNkNSaC1TESDlWMSMPSXGpUxHJD6WIquYnqvA0CgViMo9dRItBlyp5bGJERVVGkk2KiBQD6DO63hLNkHmJkvMdVeyHtdpHrSJa0V6L5BZenSB9l7r96txOovS2MEquSa5e+fYOdkS1jXc/CZV/tAQgW9swF3ztAvNgxYtNmza17JxtjDgTE5MylX/fsUZZAuutZA9lZoaZB4trPatpksoiMAMkcfKgn9Gl7j/87GmSivWs1n9efX0mqcb21r9/kPspvQprtDfoORYI77rrrvBBi2tPuNYdSW7/Z1sAVmmE/fv3y9q1a/UnreZ+RtfqZ/BTOfE/KwLws34vP42lHFvH1rF1bB1bx9axdWwdW8fWsXVsHVvH1rF1bB1bx9axdWwdW8fWsXVsHVvH1k9y/X/rDDtQyptheAAAAABJRU5ErkJggg==" alt="安心住" style="width:72px;height:72px;border-radius:16px;" /></div>
+    <div class="welcome-pattern"></div>
+    <div class="welcome-logo"><div class="welcome-logo-glow"></div><img src="data:image/png;base64,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" alt="安心住" style="width:72px;height:72px;border-radius:16px;" /></div>
     <div class="welcome-title">安心住</div>
-    <div class="welcome-slogan">长辈居家安全隐患自查方案</div>
-    <div class="welcome-desc">老人居家安全：防患胜于救险！用AI的眼睛，帮您检查家里那些容易被忽略的安全隐患。</div>
+    <div class="welcome-slogan">长辈居家安全隐患AI自查</div>
+    <div class="welcome-desc">用AI的眼睛帮您检查家里容易忽略的安全隐患。<br><div class="welcome-value-prop"><strong>一份报告，两种说法</strong></div><span style="font-size:13px;display:block;margin-top:4px">给子女看专业分析，给爸妈看暖心建议，沟通不费力。</span></div>
   </div>
 
   <div class="route-scope">
     <div class="route-scope-title">全屋安全排查 · 路线规划</div>
     <div class="route-cards">
       <div class="route-card active">
-        <div class="route-icon active-bg">🌙</div>
+        <div class="route-icon active-bg"><span class="svg-icon"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span></div>
         <div class="route-info">
           <div class="route-name">夜间起夜路线</div>
           <div class="route-desc">床 → 通道 → 卫生间</div>
@@ -415,7 +583,7 @@ button{touch-action:manipulation;cursor:pointer}
         <div class="route-badge live">已上线</div>
       </div>
       <div class="route-card locked">
-        <div class="route-icon locked-bg">🍳</div>
+        <div class="route-icon locked-bg"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v4H6z"/><path d="M6 6v16h12V6"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14h6"/></svg></div>
         <div class="route-info">
           <div class="route-name">厨房安全路线</div>
           <div class="route-desc">灶台 → 备餐区 → 餐桌</div>
@@ -423,7 +591,7 @@ button{touch-action:manipulation;cursor:pointer}
         <div class="route-badge soon">开发中</div>
       </div>
       <div class="route-card locked">
-        <div class="route-icon locked-bg">🛋️</div>
+        <div class="route-icon locked-bg"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11v5a2 2 0 0 0 2 2v2h2v-2h12v2h2v-2a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H6v-2a2 2 0 0 0-4 0z"/></svg></div>
         <div class="route-info">
           <div class="route-name">客厅活动路线</div>
           <div class="route-desc">沙发 → 茶几 → 阳台</div>
@@ -432,9 +600,11 @@ button{touch-action:manipulation;cursor:pointer}
       </div>
     </div>
   </div>
+  </div><!-- end welcome-scroll -->
 
   <div class="welcome-cta">
-    <button class="btn-primary" id="startBtn" onclick="goTo('screen-photo')">开始检查起夜路线</button>
+    <button class="btn-primary btn-pulse" id="startBtn" onclick="goTo('screen-photo')">开始检查起夜路线</button>
+    <button class="btn-primary btn-accent btn-demo" style="margin-top:12px" onclick="startDemo()"><span class="demo-btn-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>一键演示（看示例效果）</span></button>
     <div class="welcome-note">AI 视觉大模型 · 直接看图分析安全隐患 · 一键开始</div>
   </div>
 </div>
@@ -453,58 +623,58 @@ button{touch-action:manipulation;cursor:pointer}
     <div class="upload-header">
       <div class="upload-h-title">上传路线照片</div>
       <div class="upload-h-desc">每个家庭格局不同，请分别拍下三个关键区域。至少上传1张即可分析，建议3张都拍。</div>
-      <div class="upload-h-tip">💡 建议使用<strong>超广角/0.5x</strong>拍摄，单张照片能覆盖床边、通道和卫生间更多区域，AI 识别更完整。</div>
+      <div class="upload-h-tip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>建议使用<strong>超广角/0.5x</strong>拍摄，单张照片能覆盖床边、通道和卫生间更多区域，AI 识别更完整。</div>
     </div>
 
     <div class="upload-areas">
       <div class="upload-area" data-area="bedside">
         <div class="upload-slot">
-          <div class="upload-icon">🛏️</div>
+          <div class="upload-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></div>
           <div class="upload-info">
             <div class="upload-label">床边起身区域</div>
             <div class="upload-hint">拍下老人下床时的位置和周边</div>
           </div>
           <button class="upload-btn" onclick="triggerUpload(this)">拍照/上传</button>
-          <input type="file" accept="image/*" style="display:none" onchange="handleUpload(event,'bedside')">
+          <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleUpload(event,'bedside')">
         </div>
         <div class="upload-preview">
           <img alt="预览">
           <div class="area-tag">床边区域</div>
-          <button class="del-btn" onclick="deletePhoto('bedside')">✕</button>
+          <button class="del-btn" onclick="deletePhoto('bedside')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
       </div>
 
       <div class="upload-area" data-area="hallway">
         <div class="upload-slot">
-          <div class="upload-icon">🚶</div>
+          <div class="upload-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10.5 21l2-5-2-2-3-3"/><path d="M13.5 14l2 2 2-2-1-4-3-1"/><path d="M7 14l2-2"/></svg></div>
           <div class="upload-info">
             <div class="upload-label">行走通道</div>
             <div class="upload-hint">拍下从床到卫生间的走道</div>
           </div>
           <button class="upload-btn" onclick="triggerUpload(this)">拍照/上传</button>
-          <input type="file" accept="image/*" style="display:none" onchange="handleUpload(event,'hallway')">
+          <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleUpload(event,'hallway')">
         </div>
         <div class="upload-preview">
           <img alt="预览">
           <div class="area-tag">行走通道</div>
-          <button class="del-btn" onclick="deletePhoto('hallway')">✕</button>
+          <button class="del-btn" onclick="deletePhoto('hallway')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
       </div>
 
       <div class="upload-area" data-area="bathroom">
         <div class="upload-slot">
-          <div class="upload-icon">🚿</div>
+          <div class="upload-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v4a4 4 0 0 1-4 4"/><circle cx="8" cy="2" r="1"/><path d="M7 14l-2 6"/><path d="M11 14l2 6"/><path d="M8.5 14v6"/></svg></div>
           <div class="upload-info">
             <div class="upload-label">卫生间入口</div>
             <div class="upload-hint">拍下卫生间门和入口区域</div>
           </div>
           <button class="upload-btn" onclick="triggerUpload(this)">拍照/上传</button>
-          <input type="file" accept="image/*" style="display:none" onchange="handleUpload(event,'bathroom')">
+          <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleUpload(event,'bathroom')">
         </div>
         <div class="upload-preview">
           <img alt="预览">
           <div class="area-tag">卫生间入口</div>
-          <button class="del-btn" onclick="deletePhoto('bathroom')">✕</button>
+          <button class="del-btn" onclick="deletePhoto('bathroom')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
       </div>
     </div>
@@ -515,7 +685,7 @@ button{touch-action:manipulation;cursor:pointer}
     </div>
 
     <div class="privacy-note">
-      照片将发送至 AI 云端由视觉大模型进行安全分析，分析完成后不会存储。AI 直接看图识别隐患，提供专业评估。
+      <span class="privacy-lock"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>照片将发送至 AI 云端由视觉大模型进行安全分析，分析完成后不会存储。AI 直接看图识别隐患，提供专业评估。
     </div>
   </div>
 
@@ -529,7 +699,7 @@ button{touch-action:manipulation;cursor:pointer}
   <div class="analyze-content">
     <div class="analyze-icon">
       <div class="analyze-icon-ring"></div>
-      <div class="analyze-icon-emoji">🔍</div>
+      <div class="analyze-icon-emoji"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
     </div>
     <div class="analyze-status" id="analyzeStatus">正在用 AI 深度分析照片...</div>
     <div class="analyze-sub" id="analyzeSub">请稍候，AI 正在识别每张照片的安全隐患</div>
@@ -564,9 +734,9 @@ button{touch-action:manipulation;cursor:pointer}
       <div class="results-h-title">隐患分析报告</div>
       <div class="results-h-desc">AI在您的照片中检测到以下安全隐患，结合问卷信息综合分析</div>
     </div>
+    <div id="summarySection"></div>
     <div id="surveySummaryCard"></div>
     <div id="photoResults"></div>
-    <div id="summarySection"></div>
   </div>
   <div class="bottom-bar">
     <button class="btn-primary btn-accent" onclick="goTo('screen-budget')">选择改造方案</button>
@@ -604,15 +774,28 @@ button{touch-action:manipulation;cursor:pointer}
     </div>
     <button class="share-btn-top" onclick="shareReport()">分享</button>
   </div>
+  <div class="report-scroll">
   <div class="report-tabs">
     <button class="report-tab active" onclick="switchReport('child')">子女版</button>
     <button class="report-tab" onclick="switchReport('parent')">父母版</button>
   </div>
   <div class="report-subtitle">同一份风险结果，两种表达方式：一份给子女判断，一份给爸妈沟通。</div>
   <div id="reportContent"></div>
+  <div class="demo-try-banner" id="demoTryBanner">
+    <div class="demo-try-banner-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      以上是演示效果
+    </div>
+    <div class="demo-try-banner-desc">想亲自给家里拍张照试试？点击下方按钮从头开始</div>
+    <button class="demo-try-btn" onclick="restart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      亲自体验 · 拍自己家
+    </button>
+  </div>
+  </div><!-- end report-scroll -->
   <div class="report-bottom-actions">
-    <button class="btn-share" onclick="shareReport()">📤 分享报告</button>
-    <button class="btn-restart" onclick="restart()">重新检查</button>
+    <button class="btn-share" onclick="shareReport()"><span class="svg-icon" style="margin-right:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>分享报告</button>
+    <button class="btn-restart" id="restartBtn" onclick="restart()">重新检查</button>
   </div>
 </div>
 
@@ -623,21 +806,21 @@ button{touch-action:manipulation;cursor:pointer}
     <div class="share-modal-desc">把报告发给家人，一起商量怎么改。</div>
     <div class="share-options">
       <button class="share-option" onclick="generateShareImage()">
-        <span class="share-option-icon">🖼️</span>
+        <span class="share-option-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
         <div>
           <div>保存为长图</div>
           <div style="font-size:12px;color:var(--muted)">长按图片保存，发微信/朋友圈</div>
         </div>
       </button>
       <button class="share-option" onclick="copyReportText()">
-        <span class="share-option-icon">📋</span>
+        <span class="share-option-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
         <div>
           <div>复制报告文字</div>
           <div style="font-size:12px;color:var(--muted)">粘贴到任何地方</div>
         </div>
       </button>
     </div>
-    <div class="share-copied" id="shareCopied">✅ 已复制到剪贴板，去微信粘贴吧</div>
+    <div class="share-copied" id="shareCopied"><span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span></div>
     <button class="share-option" style="justify-content:center;margin-top:10px;color:var(--muted)" onclick="closeShareModal()">关闭</button>
   </div>
 </div>
@@ -652,6 +835,58 @@ button{touch-action:manipulation;cursor:pointer}
  * 2. Doubao-Seed-2.1（字节豆包）—— 交叉审查：审查误判、补充遗漏
  * 3. Doubao-Seed-2.1（字节豆包）—— 报告生成：沟通指南+父母版报告
  * ============================================================ */
+
+
+// ===== SVG Icon System =====
+function svgIcon(name, size, color) {
+  size = size || 20;
+  color = color || 'currentColor';
+  const s = size;
+  const icons = {
+    home: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    moon: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+    kitchen: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v4H6z"/><path d="M6 6v16h12V6"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14h6"/></svg>`,
+    sofa: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11v5a2 2 0 0 0 2 2v2h2v-2h12v2h2v-2a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H6v-2a2 2 0 0 0-4 0z"/></svg>`,
+    play: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${color}"><polygon points="5,3 19,12 5,21"/></svg>`,
+    bulb: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>`,
+    bed: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>`,
+    walk: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10.5 21l2-5-2-2-3-3"/><path d="M13.5 14l2 2 2-2-1-4-3-1"/><path d="M7 14l2-2"/></svg>`,
+    shower: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v4a4 4 0 0 1-4 4"/><circle cx="8" cy="2" r="1"/><path d="M7 14l-2 6"/><path d="M11 14l2 6"/><path d="M8.5 14v6"/></svg>`,
+    search: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    share: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
+    image: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+    clipboard: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`,
+    check: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    close: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    lock: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+    wave: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6a4 4 0 0 0-4 4v2"/><path d="M14 10a2 2 0 0 0-2 2v2"/><path d="M10 12a2 2 0 0 0-2 2v2"/><path d="M6 14v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4"/></svg>`,
+    warn: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    camera: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+    heart: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${color}" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    star: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${color}" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    chat: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    hammer: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15L22 10.64"/><path d="M20.91 11.7l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/></svg>`,
+    cart: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
+    emergency: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    plugin: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 14v-2a4 4 0 0 0-4-4h-4a4 4 0 0 0-4 4v2"/><path d="M10 14v6"/><path d="M14 14v6"/><path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/></svg>`,
+    carpet: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="1"/><path d="M2 10h20"/><path d="M2 14h20"/></svg>`,
+    stairs: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h4v-4h4v-4h4V9h4V5H4z"/></svg>`,
+    drop: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
+    bars: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>`,
+    toilet: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10v6H7z"/><path d="M9 8v4"/><path d="M15 8v4"/><path d="M5 12h14l-1 7a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M6 22h12"/></svg>`,
+    chair: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2"/><path d="M6 8h12"/><path d="M8 14v8"/><path d="M16 14v8"/></svg>`,
+    scissors: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>`,
+    box: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+    cone: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 21h4"/><path d="M12 3v18"/><path d="M6 21h12l-2-8H8z"/></svg>`,
+    lightning: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${color}" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    question: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    hourglass: `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12"/><path d="M6 22h12"/><path d="M6 2v6a6 6 0 0 0 12 0V2"/><path d="M6 22v-6a6 6 0 0 1 12 0v6"/></svg>`
+  };
+  return icons[name] || icons.home;
+}
+
+// Demo mode flag
+let isDemoMode = false;
 
 // ===== State =====
 let uploadedPhotos = []; // [{area, dataUrl}]
@@ -837,7 +1072,13 @@ function generateDynamicBudgetPlans(){
           costMaxVal=actualCost;
         }
         // Strip price info from the reason text to avoid confusion
-        const cleanSuggestion=suggestion.replace(/约?\d+\s*[-—~至]?\s*\d*\s*元/g,'').replace(/预估费用?/g,'').trim();
+        const cleanSuggestion=suggestion
+          .replace(/[。.！!]*\s*预估费用[：:]\s*[^。.]*/g,'')
+          .replace(/约?\d+\s*[-—~至]\s*\d+\s*元/g,'')
+          .replace(/约\s*\d+\s*元/g,'')
+          .replace(/[。.！!]\s*[。.！!]+/g,'。')
+          .replace(/^[。.！!\s]+|[。.！!\s：:]+$/g,'')
+          .trim();
         paid.push({
           name:r.title,
           spec:'',
@@ -848,21 +1089,38 @@ function generateDynamicBudgetPlans(){
         });
       }else if(isLaborOnly){
         // Truly free - labor only, no buying needed. No price in suggestion.
-        const cleanSuggestion=suggestion.replace(/约?\d+\s*[-—~至]?\s*\d*\s*元/g,'').replace(/预估费用?/g,'').trim();
+        const cleanSuggestion=suggestion
+          .replace(/[。.！!]*\s*预估费用[：:]\s*[^。.]*/g,'')
+          .replace(/约?\d+\s*[-—~至]\s*\d+\s*元/g,'')
+          .replace(/约\s*\d+\s*元/g,'')
+          .replace(/[。.！!]\s*[。.！!]+/g,'。')
+          .replace(/^[。.！!\s]+|[。.！!\s：:]+$/g,'')
+          .trim();
         free.push(areaTag+cleanSuggestion);
       }else{
         // Default: if cost > 0, it's paid
         if(actualCost>0){
+          const cleanSuggestion=suggestion
+            .replace(/[。.！!]*\s*预估费用[：:]\s*[^。.]*/g,'')
+            .replace(/约?\d+\s*[-—~至]\s*\d+\s*元/g,'')
+            .replace(/约\s*\d+\s*元/g,'')
+            .replace(/[。.！!]\s*[。.！!]+/g,'。')
+            .replace(/^[。.！!\s]+|[。.！!\s：:]+$/g,'')
+            .trim();
           paid.push({
             name:r.title,
             spec:'',
             cost:`约${actualCost}元`,
             costMin:actualCost,
             costMax:actualCost,
-            reason:areaTag+suggestion.replace(/约?\d+\s*[-—~至]?\s*\d*\s*元/g,'').trim()
+            reason:areaTag+cleanSuggestion
           });
         }else{
-          free.push(areaTag+suggestion);
+          const cleanSuggestion=suggestion
+            .replace(/[。.！!]*\s*预估费用[：:]\s*[^。.]*/g,'')
+            .replace(/^[。.！!\s]+|[。.！!\s：:]+$/g,'')
+            .trim();
+          free.push(areaTag+cleanSuggestion);
         }
       }
     });
@@ -881,10 +1139,20 @@ function generateDynamicBudgetPlans(){
     return {min, max, str:min>0?`约${min}-${max}元`:'免费'};
   }
 
-  // Basic: only top 3 most urgent high severity (cheapest fixes first)
-  const basicRisks=highRisks.length>0?
-    highRisks.slice().sort((a,b)=>(a.cost||0)-(b.cost||0)).slice(0,Math.min(3,highRisks.length)):
-    mediumRisks.slice(0,3);
+  // Basic: top 3 high risks prioritized by danger (trip/fall hazards first), with free items first
+  // Free high-risk items (cleaning/organizing) always included
+  const basicFreeHigh=highRisks.filter(r=>(r.cost||0)===0);
+  const basicPaidHigh=highRisks.filter(r=>(r.cost||0)>0).sort((a,b)=>(a.cost||0)-(b.cost||0));
+  let basicRisks=[...basicFreeHigh];
+  // Fill up to 3 with cheapest paid high risks
+  for(const r of basicPaidHigh){
+    if(basicRisks.length>=3) break;
+    basicRisks.push(r);
+  }
+  // If not enough high risks, add medium
+  if(basicRisks.length<3){
+    basicRisks=basicRisks.concat(mediumRisks.slice(0,3-basicRisks.length));
+  }
   const basicSplit=splitItems(basicRisks);
   const basicTotal=calcTotal(basicSplit.paid);
 
@@ -1133,30 +1401,30 @@ function getFallbackAnalysis(photo, imgW, imgH){
   const fallbacks={
     bedside:{
       risks:[
-        {title:'床边落脚区有杂物',description:'照片中床边第一步落脚区域可见杂物（需人工确认具体物品），夜间起夜时可能绊倒。',severity:'high',suggestion:'清理床边地面杂物，保持落脚区干净无障碍。',cost:0,needs_verification:true,verification_question:'床边地面是否有拖鞋、杂物或电线？',verification_type:'confirm'},
-        {title:'床边无可见支撑',description:'照片中未看到稳定的床边支撑点（扶手或固定家具），老人起身时缺少借力点。',severity:'high',suggestion:'在床边安装固定扶手或确保床头柜稳固可借力。',cost:300,needs_verification:true,verification_question:'床边是否有稳固的支撑点（如固定扶手、床头柜）？',verification_type:'confirm'},
-        {title:'床边无明显夜灯',description:'照片中未看到床头灯、小夜灯或感应灯，夜间起夜时可能摸黑行走。',severity:'high',suggestion:'在床边安装人体感应夜灯，距地30-40cm。',cost:60,needs_verification:false},
-        {title:'床边尖角风险',description:'照片中可见家具尖角（需确认具体位置），老人起夜时可能磕碰。',severity:'medium',suggestion:'在家具尖角处粘贴防撞条或防撞角。',cost:15,needs_verification:true,verification_question:'床边是否有家具尖角或突出物？',verification_type:'confirm'}
+        {title:'床边落脚区有杂物',description:'照片中床边第一步落脚区域可见杂物（需人工确认具体物品），夜间起夜时可能绊倒。',severity:'high',suggestion:'清理床边地面杂物，保持落脚区干净无障碍。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'床边地面是否有拖鞋、杂物或电线？',verification_type:'confirm'},
+        {title:'床边无可见支撑',description:'照片中未看到稳定的床边支撑点（扶手或固定家具），老人起身时缺少借力点。',severity:'high',suggestion:'在床边安装固定扶手或确保床头柜稳固可借力。预估费用：约200-350元',cost:300,needs_verification:true,verification_question:'床边是否有稳固的支撑点（如固定扶手、床头柜）？',verification_type:'confirm'},
+        {title:'床边无明显夜灯',description:'照片中未看到床头灯、小夜灯或感应灯，夜间起夜时可能摸黑行走。',severity:'medium',suggestion:'在床边安装人体感应夜灯，距地30-40cm。预估费用：约30-60元',cost:60,needs_verification:false},
+        {title:'床边尖角风险',description:'照片中可见家具尖角（需确认具体位置），老人起夜时可能磕碰。',severity:'low',suggestion:'在家具尖角处粘贴防撞条或防撞角。预估费用：约10-20元',cost:15,needs_verification:true,verification_question:'床边是否有家具尖角或突出物？',verification_type:'confirm'}
       ],
       summary:'床边区域需关注落脚区杂物、支撑点和照明问题。',
       objects_detected:['床','床头柜','地面']
     },
     hallway:{
       risks:[
-        {title:'通道有绊倒物',description:'照片中通道地面可见疑似杂物或障碍物，夜间行走可能绊倒。',severity:'high',suggestion:'清理通道地面所有杂物、电线、拖鞋，保持行走路线畅通。',cost:0,needs_verification:true,verification_question:'通道地面是否有杂物、电线或拖鞋？',verification_type:'confirm'},
-        {title:'通道照明不足',description:'照片中未看到沿路线的连续照明设施，夜间起夜时存在暗角。',severity:'high',suggestion:'沿行走路线安装感应夜灯，确保全程有照明。',cost:40,needs_verification:false},
-        {title:'通道有高差',description:'照片中疑似存在门槛或地面高低差，需人工确认。',severity:'high',suggestion:'如有高差，加装橡胶坡道消除。',cost:50,needs_verification:true,verification_question:'通道中是否有门槛或地面高低差？',verification_type:'confirm'},
-        {title:'家具边角靠近通道',description:'照片中可见家具边角靠近行走路线，夜间可能磕碰。',severity:'medium',suggestion:'将家具移开行走路线，或在尖角处粘贴防撞条。',cost:15,needs_verification:false}
+        {title:'通道有绊倒物',description:'照片中通道地面可见疑似杂物或障碍物，夜间行走可能绊倒。',severity:'high',suggestion:'清理通道地面所有杂物、电线、拖鞋，保持行走路线畅通。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'通道地面是否有杂物、电线或拖鞋？',verification_type:'confirm'},
+        {title:'通道照明不足',description:'照片中未看到沿路线的连续照明设施，夜间起夜时存在暗角。',severity:'medium',suggestion:'沿行走路线安装感应夜灯，确保全程有照明。预估费用：约30-50元',cost:40,needs_verification:false},
+        {title:'通道有高差',description:'照片中疑似存在门槛或地面高低差，需人工确认。',severity:'medium',suggestion:'如有高差，加装橡胶坡道消除。预估费用：约30-60元',cost:50,needs_verification:true,verification_question:'通道中是否有门槛或地面高低差？',verification_type:'confirm'},
+        {title:'家具边角靠近通道',description:'照片中可见家具边角靠近行走路线，夜间可能磕碰。',severity:'low',suggestion:'将家具移开行走路线，或在尖角处粘贴防撞条。预估费用：约10-20元',cost:15,needs_verification:false}
       ],
       summary:'行走通道需关注地面障碍物、照明和地面高差。',
       objects_detected:['地面','墙面','家具']
     },
     bathroom:{
       risks:[
-        {title:'入口门槛高差',description:'照片中卫生间入口疑似有门槛或挡水条，进出时可能绊倒。',severity:'high',suggestion:'加装橡胶坡道消除高差。',cost:50,needs_verification:true,verification_question:'卫生间门口是否有门槛或挡水条？',verification_type:'confirm'},
-        {title:'地面疑似湿滑',description:'照片中地面看起来光滑或反光，若有水渍会增加滑倒风险。',severity:'high',suggestion:'铺设防滑地垫，或在地砖上贴防滑贴。',cost:70,needs_verification:true,verification_question:'卫生间地面是否看起来光滑或有水渍？',verification_type:'confirm'},
-        {title:'入口无扶手',description:'照片中未看到卫生间入口附近的扶手或稳定支撑点。',severity:'high',suggestion:'在入口墙面安装固定扶手。',cost:200,needs_verification:false},
-        {title:'入口空间拥挤',description:'照片中门口疑似有拖鞋、盆等物品占用入口空间。',severity:'medium',suggestion:'清理门口物品，保持入口宽敞。',cost:0,needs_verification:true,verification_question:'卫生间门口是否有拖鞋、盆等物品占用空间？',verification_type:'confirm'}
+        {title:'入口门槛高差',description:'照片中卫生间入口疑似有门槛或挡水条，进出时可能绊倒。',severity:'high',suggestion:'加装橡胶坡道消除高差。预估费用：约30-60元',cost:50,needs_verification:true,verification_question:'卫生间门口是否有门槛或挡水条？',verification_type:'confirm'},
+        {title:'地面疑似湿滑',description:'照片中地面看起来光滑或反光，若有水渍会增加滑倒风险。',severity:'high',suggestion:'铺设防滑地垫，或在地砖上贴防滑贴。预估费用：约40-80元',cost:70,needs_verification:true,verification_question:'卫生间地面是否看起来光滑或有水渍？',verification_type:'confirm'},
+        {title:'入口无扶手',description:'照片中未看到卫生间入口附近的扶手或稳定支撑点。',severity:'medium',suggestion:'在入口墙面安装固定扶手。预估费用：约150-250元',cost:200,needs_verification:false},
+        {title:'入口空间拥挤',description:'照片中门口疑似有拖鞋、盆等物品占用入口空间。',severity:'low',suggestion:'清理门口物品，保持入口宽敞。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'卫生间门口是否有拖鞋、盆等物品占用空间？',verification_type:'confirm'}
       ],
       summary:'卫生间入口需关注门槛、地面湿滑、扶手和入口拥挤问题。',
       objects_detected:['门','地面','门槛']
@@ -1300,21 +1568,36 @@ function parseVisionResponse(respData, imgW, imgH){
   }
 
   const hazards=Array.isArray(parsed.hazards)?parsed.hazards:[];
+  const totalHazards=hazards.length;
   const risks=hazards.map((h,idx)=>{
     const title=String(h.title||'').slice(0,20);
 
-    // Use model's location coordinates directly (trust the model)
+    // Smart position fallback based on hazard keywords
+    const smartPos=getSmartPosition(title, idx, totalHazards);
+
+    // Use model's location coordinates if available and reasonable, otherwise use smart positioning
     let bbox=null;
     if(h.location && typeof h.location.x==='number' && typeof h.location.y==='number'){
       const to01=(v)=>(v>1?v/100:v);
       const cx_pct=to01(h.location.x);
       const cy_pct=to01(h.location.y);
-      const w_pct=Math.max(0.08, to01(h.location.width||0.15));
-      const h_pct=Math.max(0.08, to01(h.location.height||0.15));
-      const cx=cx_pct*imgW;
-      const cy=cy_pct*imgH;
-      const w=Math.max(40, Math.min(w_pct*imgW, imgW*0.3));
-      const hgt=Math.max(40, Math.min(h_pct*imgH, imgH*0.3));
+      const w_pct=Math.max(0.08, to01(h.location.width||smartPos.sz));
+      const h_pct=Math.max(0.08, to01(h.location.height||smartPos.sz));
+      // Sanity check: if model returns coordinates outside [0,1], use smart position
+      if(cx_pct>=0 && cx_pct<=1 && cy_pct>=0 && cy_pct<=1){
+        const cx=cx_pct*imgW;
+        const cy=cy_pct*imgH;
+        const w=Math.max(40, Math.min(w_pct*imgW, imgW*0.3));
+        const hgt=Math.max(40, Math.min(h_pct*imgH, imgH*0.3));
+        bbox=[Math.max(0,cx-w/2), Math.max(0,cy-hgt/2), Math.min(w,imgW), Math.min(hgt,imgH)];
+      }
+    }
+    // Fallback to smart keyword-based positioning if model didn't provide valid coordinates
+    if(!bbox){
+      const cx=smartPos.x*imgW;
+      const cy=smartPos.y*imgH;
+      const w=Math.max(60, smartPos.sz*imgW);
+      const hgt=Math.max(60, smartPos.sz*imgH);
       bbox=[Math.max(0,cx-w/2), Math.max(0,cy-hgt/2), Math.min(w,imgW), Math.min(hgt,imgH)];
     }
 
@@ -1379,7 +1662,7 @@ async function callQwenVision(photo, modelName, timeoutMs){
     throw new Error(`${modelName} API 错误 ${resp.status}: ${errText.slice(0,200)}`);
   }
   const respData=await resp.json();
-  return parseVisionResponse(respData, photo.imgW||800, photo.imgH||600);
+  return parseVisionResponse(respData, photo.naturalWidth||photo.imgW||800, photo.naturalHeight||photo.imgH||600);
 }
 
 async function analyzePhotoWithLLM(photo, imgW, imgH){
@@ -1575,8 +1858,23 @@ async function crossValidateWithGLM4(areaName, risks, objectsDetected, imgW, img
 
 async function startAnalysis(){
   goTo('screen-analyze');
+  // Make sure questions section is visible (may have been hidden by demo mode)
+  const aq=document.getElementById('analyzeQuestions');
+  if(aq) aq.style.display='';
+  const sw=document.getElementById('skipAnalysisWrap');
+  if(sw) sw.style.display='';
   updateProgress(0,'正在用 AI 并行分析所有照片...','同时分析'+uploadedPhotos.length+'张照片');
   renderAnalyzeThumbs();
+  // Add step indicator
+  const oldSteps=document.getElementById('analyzeStepList');
+  if(oldSteps) oldSteps.remove();
+  const stepsHTML=`<div class="analyze-step-list" id="analyzeStepList">
+    <div class="analyze-step active" data-step="1"><div class="analyze-step-dot">1</div>压缩图片</div>
+    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>AI视觉识别</div>
+    <div class="analyze-step" data-step="3"><div class="analyze-step-dot">3</div>交叉审查</div>
+    <div class="analyze-step" data-step="4"><div class="analyze-step-dot">4</div>生成报告</div>
+  </div>`;
+  document.getElementById('analyzeThumbs').insertAdjacentHTML('afterend', stepsHTML);
   renderSurveyQuestions();
   showSkipAnalysisButton(true);
   startAnalysisPageGuard();
@@ -1606,6 +1904,7 @@ async function startAnalysis(){
 
   // Step 1: Compress images
   updateProgress(5, '正在压缩图片，提升分析速度', '优化图片尺寸以加快AI识别');
+  setTimeout(()=>{document.querySelectorAll('.analyze-step').forEach((s,i)=>{s.classList.remove('active','done');if(i<1)s.classList.add('done');if(i===1)s.classList.add('active')});},100);
 
   // Pre-load all images to get dimensions
   const photoData=[];
@@ -1705,7 +2004,7 @@ async function startAnalysis(){
 
   if(results.some(r=>r.fallback)){
     usedFallbackDemo=true;
-    console.warn('⚠️ 部分照片使用了兜底分析数据（API不可用）');
+    console.warn('[!] 部分照片使用了兜底分析数据（API不可用）');
   }
 
   // Build analysisResults in order
@@ -1758,6 +2057,7 @@ async function startAnalysis(){
 
   // Step: Generate risk scores
   updateProgress(92, '正在生成风险评分', '根据识别结果+问卷信息综合评分');
+  document.querySelectorAll('.analyze-step').forEach((s,i)=>{s.classList.remove('active','done');if(i<3)s.classList.add('done');if(i===3)s.classList.add('active')});
   await new Promise(r=>setTimeout(r,800));
 
   showSkipAnalysisButton(false);
@@ -1770,6 +2070,7 @@ async function startAnalysis(){
     await new Promise(r=>setTimeout(r,2500));
   }else{
     updateProgress(100,'分析完成','正在跳转到结果页...');
+  document.querySelectorAll('.analyze-step').forEach(s=>{s.classList.remove('active');s.classList.add('done')});
     await new Promise(r=>setTimeout(r,600));
   }
 
@@ -1781,13 +2082,40 @@ function getAreaName(area){
   return {bedside:'床边区域',hallway:'行走通道',bathroom:'卫生间入口'}[area]||'照片';
 }
 
+// Strip cost/price info from suggestion text for clean display
+function stripCost(text){
+  if(!text) return '';
+  return String(text)
+    .replace(/[。.！!]*\s*预估费用[：:][^。.！!]*[。.！!]?\s*/g,'')
+    .replace(/约?\d+\s*[-—~至到]\s*\d+\s*元/g,'')
+    .replace(/约\s*\d+\s*元/g,'')
+    .replace(/免费[（(][^）)]*[）)]/g,'')
+    .replace(/^[。.！!\s,，、]+|[。.！!\s,，、]+$/g,'')
+    .trim();
+}
+
+// Extract cost range text from suggestion for display in meta
+function extractCostRange(suggestion, fallbackCost){
+  if(!suggestion) return fallbackCost>0?' · 预估费用：约'+fallbackCost+'元':' · 无需费用';
+  const s=String(suggestion);
+  // Try to extract range like "约200-350元"
+  const rangeMatch=s.match(/预估费用[：:]\s*(约?\d+\s*[-—~至到]\s*\d+\s*元)/);
+  if(rangeMatch) return ' · 预估费用：'+rangeMatch[1];
+  // Try single price like "约30-60元"
+  const singleMatch=s.match(/预估费用[：:]\s*(约\s*\d+\s*元)/);
+  if(singleMatch) return ' · 预估费用：'+singleMatch[1];
+  // Check for free
+  if(/免费/.test(s)) return ' · 无需费用';
+  return fallbackCost>0?' · 预估费用：约'+fallbackCost+'元':' · 无需费用';
+}
+
 // ===== Results Rendering =====
 function renderAnalyzeThumbs(){
   const container=document.getElementById('analyzeThumbs');
   container.innerHTML=uploadedPhotos.map((p,i)=>
     `<div class="analyze-thumb" id="thumb-${i}">
       <img src="${p.dataUrl}" alt="">
-      <div class="scan-overlay"></div>
+      <div class="scan-overlay"><div class="scan-glow"></div><div class="scan-line"></div></div>
     </div>`
   ).join('');
 }
@@ -1813,14 +2141,22 @@ function updateProgress(pct,status,sub){
 function renderSurveyQuestions(){
   const list=document.getElementById('questionsList');
   if(!list) return;
+  const total=surveyQuestions.length;
+  const answered=getAnsweredCount();
+  const titleEl=document.querySelector('.analyze-questions-title');
+  if(titleEl){
+    const badgeClass=answered===total?'done':'';
+    titleEl.innerHTML=`边分析边回答 <span class="survey-progress-badge ${badgeClass}">${answered}/${total}</span>`;
+  }
   list.innerHTML=surveyQuestions.map(q=>{
     const opts=q.options.map(opt=>{
       const selected=(surveyAnswers[q.id]===opt.value)?'selected':'';
       return `<button class="analyze-option ${selected}" onclick="selectSurveyOption('${q.id}','${opt.value}')">${opt.label}</button>`;
     }).join('');
     const stageText={scene:'场景',highrisk:'高风险',behavior:'行为习惯',resistance:'沟通阻力'}[q.stage]||'';
-    return `<div class="analyze-question" data-qid="${q.id}">
-      <div class="analyze-question-text"><span class="analyze-question-num">${q.order}</span><span class="analyze-question-stage">[${stageText}]</span><br>${q.text}</div>
+    const isAnswered=surveyAnswers[q.id]?'opacity:0.6;':'';
+    return `<div class="analyze-question" data-qid="${q.id}" style="${isAnswered}">
+      <div class="analyze-question-text"><span class="analyze-question-num">${q.order}</span><span class="analyze-question-stage" style="display:inline-flex;align-items:center;gap:3px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>[${stageText}]</span><br>${q.text}</div>
       <div class="analyze-options">${opts}</div>
     </div>`;
   }).join('');
@@ -1928,6 +2264,7 @@ function skipAnalysis(){
   applySurveyAdjustments();
   stopAnalysisPageGuard();
   updateProgress(100,'已跳过 AI 分析','展示示例结果');
+  document.querySelectorAll('.analyze-step').forEach(s=>{s.classList.remove('active');s.classList.add('done')});
   showSkipAnalysisButton(false);
   goTo('screen-results');
   renderResults();
@@ -1936,26 +2273,20 @@ function skipAnalysis(){
 function applySurveyAdjustments(){
   if(!analysisResults.length) return;
 
-  // 1. Compute global risk multiplier from survey answers
-  let totalBoost=1.0;
+  // Count how many high-risk signals the survey shows (for overall tone)
+  let highRiskSignals=0;
   surveyQuestions.forEach(q=>{
     const opt=getSelectedOption(q.id);
-    if(opt && opt.riskBoost) totalBoost*=opt.riskBoost;
+    if(opt && opt.severityShift==='up') highRiskSignals++;
   });
 
-  // 2. Compute severity shifts (high-risk answers)
-  let severityShiftCount=0;
-  surveyQuestions.forEach(q=>{
-    const opt=getSelectedOption(q.id);
-    if(opt && opt.severityShift==='up') severityShiftCount++;
-  });
-
-  // 3. Specific category weights derived from answers
+  // Get specific answers
   const lightAnswer=surveyAnswers['q4_light'];
   const urgentAnswer=surveyAnswers['q5_urgent'];
   const awakeAnswer=surveyAnswers['q3_awake'];
   const unstableAnswer=surveyAnswers['q7_unstable'];
   const slipperAnswer=surveyAnswers['q6_slippers'];
+  const fallAnswer=surveyAnswers['q2_nearfall'];
 
   analysisResults.forEach(result=>{
     result.risks.forEach(r=>{
@@ -1963,44 +2294,48 @@ function applySurveyAdjustments(){
       const lowerDesc=(r.desc||'').toLowerCase();
       const combined=lowerTitle+lowerDesc;
 
-      // Base boost from overall survey
-      let boost=totalBoost;
+      // Start with no boost - only apply category-specific boosts
+      let shouldUpgrade=false;
+      let upgradeReasons=[];
 
-      // Category-specific boosts
+      // === Lighting-related risks ===
       if(combined.includes('灯')||combined.includes('照明')){
-        if(lightAnswer==='often') boost*=1.4;
-        else if(lightAnswer==='sometimes') boost*=1.15;
+        if(lightAnswer==='often'){ shouldUpgrade=true; upgradeReasons.push('经常不开灯'); }
+        else if(lightAnswer==='sometimes'){ /* minor, don't upgrade but note it */ }
       }
-      if(combined.includes('地面')||combined.includes('湿滑')||combined.includes('地毯')||combined.includes('门槛')){
-        if(awakeAnswer==='groggy') boost*=1.25;
-        if(urgentAnswer==='yes') boost*=1.25;
-        if(slipperAnswer==='find'||slipperAnswer==='barefoot') boost*=1.2;
+
+      // === Trip/slip hazards on floor ===
+      if(combined.includes('地面')||combined.includes('湿滑')||combined.includes('地毯')||combined.includes('门槛')||combined.includes('杂物')||combined.includes('绊倒')||combined.includes('高差')||combined.includes('滑倒')){
+        if(awakeAnswer==='groggy'){ shouldUpgrade=true; upgradeReasons.push('起夜时半睡半醒'); }
+        if(urgentAnswer==='yes'){ shouldUpgrade=true; upgradeReasons.push('起夜比较急'); }
+        if(slipperAnswer==='find'||slipperAnswer==='barefoot'){ shouldUpgrade=true; upgradeReasons.push('找不着拖鞋或光脚'); }
+        if(fallAnswer==='yes'){ shouldUpgrade=true; upgradeReasons.push('近3月有差点摔倒'); }
       }
+
+      // === Support/grab bar risks ===
       if(combined.includes('扶手')||combined.includes('支撑')){
-        if(unstableAnswer==='yes') boost*=1.3;
-        if(awakeAnswer==='groggy') boost*=1.15;
-      }
-      if(combined.includes('电线')||combined.includes('杂物')||combined.includes('杂乱')){
-        if(urgentAnswer==='yes') boost*=1.2;
+        if(unstableAnswer==='yes'){ shouldUpgrade=true; upgradeReasons.push('起身时扶不稳东西'); }
+        if(awakeAnswer==='groggy'){ /* minor */ }
       }
 
-      // Apply boost to severity level
-      const sevOrder={low:0,medium:1,high:2};
-      const order=sevOrder[r.severity]||1;
-      // Each boost tier raises severity by one step
-      let newOrder=order;
-      if(boost>=1.5) newOrder=Math.min(2,order+2);
-      else if(boost>=1.2) newOrder=Math.min(2,order+1);
-      // Additional shift from high-risk answers
-      newOrder=Math.min(2,newOrder+severityShiftCount);
-      const newSev=['low','medium','high'][newOrder];
-      if(newSev!==r.severity) r.severity=newSev;
+      // === Cord/clutter hazards ===
+      if(combined.includes('电线')||combined.includes('杂乱')){
+        if(urgentAnswer==='yes'){ shouldUpgrade=true; upgradeReasons.push('起夜比较急'); }
+      }
 
-      // Mark high-priority for action plan if boost is significant
-      r.surveyPriority=boost>=1.3;
+      // Apply upgrade: only ONE level up, only if risk is not already high
+      if(shouldUpgrade && r.severity!=='high'){
+        const sevOrder={low:0,medium:1,high:2};
+        const order=sevOrder[r.severity]||1;
+        r.severity=['low','medium','high'][Math.min(2,order+1)];
+        r.upgradeReasons=upgradeReasons;
+      }
+
+      // Mark for priority
+      r.surveyPriority=shouldUpgrade;
     });
 
-    // Re-sort: high > medium > low, and survey-priority first within same severity
+    // Re-sort: high > medium > low
     result.risks.sort((a,b)=>{
       const sevOrder={high:0,medium:1,low:2};
       if(sevOrder[a.severity]!==sevOrder[b.severity]){
@@ -2031,20 +2366,20 @@ function renderSurveySummaryCard(){
   // Build compact survey summary
   const items=answered.map(q=>{
     const opt=getSelectedOption(q.id);
-    const icon=opt&&opt.riskBoost&&opt.riskBoost>=1.3?'⚠️':opt&&opt.riskBoost&&opt.riskBoost>=1.1?'⚡':'✅';
-    return `<div class="survey-sum-item"><span class="survey-sum-icon">${icon}</span><span class="survey-sum-q">${q.shortLabel||q.text.substring(0,q.text.indexOf('？')||q.text.length)}</span><span class="survey-sum-a">${opt?opt.label:''}</span></div>`;
+    const icon=opt&&opt.riskBoost&&opt.riskBoost>=1.3?'<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z\"/><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg>':opt&&opt.riskBoost&&opt.riskBoost>=1.1?'<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><polygon points=\"13 2 3 14 12 14 11 22 21 10 12 10 13 2\"/></svg>':'<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg>';
+    return `<div class="survey-sum-item"><span class="survey-sum-icon" style="display:inline-flex">${icon}</span><span class="survey-sum-q">${q.shortLabel||q.text.substring(0,q.text.indexOf('？')||q.text.length)}</span><span class="survey-sum-a">${opt?opt.label:''}</span></div>`;
   }).join('');
 
   card.innerHTML=`
     <div class="survey-sum-card">
-      <div class="survey-sum-title">📋 您的回答（已影响风险评级）</div>
+      <div class="survey-sum-title" style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>您的回答（已影响风险评级）</div>
       <div class="survey-sum-list">${items}</div>
     </div>`;
 }
 
 // Get human-readable reasons why a risk was boosted by survey answers
 function getSurveyImpactReasons(r){
-  const reasons=[];
+  const reasons=new Set();
   const combined=((r.title||'')+(r.desc||'')).toLowerCase();
   const lightAnswer=surveyAnswers['q4_light'];
   const urgentAnswer=surveyAnswers['q5_urgent'];
@@ -2053,34 +2388,34 @@ function getSurveyImpactReasons(r){
   const slipperAnswer=surveyAnswers['q6_slippers'];
 
   if((combined.includes('灯')||combined.includes('照明'))){
-    if(lightAnswer==='often') reasons.push('经常不开灯');
-    else if(lightAnswer==='sometimes') reasons.push('有时不开灯');
+    if(lightAnswer==='often') reasons.add('经常不开灯');
+    else if(lightAnswer==='sometimes') reasons.add('有时不开灯');
   }
-  if(combined.includes('地面')||combined.includes('湿滑')||combined.includes('地毯')||combined.includes('门槛')){
-    if(awakeAnswer==='groggy') reasons.push('起夜时半睡半醒');
-    if(urgentAnswer==='yes') reasons.push('起夜比较急');
-    if(slipperAnswer==='find'||slipperAnswer==='barefoot') reasons.push('找不着拖鞋或光脚');
+  if(combined.includes('地面')||combined.includes('湿滑')||combined.includes('地毯')||combined.includes('门槛')||combined.includes('杂物')||combined.includes('绊倒')){
+    if(awakeAnswer==='groggy') reasons.add('起夜时半睡半醒');
+    if(urgentAnswer==='yes') reasons.add('起夜比较急');
+    if(slipperAnswer==='find'||slipperAnswer==='barefoot') reasons.add('找不着拖鞋或光脚');
   }
   if(combined.includes('扶手')||combined.includes('支撑')){
-    if(unstableAnswer==='yes') reasons.push('起身时扶不稳东西');
-    if(awakeAnswer==='groggy') reasons.push('起夜时半睡半醒');
+    if(unstableAnswer==='yes'||unstableAnswer==='sometimes') reasons.add('起身时扶不稳东西');
+    if(awakeAnswer==='groggy') reasons.add('起夜时半睡半醒');
   }
-  if(combined.includes('电线')||combined.includes('杂物')||combined.includes('杂乱')){
-    if(urgentAnswer==='yes') reasons.push('起夜比较急');
+  if(combined.includes('电线')||combined.includes('杂乱')){
+    if(urgentAnswer==='yes') reasons.add('起夜比较急');
   }
-  return reasons;
+  return [...reasons];
 }
 
 function renderResults(){
   // Render survey summary card
   renderSurveySummaryCard();
   const container=document.getElementById('photoResults');
-  // Re-assign numbers: only bbox risks that are not dismissed get numbered
+  // Re-assign global sequential numbers: only bbox risks that are not dismissed get numbered
+  let globalN=0;
   analysisResults.forEach(result=>{
-    let n=0;
     result.risks.forEach(r=>{
       if(r.bbox && r.verified!==false){
-        r.number=++n;
+        r.number=++globalN;
       }else{
         r.number=null;
       }
@@ -2094,12 +2429,13 @@ function renderResults(){
     return `
     <div class="photo-result">
       <div class="photo-result-header">
-        <span class="photo-result-icon">${{bedside:'🛏️',hallway:'🚶',bathroom:'🚿'}[photo.area]||'📷'}</span>
+        <span class="photo-result-icon">${{bedside:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>',hallway:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10.5 21l2-5-2-2-3-3"/><path d="M13.5 14l2 2 2-2-1-4-3-1"/><path d="M7 14l2-2"/></svg>',bathroom:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v4a4 4 0 0 1-4 4"/><circle cx="8" cy="2" r="1"/><path d="M7 14l-2 6"/><path d="M11 14l2 6"/><path d="M8.5 14v6"/></svg>'}[photo.area]||'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>'}</span>
         <span class="photo-result-name">${getAreaName(photo.area)}</span>
         <span class="photo-result-count">${visibleRisks.length}个隐患</span>
       </div>
       <div class="photo-annotation-wrap">
-        <img src="${photo.dataUrl}" alt="${getAreaName(photo.area)}">
+        <img src="${photo.dataUrl}" alt="${getAreaName(photo.area)}" onload="this.dataset.loaded='1'">
+        ${generateAnnotationSVG(risks, result.imgW||photo.naturalWidth||800, result.imgH||photo.naturalHeight||600)}
       </div>
       ${result.objects_detected && result.objects_detected.length>0?`
       <div class="detected-objects">
@@ -2108,20 +2444,15 @@ function renderResults(){
       </div>`:''}
       <div class="risk-list">
         <div class="risk-list-title">隐患详情</div>
-        ${risks.length===0?'<div class="no-risk-note">✅ 未检测到明显安全隐患，请仍注意日常安全。</div>':''}
+        ${risks.length===0?'<div class="no-risk-note" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>未检测到明显安全隐患，请仍注意日常安全。</div>':''}
         ${risks.map((r,ri)=>{
           r._riskIdx=ri;
           const badgeContent=r.number!==null?r.number:'全图';
           const badgeClass=r.number!==null?'':'global';
-          // Survey impact note - show for ALL risks, not just boosted ones
+          // Survey impact note
           let surveyNote='';
-          const surveyReasons=getSurveyImpactReasons(r);
-          if(surveyReasons.length>0){
-            if(r.surveyPriority){
-              surveyNote=`<div class="risk-survey-impact">📊 因问卷回答「${surveyReasons.join('、')}」，此隐患风险等级已提升</div>`;
-            }else{
-              surveyNote=`<div class="risk-survey-context">📋 问卷提示：${surveyReasons.join('、')}，需重点关注</div>`;
-            }
+          if(r.upgradeReasons && r.upgradeReasons.length>0){
+            surveyNote=`<div class="risk-survey-impact" style="display:flex;align-items:flex-start;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#856404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>结合您的回答「${r.upgradeReasons.join('、')}」，此隐患风险等级已上调</div>`;
           }
           return `
           <div class="risk-card ${r.severity}">
@@ -2133,10 +2464,10 @@ function renderResults(){
               </div>
               <div class="risk-desc">${r.desc}</div>
               ${surveyNote}
-              <div class="risk-suggestion">💡 ${r.suggestion}</div>
+              <div class="risk-suggestion" style="display:flex;align-items:flex-start;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg><span>${stripCost(r.suggestion)}</span></div>
               ${r.needsVerification && r.verificationQuestion && r.verified===null?`
               <div class="verify-card">
-                <div class="verify-q"><span class="verify-icon">❓</span>${r.verificationQuestion}</div>
+                <div class="verify-q"><span class="verify-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>${r.verificationQuestion}</div>
                 ${r.verificationType==='measure'?`
                 <div class="verify-measure">
                   <input type="number" class="verify-input" id="verify-input-${idx}-${r._riskIdx}" placeholder="输入数值" />
@@ -2149,8 +2480,8 @@ function renderResults(){
                   <button class="verify-btn deny" onclick="verifyRisk(${idx},${r._riskIdx},'deny')">没有，排除这条</button>
                 </div>`}
               </div>`:''}
-              ${r.verified===true?'<div class="verify-resolved">✅ 已确认存在此隐患'+(r.verifiedValue?('（用户输入：'+r.verifiedValue+'厘米）'):'')+'</div>':''}
-              ${r.verified===false?'<div class="verify-resolved" style="color:var(--muted)">✖ 用户已排除此隐患</div>':''}
+              ${r.verified===true?'<div class="verify-resolved" style="display:flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已确认存在此隐患'+(r.verifiedValue?('（用户输入：'+r.verifiedValue+'厘米）'):'')+'</div>':''}
+              ${r.verified===false?'<div class="verify-resolved" style="color:var(--muted);display:flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>用户已排除此隐患</div>':''}
             </div>
           </div>`;
         }).join('')}
@@ -2226,7 +2557,7 @@ function generateAnnotationSVG(risks,imgW,imgH){
     const by=idx*(bannerH+gap)+gap;
     svg+=`<rect x="0" y="${by}" width="${imgW}" height="${bannerH}" fill="rgba(0,0,0,0.7)"/>`;
     svg+=`<rect x="0" y="${by}" width="${5*sf}" height="${bannerH}" fill="${color}"/>`;
-    svg+=`<text x="${16*sf}" y="${by+bannerH/2+fs*0.35}" fill="${color}" font-size="${fs+2*sf}" font-family="${cjk}">⚠</text>`;
+    svg+=`<text x="${16*sf}" y="${by+bannerH/2+fs*0.35}" fill="${color}" font-size="${fs+2*sf}" font-family="${cjk}" font-weight="bold">!</text>`;
     svg+=`<text x="${32*sf}" y="${by+bannerH/2+fs*0.35}" fill="white" font-size="${fs}" font-family="${cjk}">${st}</text>`;
   });
 
@@ -2240,30 +2571,88 @@ function renderSummary(){
   const low=allRisks.filter(r=>r.severity==='low').length;
   const total=allRisks.length;
 
-  // Safety score
-  let score=100-high*15-medium*8-low*3;
+  // Safety score - balanced weights for realistic scoring
+  let score=100-high*8-medium*4-low*2;
   score=Math.max(0,Math.min(100,score));
 
   let evalText;
-  if(score>=90) evalText='安全状况良好，仅有少量小问题需要注意。';
-  else if(score>=70) evalText='存在一些安全隐患，建议尽快改善。';
-  else if(score>=50) evalText='存在较多安全隐患，建议尽快进行改造。';
-  else evalText='安全隐患较多，建议立即进行改造。';
+  if(score>=80) evalText='安全状况良好，仅有少量小问题需要注意。';
+  else if(score>=60) evalText='存在一些安全隐患，建议逐步改善。';
+  else if(score>=40) evalText='存在较多安全隐患，建议优先处理高风险项。';
+  else evalText='安全隐患较多，建议尽快安排改造。';
 
-  const scoreColor=score>=70?'var(--accent2)':score>=50?'var(--accent)':'var(--danger)';
+  const scoreColor=score>=60?'var(--accent2)':score>=40?'var(--accent)':'var(--danger)';
+
+  // Calculate risk heat by area
+  const areaStats = {};
+  analysisResults.forEach(r => {
+    const areaName = getAreaName(r.photo.area);
+    if(!areaStats[areaName]) areaStats[areaName] = {high:0, medium:0, low:0, total:0};
+    r.risks.filter(rk=>rk.verified!==false).forEach(rk=>{
+      areaStats[areaName][rk.severity]++;
+      areaStats[areaName].total++;
+    });
+  });
+  const areaNames = Object.keys(areaStats);
+  const heatmapHTML = areaNames.map(name => {
+    const s = areaStats[name];
+    const cls = s.high>0?'hot':s.medium>0?'warm':'cool';
+    return '<div class="heatmap-item '+cls+'"><div class="heatmap-area">'+name+'</div><div class="heatmap-count">'+s.total+'</div></div>';
+  }).join('');
+
+  // Circular progress
+  const circumference = 2*Math.PI*48;
+  const offset = circumference - (score/100)*circumference;
+  const ringColor = score>=60?'#5f8b6b':score>=40?'#d58b55':'#e74c3c';
 
   document.getElementById('summarySection').innerHTML=`
     <div class="summary-section">
       <div class="summary-title">安全评估总览</div>
-      <div class="summary-stats">
-        <div class="stat-item"><div class="stat-num high">${high}</div><div class="stat-label">高风险</div></div>
-        <div class="stat-item"><div class="stat-num medium">${medium}</div><div class="stat-label">中风险</div></div>
-        <div class="stat-item"><div class="stat-num low">${low}</div><div class="stat-label">低风险</div></div>
+      <div class="score-circle-wrap">
+        <svg class="score-circle-svg" width="120" height="120" viewBox="0 0 120 120">
+          <circle class="score-circle-bg" cx="60" cy="60" r="48"/>
+          <circle class="score-circle-fill" cx="60" cy="60" r="48" stroke="${ringColor}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}" id="scoreRing"/>
+        </svg>
+        <div class="score-circle-text">
+          <div class="score-circle-num" style="color:${ringColor}" id="scoreNum">0</div>
+          <div class="score-circle-label">安全评分</div>
+        </div>
       </div>
-      <div class="score-bar"><div class="score-fill" style="width:${score}%;background:${scoreColor}"></div></div>
-      <div class="score-text">安全评分：${score}/100</div>
-      <div class="score-eval">${evalText}</div>
+      <div class="score-eval" style="text-align:center;margin-bottom:16px">${evalText}</div>
+      <div class="risk-heatmap">${heatmapHTML}</div>
+      <div class="summary-stats" style="margin-top:16px">
+        <div class="stat-item"><div class="stat-num high" id="statHigh">0</div><div class="stat-label">高风险</div></div>
+        <div class="stat-item"><div class="stat-num medium" id="statMed">0</div><div class="stat-label">中风险</div></div>
+        <div class="stat-item"><div class="stat-num low" id="statLow">0</div><div class="stat-label">低风险</div></div>
+      </div>
     </div>`;
+
+  // Animate circular progress
+  setTimeout(()=>{
+    const ring=document.getElementById('scoreRing');
+    if(ring) ring.style.strokeDashoffset=offset;
+  },100);
+
+  // Count up animation
+  function countUp(el, target, duration) {
+    if(!el) return;
+    const start=0;
+    const startTime=performance.now();
+    function tick(now){
+      const elapsed=now-startTime;
+      const progress=Math.min(elapsed/duration,1);
+      const eased=1-Math.pow(1-progress,3);
+      el.textContent=Math.round(start+(target-start)*eased);
+      if(progress<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  setTimeout(()=>{
+    countUp(document.getElementById('scoreNum'),score,1200);
+    countUp(document.getElementById('statHigh'),high,800);
+    countUp(document.getElementById('statMed'),medium,800);
+    countUp(document.getElementById('statLow'),low,800);
+  },200);
 }
 
 // ===== Budget Selection =====
@@ -2272,17 +2661,23 @@ function renderBudgetCards(){
   dynamicBudgetPlans = generateDynamicBudgetPlans();
   const plans = dynamicBudgetPlans || budgetPlans; // fallback to static
   const container=document.getElementById('budgetCards');
+  // Default select safe plan if nothing selected yet
+  if(!selectedBudget || !plans[selectedBudget]){
+    selectedBudget='safe';
+  }
   container.innerHTML=Object.entries(plans).map(([key,plan])=>`
-    <div class="budget-card ${selectedBudget===key?'selected':''}" onclick="selectBudget('${key}')">
+    <div class="budget-card ${selectedBudget===key?'selected':''} ${key==='safe'?'recommended':''}" onclick="selectBudget('${key}')">
+      ${key==='safe'?'<div class="budget-recommend-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>推荐</div>':''}
       <div class="budget-card-head">
         <span class="budget-card-name">${plan.name}</span>
         <span class="budget-card-price">${plan.priceRange}</span>
       </div>
       <div class="budget-card-desc">${plan.desc}</div>
+      ${key==='safe'?'<div class="budget-recommend-hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>性价比最高，覆盖全部高风险项</div>':''}
       ${plan.freeItems&&plan.freeItems.length>0?`
       <div class="budget-section-label budget-free-label">免费 · 自己动手</div>
       <ul class="budget-free-list">
-        ${plan.freeItems.map(item=>`<li>${item}</li>`).join('')}
+        ${plan.freeItems.map(item=>`<li><span class="budget-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${item}</li>`).join('')}
       </ul>`:''}
       ${plan.paidItems&&plan.paidItems.length>0?`
       <div class="budget-section-label budget-paid-label">花钱 · 需购买</div>
@@ -2383,19 +2778,20 @@ const REPORT_GEN_PROMPT=`你是居家安全顾问，同时也是一个懂老人�
 // Pick an emoji icon based on risk title keywords (since LLM returns no type)
 function pickRiskIcon(title){
   const t=String(title||'');
-  if(/线|电线|线缆|电缆/.test(t)) return '🔌';
-  if(/地毯|地垫|垫子/.test(t)) return '🧶';
-  if(/门槛|台阶|楼梯/.test(t)) return '🪜';
-  if(/光|灯|照明|亮度/.test(t)) return '💡';
-  if(/滑|湿|水|潮/.test(t)) return '💧';
-  if(/扶手|栏杆/.test(t)) return '🦽';
-  if(/床/.test(t)) return '🛏️';
-  if(/马桶|厕|卫生间/.test(t)) return '🚽';
-  if(/椅|凳|桌|家具/.test(t)) return '🪑';
-  if(/尖|刀|剪|玻璃/.test(t)) return '✂️';
-  if(/障|物|杂|堆|收纳|动线/.test(t)) return '📦';
-  if(/撞|角|边/.test(t)) return '🚧';
-  return '🏠';
+  const sz=36;
+  if(/线|电线|线缆|电缆/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 14v-2a4 4 0 0 0-4-4h-4a4 4 0 0 0-4 4v2"/><path d="M10 14v6"/><path d="M14 14v6"/><path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/></svg>';
+  if(/地毯|地垫|垫子/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="1"/><path d="M2 10h20"/><path d="M2 14h20"/></svg>';
+  if(/门槛|台阶|楼梯/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h4v-4h4v-4h4V9h4V5H4z"/></svg>';
+  if(/光|灯|照明|亮度/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>';
+  if(/滑|湿|水|潮/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>';
+  if(/扶手|栏杆/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>';
+  if(/床/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>';
+  if(/马桶|厕|卫生间/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10v6H7z"/><path d="M9 8v4"/><path d="M15 8v4"/><path d="M5 12h14l-1 7a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M6 22h12"/></svg>';
+  if(/椅|凳|桌|家具/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2"/><path d="M6 8h12"/><path d="M8 14v8"/><path d="M16 14v8"/></svg>';
+  if(/尖|刀|剪|玻璃/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/></svg>';
+  if(/障|物|杂|堆|收纳|动线/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/></svg>';
+  if(/撞|角|边/.test(t)) return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 21h4"/><path d="M12 3v18"/><path d="M6 21h12l-2-8H8z"/></svg>';
+  return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
 }
 
 // Template-based report + LLM personalization
@@ -2575,6 +2971,20 @@ function switchReport(version){
   }else{
     container.innerHTML=renderParentReport();
   }
+
+  // Show/hide demo try banner based on mode
+  const banner=document.getElementById('demoTryBanner');
+  const restartBtn=document.getElementById('restartBtn');
+  if(banner){
+    banner.classList.toggle('show', !!isDemoMode);
+  }
+  if(restartBtn){
+    if(isDemoMode){
+      restartBtn.textContent='回到首页';
+    }else{
+      restartBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>重新检查';
+    }
+  }
 }
 
 // ===== Share Report =====
@@ -2585,7 +2995,7 @@ function buildShareText(){
   const high=allRisks.filter(r=>r.severity==='high');
   const medium=allRisks.filter(r=>r.severity==='medium');
   const low=allRisks.filter(r=>r.severity==='low');
-  let score=100-high.length*15-medium.length*8-low.length*3;
+  let score=100-high.length*8-medium.length*4-low.length*2;
   score=Math.max(0,Math.min(100,score));
 
   let text='【安心住·居家安全报告】\n\n';
@@ -2593,7 +3003,7 @@ function buildShareText(){
   text+='隐患统计：高风险'+high.length+'个 · 中风险'+medium.length+'个 · 低风险'+low.length+'个\n\n';
 
   if(allRisks.length>0){
-    text+='📋 隐患清单：\n';
+    text+='[隐患清单]\n';
     allRisks.forEach((r,i)=>{
       text+=(i+1)+'. ['+{high:'高风险',medium:'中风险',low:'低风险'}[r.severity]+'] '+r.title+'\n';
       text+='   '+r.suggestion+'\n';
@@ -2604,7 +3014,7 @@ function buildShareText(){
   const plans=dynamicBudgetPlans||budgetPlans;
   const plan=plans[selectedBudget];
   if(plan){
-    text+='\n💰 改造方案：'+plan.name+'（'+plan.priceRange+'）\n';
+    text+='\n[改造方案]：'+plan.name+'（'+plan.priceRange+'）\n';
     if(plan.freeItems&&plan.freeItems.length>0){
       text+='免费（自己动手）：\n';
       plan.freeItems.forEach(item=>{text+='  · '+item+'\n'});
@@ -2619,7 +3029,7 @@ function buildShareText(){
   const tips=(llmReport && llmReport.child_report && Array.isArray(llmReport.child_report.comm_tips) && llmReport.child_report.comm_tips.length>0)
     ? llmReport.child_report.comm_tips : commTips;
   if(tips.length>0){
-    text+='\n💬 沟通技巧（精选）：\n';
+    text+='\n[沟通技巧]：\n';
     text+='「'+tips[0]+'」\n';
   }
 
@@ -2687,7 +3097,7 @@ async function generateShareImage(){
   }
   const btn=document.getElementById('shareCopied');
   if(btn){
-    btn.textContent='⏳ 正在生成分享图片...';
+    btn.textContent='正在生成分享图片...';
     btn.classList.add('show');
   }
 
@@ -2695,8 +3105,8 @@ async function generateShareImage(){
   if(typeof html2canvas==='undefined'){
     console.error('html2canvas not loaded');
     if(btn){
-      btn.textContent='❌ 图片库未加载，正在使用文字分享...';
-      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},2000);
+      btn.textContent='图片库未加载，正在使用文字分享...';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='<span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span>';},2000);
     }
     copyReportText();
     return;
@@ -2708,7 +3118,7 @@ async function generateShareImage(){
     wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:375px;background:#f6f7f4;padding:24px 20px;font-size:14px;line-height:1.65;color:#2c2c2c;z-index:-1;';
     const dateStr=new Date().toLocaleDateString('zh-CN');
     wrapper.innerHTML=`<div style="text-align:center;margin-bottom:16px;">
-      <div style="font-size:20px;font-weight:700;color:#5a7d3a;margin-bottom:4px;">🏠 安心住 · 居家安全报告</div>
+      <div style="font-size:20px;font-weight:700;color:#5a7d3a;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5a7d3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>安心住 · 居家安全报告</div>
       <div style="font-size:12px;color:#888;">${dateStr}</div>
     </div>`+renderChildReport()+renderParentReport()+`<div style="margin-top:20px;padding:12px;background:#eef3e6;border-radius:10px;font-size:12px;color:#5a7d3a;text-align:center;">用「安心住」AI 自查家中老人安全隐患</div>`;
     document.body.appendChild(wrapper);
@@ -2737,8 +3147,8 @@ async function generateShareImage(){
         files:[file]
       });
       if(btn){
-        btn.textContent='✅ 已唤起系统分享，选择微信即可发送';
-        setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+        btn.textContent='已唤起系统分享，选择微信即可发送';
+        setTimeout(()=>{btn.classList.remove('show');btn.textContent='<span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span>';},3000);
       }
       return;
     }
@@ -2747,15 +3157,15 @@ async function generateShareImage(){
     const url=URL.createObjectURL(blob);
     showShareImagePreview(url);
     if(btn){
-      btn.textContent='✅ 分享图已生成，长按图片保存后发送到微信';
-      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},4000);
+      btn.textContent='分享图已生成，长按图片保存后发送到微信';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='<span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span>';},4000);
     }
   }catch(e){
     console.error('Share image failed:',e);
     // Fallback to text copy if image generation fails
     if(btn){
-      btn.textContent='❌ 图片生成失败，已切换为文字分享';
-      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+      btn.textContent='图片生成失败，已切换为文字分享';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='<span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span>';},3000);
     }
     copyReportText();
   }
@@ -2798,7 +3208,7 @@ async function exportReportPDF(){
 
   const btn=document.getElementById('shareCopied');
   if(btn){
-    btn.textContent='⏳ 正在生成 PDF，请稍候...';
+    btn.textContent='正在生成 PDF，请稍候...';
     btn.classList.add('show');
   }
   try{
@@ -2844,19 +3254,22 @@ async function exportReportPDF(){
     const dateStr=new Date().toLocaleDateString('zh-CN');
     pdf.save(`安心住安全报告_${dateStr}.pdf`);
     if(btn){
-      btn.textContent='✅ PDF 已保存，可到微信中发送文件';
-      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+      btn.textContent='PDF 已保存，可到微信中发送文件';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='<span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span>';},3000);
     }
   }catch(e){
     console.error('PDF export failed:',e);
     if(btn){
-      btn.textContent='❌ PDF 生成失败：'+e.message;
-      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
+      btn.textContent='PDF 生成失败：'+e.message;
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='<span style="display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已复制到剪贴板，去微信粘贴吧</span>';},3000);
     }
   }
 }
 
 function restart(){
+  isDemoMode=false;
+  const badge=document.getElementById('demoBadge');
+  if(badge) badge.classList.remove('show');
   uploadedPhotos=[];
   analysisResults=[];
   llmReport=null;
@@ -2886,7 +3299,7 @@ function renderChildReport(){
   const plans=dynamicBudgetPlans||budgetPlans;
   const plan=plans[selectedBudget];
 
-  let score=100-high.length*15-medium.length*8-low.length*3;
+  let score=100-high.length*8-medium.length*4-low.length*2;
   score=Math.max(0,Math.min(100,score));
 
   // Highlight 「话术」 in text
@@ -2896,6 +3309,15 @@ function renderChildReport(){
 
   return `
   <div class="report-child active">
+    <!-- Professional Header -->
+    <div class="report-child-header">
+      <div class="report-child-header-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>安心住 · 居家安全评估报告</div>
+      <div class="report-child-header-meta">
+        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${new Date().toLocaleDateString('zh-CN')}</span>
+        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>夜间起夜路线</span>
+        <span>安全评分 ${score}/100</span>
+      </div>
+    </div>
     <!-- Overview -->
     <div class="report-overview">
       <div class="report-overview-row">
@@ -2926,24 +3348,24 @@ function renderChildReport(){
 
     <!-- Risk Details -->
     <div class="report-section">
-      <div class="report-section-title">📋 详细风险清单</div>
-      ${allRisks.length===0?'<div class="no-risk-note">✅ 未检测到明显安全隐患</div>':''}
-      ${allRisks.map(r=>`
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>详细风险清单</div>
+      ${allRisks.length===0?'<div class="no-risk-note" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>未检测到明显安全隐患</div>':''}
+      ${allRisks.map((r,i)=>`
         <div class="risk-detail-card ${r.severity}">
-          <div class="risk-detail-title">${r.number!==null?'['+r.number+'] ':''}${r.title}</div>
+          <div class="risk-detail-title">[${i+1}] ${r.title}</div>
           <div class="risk-detail-meta">
             风险等级：${{high:'高风险',medium:'中风险',low:'低风险'}[r.severity]}
-            ${r.cost>0?' · 预估费用：'+r.cost+'元':' · 无需费用'}
+            ${extractCostRange(r.suggestion, r.cost)}
           </div>
           <div class="risk-detail-desc">${r.desc}</div>
-          <div class="risk-detail-fix">💡 ${r.suggestion}</div>
+          <div class="risk-detail-fix" style="display:flex;align-items:flex-start;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg><span>${stripCost(r.suggestion)}</span></div>
         </div>
       `).join('')}
     </div>
 
     <!-- Communication Guide -->
     <div class="report-section">
-      <div class="report-section-title">💬 与父母沟通指南${llmReport?' · AI 个性化':''}</div>
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>与父母沟通指南${llmReport?' · AI 个性化':''}</div>
       <div class="comm-block">
         <div class="comm-block-title">沟通技巧</div>
         ${(llmReport && llmReport.child_report && Array.isArray(llmReport.child_report.comm_tips) && llmReport.child_report.comm_tips.length>0
@@ -2974,7 +3396,7 @@ function renderChildReport(){
 
     <!-- Action Plan -->
     <div class="report-section">
-      <div class="report-section-title">🔨 改造行动计划</div>
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15L22 10.64"/></svg>改造行动计划</div>
       ${high.length>0?`
         <div class="action-priority">
           <span class="action-priority-label p1">优先级1 · 立即处理</span>
@@ -2995,13 +3417,13 @@ function renderChildReport(){
     <!-- Budget Detail -->
     ${plan?`
     <div class="report-section">
-      <div class="report-section-title">🛒 改造清单（${plan.name}）</div>
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>改造清单（${plan.name}）</div>
       <div class="comm-block">
         <div class="comm-block-title">${plan.priceRange} · ${plan.desc}</div>
         ${plan.freeItems&&plan.freeItems.length>0?`
         <div class="budget-section-label budget-free-label">免费 · 自己动手</div>
         <ul class="budget-free-list">
-          ${plan.freeItems.map(item=>`<li>${item}</li>`).join('')}
+          ${plan.freeItems.map(item=>`<li><span class="budget-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${item}</li>`).join('')}
         </ul>`:''}
         ${plan.paidItems&&plan.paidItems.length>0?`
         <div class="budget-section-label budget-paid-label">花钱 · 需购买</div>
@@ -3028,9 +3450,17 @@ function renderParentReport(){
 
   return `
   <div class="report-parent active">
+    <!-- Warm Greeting -->
+    <div class="parent-warm-msg">
+      <div class="parent-warm-msg-greeting">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        给爸妈的话
+      </div>
+      <div class="parent-warm-msg-text">我们用AI帮您看了看家里起夜路上的几个地方，发现了几个小问题，稍微收拾一下就更安全了。<br>不是什么大事，您别担心，我们来安排。</div>
+    </div>
     <!-- Overview -->
     <div class="report-section">
-      <div class="report-section-title">📋 您的安全检查报告</div>
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>您的安全检查报告</div>
       <div class="report-overview">
         <div class="report-overview-row">
           <span class="report-overview-label">检查了几个地方</span>
@@ -3049,20 +3479,21 @@ function renderParentReport(){
 
     <!-- Risk Cards (Parent Version) -->
     <div class="report-section">
-      <div class="report-section-title">⚠️ 需要注意的地方</div>
-      ${allRisks.length===0?'<div class="no-risk-note" style="font-size:18px">✅ 没有发现明显问题，您的家很安全！</div>':''}
-      ${allRisks.map(r=>{
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>需要注意的地方</div>
+      ${allRisks.length===0?'<div class="no-risk-note" style="font-size:18px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>没有发现明显问题，您的家很安全！</div>':''}
+      ${allRisks.map((r,i)=>{
         return `
-        <div class="parent-risk-card">
-          <div class="parent-risk-icon">${pickRiskIcon(r.title)}</div>
+        <div class="parent-risk-card ${r.severity}">
+          <div class="parent-risk-num">${i+1}</div>
+          <div class="parent-risk-icon ${r.severity}">${pickRiskIcon(r.title)}</div>
           <div class="parent-risk-title">${r.title}</div>
           <div class="parent-risk-what"><strong>这是什么问题：</strong>${r.desc}</div>
           <div class="parent-risk-fix">
-            <div class="parent-risk-fix-title">✅ 怎么改善：</div>
-            ${r.suggestion}
+            <div class="parent-risk-fix-title" style="display:flex;align-items:center;gap:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>怎么改善：</div>
+            ${stripCost(r.suggestion)}
           </div>
           ${r.severity==='high'?`
-          <div class="parent-ask-child">这个比较要紧，让孩子帮您尽快处理一下。</div>`:''}
+          <div class="parent-ask-child" style="display:flex;align-items:flex-start;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5,0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>这个比较要紧，让孩子帮您尽快处理一下。</span></div>`:''}
         </div>`;
       }).join('')}
     </div>
@@ -3070,7 +3501,7 @@ function renderParentReport(){
     <!-- Shopping List -->
     ${plan?`
     <div class="report-section">
-      <div class="report-section-title">🛒 要买的东西</div>
+      <div class="report-section-title" style="display:flex;align-items:center;gap:6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>要买的东西</div>
       <div class="parent-risk-card">
         <div class="parent-risk-what"><strong>${plan.name}</strong> · ${plan.priceRange}</div>
         <div class="parent-risk-what" style="margin-top:8px">${plan.desc}</div>
@@ -3079,7 +3510,7 @@ function renderParentReport(){
           ${plan.freeItems&&plan.freeItems.length>0?`<div style="font-size:12px;color:#2e7d32;margin-bottom:4px">免费（自己动手）：</div>${plan.freeItems.map(item=>`• ${item}<br>`).join('')}`:''}
           ${plan.paidItems&&plan.paidItems.length>0?`<div style="font-size:12px;color:#e65100;margin-top:8px;margin-bottom:4px">需要买的：</div>${plan.paidItems.map(item=>`• ${item.name}（${item.cost}）— ${item.reason}<br>`).join('')}`:''}
         </div>
-        <div class="parent-ask-child">${(llmReport && llmReport.parent_report && llmReport.parent_report.shopping_note)?llmReport.parent_report.shopping_note:'让孩子帮您在网上买好，或者周末一起出去选购。'}</div>
+        <div class="parent-ask-child" style="display:flex;align-items:flex-start;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>${(llmReport && llmReport.parent_report && llmReport.parent_report.shopping_note)?llmReport.parent_report.shopping_note:'让孩子帮您在网上买好，或者周末一起出去选购。'}</span></div>
       </div>
     </div>`:''}
 
@@ -3091,14 +3522,14 @@ function renderParentReport(){
             ? llmReport.parent_report.encouragement.replace(/\n/g,'<br>')
             : '做了这些改善，<br>您晚上起夜就更安心了。<br><br>安全无小事，<br>预防胜于治疗。'}
           <br><br>
-          <span style="font-size:24px">❤️</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--danger)" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </div>
       </div>
     </div>
 
     <!-- Emergency -->
     <div class="parent-emergency">
-      <div class="parent-emergency-title">🚨 紧急情况请联系</div>
+      <div class="parent-emergency-title" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>紧急情况请联系</div>
       <div class="parent-emergency-num">120</div>
       <div style="font-size:15px;color:var(--muted);margin-top:4px">急救电话 · 24小时</div>
     </div>
@@ -3113,6 +3544,353 @@ const budgetObserver=new MutationObserver(()=>{
 });
 budgetObserver.observe(document.getElementById('screen-budget'),{attributes:true,attributeFilter:['class']});
 
+// ===== One-Click Demo Mode =====
+// Generate a simple placeholder room scene using canvas
+function generateDemoScene(area, w, h){
+  const canvas=document.createElement('canvas');
+  canvas.width=w; canvas.height=h;
+  const ctx=canvas.getContext('2d');
+
+  // Helper: draw rounded rect
+  function roundRect(x,y,w,h,r,fill,stroke){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.lineTo(x+w-r,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill();}
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}
+  }
+
+  // === Base scene: warm interior ===
+  // Wall
+  ctx.fillStyle='#f0e6d8';
+  ctx.fillRect(0,0,w,h*0.65);
+  // Floor (wood-like)
+  ctx.fillStyle='#c9a87c';
+  ctx.fillRect(0,h*0.65,w,h*0.35);
+  // Floor planks
+  ctx.strokeStyle='#b8956a';
+  ctx.lineWidth=1;
+  for(let i=0;i<8;i++){
+    ctx.beginPath();
+    ctx.moveTo(0,h*0.65+i*h*0.045);
+    ctx.lineTo(w,h*0.65+i*h*0.045);
+    ctx.stroke();
+  }
+  // Baseboard
+  ctx.fillStyle='#a08060';
+  ctx.fillRect(0,h*0.63,w,8);
+  // Wall-floor line
+  ctx.strokeStyle='#8b7050';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(0,h*0.65);ctx.lineTo(w,h*0.65);
+  ctx.stroke();
+
+  if(area==='bedside'){
+    // === BEDSIDE SCENE ===
+    // Bed (mattress + blanket)
+    ctx.fillStyle='#d4c5b0';
+    roundRect(w*0.12,h*0.30,w*0.55,h*0.42,8,'#e8ddd0','#c0b0a0');
+    // Blanket
+    ctx.fillStyle='#7a9e7a';
+    roundRect(w*0.12,h*0.34,w*0.55,h*0.25,4,'#7a9e7a',null);
+    // Pillow
+    ctx.fillStyle='#ffffff';
+    roundRect(w*0.15,h*0.30,w*0.22,h*0.10,6,'#ffffff','#ddd');
+    // Headboard
+    ctx.fillStyle='#8b7355';
+    roundRect(w*0.10,h*0.20,w*0.60,h*0.12,4,'#8b7355','#6b5340');
+    // Nightstand (right side of bed)
+    ctx.fillStyle='#9b8b75';
+    roundRect(w*0.72,h*0.42,w*0.16,h*0.28,4,'#9b8b75','#7a6b58');
+    ctx.fillStyle='#8b7b65';
+    ctx.fillRect(w*0.72,h*0.52,w*0.16,2);
+    // Slippers scattered on floor (TRIP HAZARD)
+    ctx.fillStyle='#8b5e3c';
+    roundRect(w*0.18,h*0.78,w*0.13,h*0.06,4,'#a0522d','#8b4513');
+    roundRect(w*0.38,h*0.82,w*0.10,h*0.05,3,'#cd853f','#a0522d');
+    // No lamp on nightstand (empty surface, dark corner)
+    // Dark corner shadow (NO LIGHT)
+    ctx.fillStyle='rgba(0,0,0,0.18)';
+    ctx.beginPath();
+    ctx.moveTo(0,h*0.45);ctx.lineTo(w*0.12,h*0.45);
+    ctx.lineTo(w*0.12,h);ctx.lineTo(0,h);
+    ctx.fill();
+    // Sharp corner of nightstand (SHARP EDGE) - highlighted by angle
+    ctx.strokeStyle='#d4c5b0';
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(w*0.72,h*0.42);
+    ctx.lineTo(w*0.72-3,h*0.42-3);
+    ctx.stroke();
+  }else if(area==='hallway'){
+    // === HALLWAY SCENE ===
+    // Perspective walls (converging effect)
+    ctx.fillStyle='#e8dcc8';
+    // Left wall shadow
+    ctx.fillStyle='#ddd0c0';
+    ctx.beginPath();
+    ctx.moveTo(0,0);ctx.lineTo(w*0.15,0);
+    ctx.lineTo(w*0.25,h);ctx.lineTo(0,h);
+    ctx.fill();
+    // Right wall shadow
+    ctx.fillStyle='#ddd0c0';
+    ctx.beginPath();
+    ctx.moveTo(w,0);ctx.lineTo(w*0.85,0);
+    ctx.lineTo(w*0.75,h);ctx.lineTo(w,h);
+    ctx.fill();
+    // Cardboard box on floor (TRIP HAZARD)
+    ctx.fillStyle='#b8860b';
+    roundRect(w*0.28,h*0.73,w*0.14,h*0.10,2,'#c4941a','#a07810');
+    ctx.strokeStyle='#8b6914';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.moveTo(w*0.28,h*0.78);ctx.lineTo(w*0.42,h*0.78);
+    ctx.moveTo(w*0.35,h*0.73);ctx.lineTo(w*0.35,h*0.83);
+    ctx.stroke();
+    // Electrical cord snaking across floor
+    ctx.strokeStyle='#2c2c2c';
+    ctx.lineWidth=2.5;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(w*0.05,h*0.70);
+    ctx.quadraticCurveTo(w*0.20,h*0.88,w*0.45,h*0.80);
+    ctx.quadraticCurveTo(w*0.65,h*0.72,w*0.95,h*0.88);
+    ctx.stroke();
+    // Small stool/furniture edge protruding (BUMP HAZARD)
+    ctx.fillStyle='#7a6b58';
+    roundRect(w*0.65,h*0.66,w*0.12,h*0.08,3,'#8b7b65','#6a5b48');
+    // Dark end of hallway (POOR LIGHTING)
+    const darkGrad=ctx.createLinearGradient(w*0.3,0,w*0.7,0);
+    darkGrad.addColorStop(0,'rgba(0,0,0,0)');
+    darkGrad.addColorStop(0.5,'rgba(0,0,0,0.15)');
+    darkGrad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=darkGrad;
+    ctx.fillRect(w*0.2,0,w*0.6,h);
+    // Floor threshold/step (HEIGHT DIFFERENCE)
+    ctx.fillStyle='#a08060';
+    ctx.fillRect(w*0.45,h*0.64,w*0.18,6);
+    ctx.fillStyle='#8b7050';
+    ctx.fillRect(w*0.45,h*0.64,w*0.18,2);
+  }else if(area==='bathroom'){
+    // === BATHROOM ENTRANCE SCENE ===
+    // Door frame
+    ctx.fillStyle='#7a6b58';
+    ctx.fillRect(w*0.22,0,w*0.06,h*0.92);
+    ctx.fillRect(w*0.72,0,w*0.06,h*0.92);
+    ctx.fillRect(w*0.22,0,w*0.56,h*0.06);
+    // Door (slightly open)
+    ctx.fillStyle='#e0d5c5';
+    ctx.fillRect(w*0.28,h*0.06,w*0.44,h*0.86);
+    ctx.strokeStyle='#c0b0a0';
+    ctx.lineWidth=1;
+    ctx.strokeRect(w*0.28,h*0.06,w*0.44,h*0.86);
+    // Door handle
+    ctx.fillStyle='#b8860b';
+    ctx.beginPath();
+    ctx.arc(w*0.66,h*0.48,5,0,Math.PI*2);
+    ctx.fill();
+    // Bathroom floor (tiles - lighter color)
+    ctx.fillStyle='#d8d0c8';
+    ctx.fillRect(w*0.28,h*0.65,w*0.44,h*0.35);
+    // Tile grid
+    ctx.strokeStyle='#c8c0b8';
+    ctx.lineWidth=0.8;
+    for(let r=0;r<4;r++){
+      ctx.beginPath();
+      ctx.moveTo(w*0.28,h*0.65+r*h*0.09);
+      ctx.lineTo(w*0.72,h*0.65+r*h*0.09);
+      ctx.stroke();
+    }
+    for(let c=0;c<5;c++){
+      ctx.beginPath();
+      ctx.moveTo(w*0.28+c*w*0.09,h*0.65);
+      ctx.lineTo(w*0.28+c*w*0.09,h);
+      ctx.stroke();
+    }
+    // High threshold (TRIP HAZARD) - prominent step
+    ctx.fillStyle='#8b7355';
+    ctx.fillRect(w*0.22,h*0.63,w*0.56,h*0.04);
+    ctx.fillStyle='#6b5340';
+    ctx.fillRect(w*0.22,h*0.63,w*0.56,3);
+    // Wet floor (glossy reflection) (SLIP HAZARD)
+    ctx.fillStyle='rgba(100,149,237,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(w*0.50,h*0.82,w*0.18,h*0.08,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle='rgba(135,180,255,0.2)';
+    ctx.beginPath();
+    ctx.ellipse(w*0.45,h*0.88,w*0.10,h*0.04,0.2,0,Math.PI*2);
+    ctx.fill();
+    // Slippers at doorway (CLUTTER)
+    ctx.fillStyle='#4682b4';
+    roundRect(w*0.10,h*0.78,w*0.10,h*0.05,3,'#5b9bd5','#4178b0');
+    roundRect(w*0.14,h*0.86,w*0.08,h*0.04,3,'#4a8bc2','#3a6b97');
+    // Small basin/bucket
+    ctx.fillStyle='#d2691e';
+    ctx.beginPath();
+    ctx.ellipse(w*0.20,h*0.90,w*0.06,h*0.03,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle='#a0522d';
+    ctx.fillRect(w*0.14,h*0.87,w*0.12,h*0.03);
+  }
+
+  // === Nighttime vignette ===
+  const grad=ctx.createRadialGradient(w*0.4,h*0.4,w*0.15,w*0.5,h*0.5,w*0.75);
+  grad.addColorStop(0,'rgba(0,0,0,0)');
+  grad.addColorStop(1,'rgba(0,0,0,0.35)');
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,w,h);
+
+  // Watermark (so judges know it's a demo illustration)
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='12px sans-serif';
+  ctx.fillText('示意图片',w-70,h-10);
+
+  return canvas.toDataURL('image/jpeg',0.85);
+}
+
+function startDemo(){
+  // Set demo mode flag
+  isDemoMode=true;
+  const badge=document.getElementById('demoBadge');
+  if(badge) badge.classList.add('show');
+  // Reset state
+  uploadedPhotos=[];
+  analysisResults=[];
+  surveyAnswers={};
+  selectedBudget=null;
+  dynamicBudgetPlans=null;
+  llmReport=null;
+  historyStack=[]; // reset navigation history
+  currentScreen='screen-welcome';
+
+  // Show loading screen with simulated AI analysis steps
+  goTo('screen-analyze');
+  // Hide questions section for demo mode
+  const aq=document.getElementById('analyzeQuestions');
+  if(aq) aq.style.display='none';
+  const sw=document.getElementById('skipAnalysisWrap');
+  if(sw) sw.style.display='none';
+  renderAnalyzeThumbs();
+  // Show animated steps
+  const stepList=document.getElementById('analyzeStepList');
+  if(stepList) stepList.remove();
+  const stepsHTML=`<div class="analyze-step-list" id="analyzeStepList">
+    <div class="analyze-step active" data-step="1"><div class="analyze-step-dot">1</div>准备示例照片</div>
+    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>AI视觉模型分析</div>
+    <div class="analyze-step" data-step="3"><div class="analyze-step-dot">3</div>综合问卷调整评级</div>
+    <div class="analyze-step" data-step="4"><div class="analyze-step-dot">4</div>生成改造建议</div>
+  </div>`;
+  document.getElementById('analyzeThumbs').insertAdjacentHTML('afterend', stepsHTML);
+  updateProgress(5,'正在准备示例照片','生成3张夜间起夜路线示意图片...');
+
+  setTimeout(()=>{
+    // Set demo survey answers (a realistic elderly profile - moderate risk)
+    surveyAnswers['q1_sleep']='together';
+    surveyAnswers['q2_nearfall']='no';
+    surveyAnswers['q3_awake']='sometimes';
+    surveyAnswers['q4_light']='sometimes';
+    surveyAnswers['q5_urgent']='sometimes';
+    surveyAnswers['q6_slippers']='ready';
+    surveyAnswers['q7_unstable']='no';
+    surveyAnswers['q8_resistance']='little';
+
+    updateProgress(25,'AI视觉模型分析中','识别床边区域的物体和隐患...');
+  // Update step indicator
+  setTimeout(()=>{
+    document.querySelectorAll('.analyze-step').forEach((s,i)=>{s.classList.remove('active','done'); if(i<1)s.classList.add('done'); if(i===1)s.classList.add('active')});
+  },50);
+  },300);
+
+  setTimeout(()=>{
+    // Generate 3 demo photos
+    const w=800, h=600;
+    const areas=['bedside','hallway','bathroom'];
+    areas.forEach(area=>{
+      const dataUrl=generateDemoScene(area,w,h);
+      uploadedPhotos.push({area,dataUrl,naturalWidth:w,naturalHeight:h});
+    });
+    updateProgress(50,'AI视觉模型分析中','识别行走通道和卫生间入口...');
+  },700);
+
+  setTimeout(()=>{
+    updateProgress(70,'综合问卷信息','结合8项行为习惯调整风险评级...');
+  document.querySelectorAll('.analyze-step').forEach((s,i)=>{s.classList.remove('active','done'); if(i<2)s.classList.add('done'); if(i===2)s.classList.add('active')});
+  },1200);
+
+  setTimeout(()=>{
+    // Generate analysis results from fallback data WITH smart bbox annotations
+    analysisResults=uploadedPhotos.map(photo=>{
+      const fb=getFallbackAnalysis(photo, photo.naturalWidth, photo.naturalHeight);
+      // Add smart bbox positions for demo visualization AND normalize field names
+      const totalRisks=fb.risks.length;
+      fb.risks=fb.risks.map((rk,idx)=>{
+        const smartPos=getSmartPosition(rk.title, idx, totalRisks);
+        const cx=smartPos.x*photo.naturalWidth;
+        const cy=smartPos.y*photo.naturalHeight;
+        const bw=Math.max(80, smartPos.sz*photo.naturalWidth);
+        const bh=Math.max(80, smartPos.sz*photo.naturalHeight);
+        return {
+          number:null,
+          severity:rk.severity,
+          bbox:[Math.max(0,cx-bw/2), Math.max(0,cy-bh/2), bw, bh],
+          title:rk.title,
+          desc:rk.description||'',
+          suggestion:rk.suggestion||'',
+          cost:rk.cost||0,
+          needsVerification:false, // demo mode: skip verification for smooth flow
+          verificationQuestion:rk.verification_question||'',
+          verificationType:rk.verification_type||'confirm',
+          verified:null
+        };
+      });
+      return {
+        photo:photo,
+        risks:fb.risks,
+        objects_detected:fb.objects_detected,
+        summary:fb.summary,
+        imgW:photo.naturalWidth,
+        imgH:photo.naturalHeight
+      };
+    });
+
+    // Apply survey adjustments
+    applySurveyAdjustments();
+    updateProgress(85,'生成改造建议和预算方案','整理高/中/低风险项...');
+  document.querySelectorAll('.analyze-step').forEach((s,i)=>{s.classList.remove('active','done'); if(i<3)s.classList.add('done'); if(i===3)s.classList.add('active')});
+  },1600);
+
+  setTimeout(()=>{
+    // Use fallback report (demo mode)
+    const hazardsData=analysisResults.map(r=>({
+      area:getAreaName(r.photo.area),
+      hazards:r.risks.filter(rk=>rk.verified!==false).map(rk=>({
+        title:rk.title,
+        description:rk.desc,
+        severity:rk.severity,
+        suggestion:rk.suggestion
+      }))
+    }));
+    llmReport=getFallbackReport(hazardsData);
+
+    updateProgress(100,'分析完成','正在生成报告...');
+  document.querySelectorAll('.analyze-step').forEach(s=>{s.classList.remove('active');s.classList.add('done')});
+  },2000);
+
+  setTimeout(()=>{
+    goTo('screen-results');
+    renderResults();
+  },2400);
+}
 </script>
     </div>
   </div>
