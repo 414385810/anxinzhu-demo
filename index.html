@@ -218,6 +218,15 @@ button{touch-action:manipulation;cursor:pointer}
 .risk-sev-tag.low{background:var(--soft);color:var(--accent2)}
 .risk-desc{font-size:13px;color:var(--muted);line-height:1.6}
 .risk-suggestion{margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--ink);line-height:1.5;border-left:3px solid var(--accent2)}
+.risk-survey-impact{margin-top:6px;padding:6px 10px;background:#fff3cd;border-radius:6px;font-size:11px;color:#856404;line-height:1.5;border-left:3px solid #ffc107}
+.risk-survey-context{margin-top:6px;padding:6px 10px;background:#e8f4fd;border-radius:6px;font-size:11px;color:#0c5460;line-height:1.5;border-left:3px solid #17a2b8}
+.survey-sum-card{margin:0 0 16px;padding:14px 16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border)}
+.survey-sum-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.survey-sum-list{display:flex;flex-direction:column;gap:6px}
+.survey-sum-item{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.4}
+.survey-sum-icon{flex-shrink:0;font-size:14px}
+.survey-sum-q{color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.survey-sum-a{color:var(--ink);font-weight:500;flex-shrink:0;max-width:40%;text-align:right}
 
 .summary-section{margin:20px 24px;padding:24px;background:var(--bg2);border-radius:var(--radius);box-shadow:var(--shadow);text-align:center}
 .summary-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:16px}
@@ -555,6 +564,7 @@ button{touch-action:manipulation;cursor:pointer}
       <div class="results-h-title">隐患分析报告</div>
       <div class="results-h-desc">AI在您的照片中检测到以下安全隐患，结合问卷信息综合分析</div>
     </div>
+    <div id="surveySummaryCard"></div>
     <div id="photoResults"></div>
     <div id="summarySection"></div>
   </div>
@@ -610,13 +620,13 @@ button{touch-action:manipulation;cursor:pointer}
 <div class="share-modal" id="shareModal" onclick="if(event.target===this)closeShareModal()">
   <div class="share-modal-content">
     <div class="share-modal-title">分享安全报告</div>
-    <div class="share-modal-desc">把报告发给家人，一起商量怎么改。可以直接分享到微信，或复制文字粘贴。</div>
+    <div class="share-modal-desc">把报告发给家人，一起商量怎么改。</div>
     <div class="share-options">
-      <button class="share-option" onclick="shareViaWebAPI()">
-        <span class="share-option-icon">💬</span>
+      <button class="share-option" onclick="generateShareImage()">
+        <span class="share-option-icon">🖼️</span>
         <div>
-          <div>直接分享</div>
-          <div style="font-size:12px;color:var(--muted)">通过微信、短信等发送</div>
+          <div>保存为长图</div>
+          <div style="font-size:12px;color:var(--muted)">长按图片保存，发微信/朋友圈</div>
         </div>
       </button>
       <button class="share-option" onclick="copyReportText()">
@@ -624,13 +634,6 @@ button{touch-action:manipulation;cursor:pointer}
         <div>
           <div>复制报告文字</div>
           <div style="font-size:12px;color:var(--muted)">粘贴到任何地方</div>
-        </div>
-      </button>
-      <button class="share-option" onclick="generateShareImage()">
-        <span class="share-option-icon">🖼️</span>
-        <div>
-          <div>生成分享图</div>
-          <div style="font-size:12px;color:var(--muted)">生成图片发微信/朋友圈</div>
         </div>
       </button>
     </div>
@@ -662,7 +665,7 @@ let surveyAnswers = {}; // key: questionId -> option value
 // ===== Survey Questions (photo-invisible but report-critical) =====
 const surveyQuestions=[
   {
-    id:'q1_sleep', order:1, stage:'scene',
+    id:'q1_sleep', order:1, stage:'scene', shortLabel:'睡眠情况',
     text:'老人夜里通常是自己睡，还是和老伴一起睡？',
     options:[
       {value:'alone', label:'自己睡', riskBoost:1.2},
@@ -671,7 +674,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q2_nearfall', order:2, stage:'highrisk',
+    id:'q2_nearfall', order:2, stage:'highrisk', shortLabel:'近3月差点摔倒',
     text:'最近 3 个月，老人有没有“差点摔倒”但没太当回事？',
     options:[
       {value:'yes', label:'有过', riskBoost:1.3, severityShift:'up'},
@@ -680,7 +683,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q3_awake', order:3, stage:'behavior',
+    id:'q3_awake', order:3, stage:'behavior', shortLabel:'起夜状态',
     text:'老人夜里起床后，是清醒了再走，还是半睡半醒就走？',
     options:[
       {value:'groggy', label:'半睡半醒就走', riskBoost:1.3, severityShift:'up'},
@@ -689,7 +692,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q4_light', order:4, stage:'behavior',
+    id:'q4_light', order:4, stage:'behavior', shortLabel:'起夜是否开灯',
     text:'老人是不是因为怕麻烦、怕吵醒别人或省电，经常不开灯？',
     options:[
       {value:'often', label:'经常不开灯', riskBoost:1.4, severityShift:'up'},
@@ -698,7 +701,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q5_urgent', order:5, stage:'behavior',
+    id:'q5_urgent', order:5, stage:'behavior', shortLabel:'起夜是否着急',
     text:'老人夜里去卫生间时，会不会憋不住、赶着走？',
     options:[
       {value:'yes', label:'会，比较急', riskBoost:1.3, severityShift:'up'},
@@ -707,7 +710,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q6_slippers', order:6, stage:'behavior',
+    id:'q6_slippers', order:6, stage:'behavior', shortLabel:'起床穿鞋',
     text:'老人起床第一步，通常是直接踩拖鞋，还是要找拖鞋？',
     options:[
       {value:'find', label:'要找/找不到', riskBoost:1.2},
@@ -716,7 +719,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q7_unstable', order:7, stage:'behavior',
+    id:'q7_unstable', order:7, stage:'behavior', shortLabel:'起身扶什么',
     text:'老人夜里走路时，是不是会扶一些不太稳定的东西？',
     options:[
       {value:'yes', label:'会扶椅子/柜子等', riskBoost:1.3, severityShift:'up'},
@@ -725,7 +728,7 @@ const surveyQuestions=[
     ]
   },
   {
-    id:'q8_resistance', order:8, stage:'resistance',
+    id:'q8_resistance', order:8, stage:'resistance', shortLabel:'改造意愿',
     text:'家里人以前有没有劝过老人调整，但老人不愿意？',
     options:[
       {value:'yes', label:'劝过，不听', tone:'soft'},
@@ -776,7 +779,7 @@ let dynamicBudgetPlans = null;
 function generateDynamicBudgetPlans(){
   const allRisks = analysisResults.flatMap(r => {
     const areaName = getAreaName(r.photo.area);
-    return r.risks.filter(risk => risk.verified !== false) // exclude dismissed risks
+    return r.risks.filter(risk => risk.verified !== false)
       .map(risk => ({ ...risk, areaName: areaName }));
   });
 
@@ -784,47 +787,131 @@ function generateDynamicBudgetPlans(){
 
   const highRisks = allRisks.filter(r => r.severity === 'high');
   const mediumRisks = allRisks.filter(r => r.severity === 'medium');
-  const lowRisks = allRisks.filter(r => r.severity === 'low');
 
-  // Split risks into free (cost=0 or labor-only) and paid
+  // Split risks into free (truly no cost) and paid (need to buy something)
+  // Each risk goes to EXACTLY one category - never both
   function splitItems(risks){
     const free=[];
     const paid=[];
+    const seenTitles=new Set(); // dedup by title
     risks.forEach(r=>{
+      // Skip duplicates by title
+      const titleKey=String(r.title||'').trim();
+      if(seenTitles.has(titleKey)) return;
+      seenTitles.add(titleKey);
+
       const areaTag=r.areaName?`[${r.areaName}] `:'';
       const suggestion=String(r.suggestion||'');
       const title=String(r.title||'');
-      const combined=(title+suggestion).toLowerCase();
-      // Labor-only actions don't need money: 清理, 整理, 收拾, 移动, 归置, 移除, 调整, 保持, 避免, 注意, 检查, 测量, 固定
-      const laborOnlyKeywords=['清理','整理','收拾','移动','归置','移除','调整','摆放','保持','避免','注意','检查','测量','固定','扎紧','归位','收起','挪开','移开','清空','减少','规范'];
+      const combined=(title+suggestion);
+
+      // Extract all price mentions from suggestion
+      const priceMatches=[...suggestion.matchAll(/(\d+)\s*[-—~至]\s*(\d+)\s*元/g)];
+      const singlePrices=[...suggestion.matchAll(/约\s*(\d+)\s*元/g)];
+      
+      // Determine actual cost: use AI's cost field, or extract from suggestion
+      let actualCost=r.cost||0;
+      if(actualCost===0 && priceMatches.length>0){
+        actualCost=parseInt(priceMatches[0][1]);
+      }else if(actualCost===0 && singlePrices.length>0){
+        actualCost=parseInt(singlePrices[0][1]);
+      }
+
+      // Labor-only actions: truly free, no buying needed
+      // BUT only if there's no price mentioned in the suggestion
+      const laborOnlyKeywords=['清理','整理','收拾','移动','归置','移除','调整','摆放','保持','避免','注意','检查','测量','扎紧','归位','收起','挪开','移开','清空','减少','规范'];
       const isLaborOnly=laborOnlyKeywords.some(k=>combined.includes(k));
-      // Also free if AI explicitly set cost to 0
-      const isFree=!(r.cost>0) || isLaborOnly;
-      if(!isFree){
+      const hasPriceMention=priceMatches.length>0 || singlePrices.length>0 || actualCost>0;
+      
+      if(hasPriceMention && actualCost>0){
+        // This item needs buying something - it's a paid item
+        let costStr;
+        let costMinVal, costMaxVal;
+        if(priceMatches.length>0){
+          costStr=`约${priceMatches[0][1]}-${priceMatches[0][2]}元`;
+          costMinVal=parseInt(priceMatches[0][1]);
+          costMaxVal=parseInt(priceMatches[0][2]);
+        }else{
+          costStr=`约${actualCost}元`;
+          costMinVal=actualCost;
+          costMaxVal=actualCost;
+        }
+        // Strip price info from the reason text to avoid confusion
+        const cleanSuggestion=suggestion.replace(/约?\d+\s*[-—~至]?\s*\d*\s*元/g,'').replace(/预估费用?/g,'').trim();
         paid.push({
           name:r.title,
           spec:'',
-          cost:`约${r.cost}元`,
-          reason:areaTag+r.suggestion
+          cost:costStr,
+          costMin:costMinVal,
+          costMax:costMaxVal,
+          reason:areaTag+cleanSuggestion
         });
+      }else if(isLaborOnly){
+        // Truly free - labor only, no buying needed. No price in suggestion.
+        const cleanSuggestion=suggestion.replace(/约?\d+\s*[-—~至]?\s*\d*\s*元/g,'').replace(/预估费用?/g,'').trim();
+        free.push(areaTag+cleanSuggestion);
       }else{
-        free.push(areaTag+r.suggestion);
+        // Default: if cost > 0, it's paid
+        if(actualCost>0){
+          paid.push({
+            name:r.title,
+            spec:'',
+            cost:`约${actualCost}元`,
+            costMin:actualCost,
+            costMax:actualCost,
+            reason:areaTag+suggestion.replace(/约?\d+\s*[-—~至]?\s*\d*\s*元/g,'').trim()
+          });
+        }else{
+          free.push(areaTag+suggestion);
+        }
       }
     });
     return {free,paid};
   }
 
-  // Basic: only high severity
-  const basicRisks=highRisks.length>0?highRisks:mediumRisks.slice(0,3);
-  const basicSplit=splitItems(basicRisks);
-  const basicMin=basicSplit.paid.reduce((s,i)=>{const m=String(i.cost).match(/(\d+)/);return s+(m?parseInt(m[1]):0)},0);
-  const basicMax=Math.round(basicMin*1.3);
+  // Calculate accurate total from paid items
+  function calcTotal(paidItems){
+    let min=0, max=0;
+    paidItems.forEach(i=>{
+      min+=i.costMin||0;
+      max+=i.costMax||i.costMin||0;
+    });
+    // If max === min, just show single number
+    if(max===min) return {min, max, str:min>0?`约${min}元`:'免费'};
+    return {min, max, str:min>0?`约${min}-${max}元`:'免费'};
+  }
 
-  // Safe: high + medium
+  // Basic: only top 3 most urgent high severity (cheapest fixes first)
+  const basicRisks=highRisks.length>0?
+    highRisks.slice().sort((a,b)=>(a.cost||0)-(b.cost||0)).slice(0,Math.min(3,highRisks.length)):
+    mediumRisks.slice(0,3);
+  const basicSplit=splitItems(basicRisks);
+  const basicTotal=calcTotal(basicSplit.paid);
+
+  // Safe: ALL high + ALL medium
   const safeRisks=[...highRisks,...mediumRisks];
   const safeSplit=splitItems(safeRisks);
-  const safeMin=safeSplit.paid.reduce((s,i)=>{const m=String(i.cost).match(/(\d+)/);return s+(m?parseInt(m[1]):0)},0);
-  const safeMax=Math.round(safeMin*1.4);
+  const safeTotal=calcTotal(safeSplit.paid);
+
+  // If safe and basic are identical (no medium risks), make safe add a recommended upgrade
+  let safeExtraNote='';
+  if(mediumRisks.length===0 && safeSplit.paid.length===basicSplit.paid.length){
+    // No medium risks to differentiate - add a recommended upgrade item
+    safeSplit.paid.push({
+      name:'卫生间防滑升级',
+      spec:'防滑地垫+防滑贴',
+      cost:'约70-150元',
+      costMin:70,
+      costMax:150,
+      reason:'[全屋] 虽然本次照片未检出中风险，但卫生间是老人最易滑倒的区域，建议预防性升级'
+    });
+    safeExtraNote='（含预防性卫生间升级）';
+    // Recalculate safe total
+    const safeTotalNew=calcTotal(safeSplit.paid);
+    safeTotal.min=safeTotalNew.min;
+    safeTotal.max=safeTotalNew.max;
+    safeTotal.str=safeTotalNew.str;
+  }
 
   // Comfort: all + smart device
   const comfortSplit=splitItems(allRisks);
@@ -832,34 +919,54 @@ function generateDynamicBudgetPlans(){
     name:'智能跌倒检测报警器',
     spec:'毫米波雷达',
     cost:'约300-500元',
+    costMin:300,
+    costMax:500,
     reason:'万一摔倒自动通知家人'
   });
-  const comfortMin=comfortSplit.paid.reduce((s,i)=>{const m=String(i.cost).match(/(\d+)/);return s+(m?parseInt(m[1]):0)},0);
-  const comfortMax=Math.round(comfortMin*1.8);
+  const comfortTotal=calcTotal(comfortSplit.paid);
 
-  return {
+  // Audit: verify totals match sum of items
+  function auditPlan(plan, total){
+    const itemsMin=plan.paidItems.reduce((s,i)=>s+(i.costMin||0),0);
+    const itemsMax=plan.paidItems.reduce((s,i)=>s+(i.costMax||i.costMin||0),0);
+    if(itemsMin!==total.min || itemsMax!==total.max){
+      console.warn(`[Budget Audit] ${plan.name}: total mismatch! items=${itemsMin}-${itemsMax}, displayed=${total.min}-${total.max}`);
+      return false;
+    }
+    console.log(`[Budget Audit] ${plan.name}: OK (items=${itemsMin}-${itemsMax} = total=${total.min}-${total.max})`);
+    return true;
+  }
+
+  const plans={
     basic: {
       name: '低打扰基础版',
-      priceRange: basicMin>0?`约${basicMin}-${basicMax}元`:'免费',
-      desc: `仅处理${basicRisks.length}个高风险隐患，能自己动手的不花钱`,
+      priceRange: basicTotal.str,
+      desc: `仅处理最紧急的${basicRisks.length}个高风险隐患，能自己动手的不花钱`,
       freeItems: basicSplit.free.length>0?basicSplit.free:['清理地面杂物，理顺电线','调整家具摆放拓宽通道'],
       paidItems: basicSplit.paid
     },
     safe: {
       name: '安全优先版',
-      priceRange: safeMin>0?`约${safeMin}-${safeMax}元`:'免费',
-      desc: `处理${highRisks.length}个高风险 + ${mediumRisks.length}个中风险隐患`,
+      priceRange: safeTotal.str,
+      desc: `处理全部${highRisks.length}个高风险 + ${mediumRisks.length}个中风险隐患${safeExtraNote}`,
       freeItems: safeSplit.free.length>0?safeSplit.free:['清理地面杂物，理顺电线','调整家具摆放拓宽通道'],
       paidItems: safeSplit.paid
     },
     comfort: {
       name: '舒适增强版',
-      priceRange: `约${comfortMin}-${comfortMax}元`,
+      priceRange: comfortTotal.str,
       desc: `处理全部${allRisks.length}个隐患，含智能检测设备`,
       freeItems: comfortSplit.free.length>0?comfortSplit.free:['清理地面杂物，理顺电线','调整家具摆放拓宽通道'],
       paidItems: comfortSplit.paid
     }
   };
+
+  // Run audit
+  auditPlan(plans.basic, basicTotal);
+  auditPlan(plans.safe, safeTotal);
+  auditPlan(plans.comfort, comfortTotal);
+
+  return plans;
 }
 
 // ===== Communication Content =====
@@ -1911,7 +2018,62 @@ function applySurveyAdjustments(){
   });
 }
 
+function renderSurveySummaryCard(){
+  const card=document.getElementById('surveySummaryCard');
+  if(!card) return;
+
+  const answered=surveyQuestions.filter(q=>surveyAnswers[q.id]);
+  if(answered.length===0){
+    card.innerHTML='';
+    return;
+  }
+
+  // Build compact survey summary
+  const items=answered.map(q=>{
+    const opt=getSelectedOption(q.id);
+    const icon=opt&&opt.riskBoost&&opt.riskBoost>=1.3?'⚠️':opt&&opt.riskBoost&&opt.riskBoost>=1.1?'⚡':'✅';
+    return `<div class="survey-sum-item"><span class="survey-sum-icon">${icon}</span><span class="survey-sum-q">${q.shortLabel||q.text.substring(0,q.text.indexOf('？')||q.text.length)}</span><span class="survey-sum-a">${opt?opt.label:''}</span></div>`;
+  }).join('');
+
+  card.innerHTML=`
+    <div class="survey-sum-card">
+      <div class="survey-sum-title">📋 您的回答（已影响风险评级）</div>
+      <div class="survey-sum-list">${items}</div>
+    </div>`;
+}
+
+// Get human-readable reasons why a risk was boosted by survey answers
+function getSurveyImpactReasons(r){
+  const reasons=[];
+  const combined=((r.title||'')+(r.desc||'')).toLowerCase();
+  const lightAnswer=surveyAnswers['q4_light'];
+  const urgentAnswer=surveyAnswers['q5_urgent'];
+  const awakeAnswer=surveyAnswers['q3_awake'];
+  const unstableAnswer=surveyAnswers['q7_unstable'];
+  const slipperAnswer=surveyAnswers['q6_slippers'];
+
+  if((combined.includes('灯')||combined.includes('照明'))){
+    if(lightAnswer==='often') reasons.push('经常不开灯');
+    else if(lightAnswer==='sometimes') reasons.push('有时不开灯');
+  }
+  if(combined.includes('地面')||combined.includes('湿滑')||combined.includes('地毯')||combined.includes('门槛')){
+    if(awakeAnswer==='groggy') reasons.push('起夜时半睡半醒');
+    if(urgentAnswer==='yes') reasons.push('起夜比较急');
+    if(slipperAnswer==='find'||slipperAnswer==='barefoot') reasons.push('找不着拖鞋或光脚');
+  }
+  if(combined.includes('扶手')||combined.includes('支撑')){
+    if(unstableAnswer==='yes') reasons.push('起身时扶不稳东西');
+    if(awakeAnswer==='groggy') reasons.push('起夜时半睡半醒');
+  }
+  if(combined.includes('电线')||combined.includes('杂物')||combined.includes('杂乱')){
+    if(urgentAnswer==='yes') reasons.push('起夜比较急');
+  }
+  return reasons;
+}
+
 function renderResults(){
+  // Render survey summary card
+  renderSurveySummaryCard();
   const container=document.getElementById('photoResults');
   // Re-assign numbers: only bbox risks that are not dismissed get numbered
   analysisResults.forEach(result=>{
@@ -1951,6 +2113,16 @@ function renderResults(){
           r._riskIdx=ri;
           const badgeContent=r.number!==null?r.number:'全图';
           const badgeClass=r.number!==null?'':'global';
+          // Survey impact note - show for ALL risks, not just boosted ones
+          let surveyNote='';
+          const surveyReasons=getSurveyImpactReasons(r);
+          if(surveyReasons.length>0){
+            if(r.surveyPriority){
+              surveyNote=`<div class="risk-survey-impact">📊 因问卷回答「${surveyReasons.join('、')}」，此隐患风险等级已提升</div>`;
+            }else{
+              surveyNote=`<div class="risk-survey-context">📋 问卷提示：${surveyReasons.join('、')}，需重点关注</div>`;
+            }
+          }
           return `
           <div class="risk-card ${r.severity}">
             <div class="risk-badge ${r.severity} ${badgeClass}">${badgeContent}</div>
@@ -1960,6 +2132,7 @@ function renderResults(){
                 <span class="risk-sev-tag ${r.severity}">${{high:'高风险',medium:'中风险',low:'低风险'}[r.severity]}</span>
               </div>
               <div class="risk-desc">${r.desc}</div>
+              ${surveyNote}
               <div class="risk-suggestion">💡 ${r.suggestion}</div>
               ${r.needsVerification && r.verificationQuestion && r.verified===null?`
               <div class="verify-card">
