@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>安心住 · 居家安全AI自查Demo</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 /* ===== Reset & Base ===== */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -2517,6 +2517,18 @@ async function generateShareImage(){
     btn.textContent='⏳ 正在生成分享图片...';
     btn.classList.add('show');
   }
+
+  // Check if html2canvas loaded
+  if(typeof html2canvas==='undefined'){
+    console.error('html2canvas not loaded');
+    if(btn){
+      btn.textContent='❌ 图片库未加载，正在使用文字分享...';
+      setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},2000);
+    }
+    copyReportText();
+    return;
+  }
+
   try{
     // Build a shareable image wrapper
     const wrapper=document.createElement('div');
@@ -2531,11 +2543,13 @@ async function generateShareImage(){
     const canvas=await html2canvas(wrapper,{
       scale:3,
       useCORS:true,
+      allowTaint:false,
       backgroundColor:'#f6f7f4',
       width:375,
       height:wrapper.scrollHeight,
       windowWidth:375,
-      windowHeight:wrapper.scrollHeight
+      windowHeight:wrapper.scrollHeight,
+      logging:false
     });
     document.body.removeChild(wrapper);
 
@@ -2565,10 +2579,12 @@ async function generateShareImage(){
     }
   }catch(e){
     console.error('Share image failed:',e);
+    // Fallback to text copy if image generation fails
     if(btn){
-      btn.textContent='❌ 分享图生成失败：'+e.message;
+      btn.textContent='❌ 图片生成失败，已切换为文字分享';
       setTimeout(()=>{btn.classList.remove('show');btn.textContent='✅ 已复制到剪贴板，去微信粘贴吧';},3000);
     }
+    copyReportText();
   }
 }
 
@@ -2598,6 +2614,15 @@ async function exportReportPDF(){
     alert('请先生成报告');
     return;
   }
+
+  // Check if libraries loaded
+  if(typeof html2canvas==='undefined' || typeof window.jspdf==='undefined'){
+    console.error('html2canvas or jspdf not loaded');
+    alert('PDF库未加载，正在使用图片方式分享...');
+    generateShareImage();
+    return;
+  }
+
   const btn=document.getElementById('shareCopied');
   if(btn){
     btn.textContent='⏳ 正在生成 PDF，请稍候...';
