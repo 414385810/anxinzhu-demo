@@ -529,7 +529,7 @@ button:active{transform:scale(0.97)}
 /* ===== Desktop Phone Mockup ===== */
 @media (min-width:700px){
   body{background:#1f1f24;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;margin:0;overflow:auto}
-  .phone-frame{display:block;width:402px;height:min(820px,calc(100vh - 80px));background:#111;border-radius:54px;padding:14px;box-shadow:0 25px 80px rgba(0,0,0,.55), inset 0 0 0 2px #333;position:relative;flex-shrink:0}
+  .phone-frame{display:block;height:min(820px,calc(100vh - 80px));aspect-ratio:9/19.5;width:auto;max-width:calc(100vw - 40px);background:#111;border-radius:54px;padding:14px;box-shadow:0 25px 80px rgba(0,0,0,.55), inset 0 0 0 2px #333;position:relative;flex-shrink:0}
   .phone-notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:160px;height:32px;background:#111;border-radius:0 0 20px 20px;z-index:10}
   .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);position:relative;display:flex;flex-direction:column}
   .phone-button{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:140px;height:5px;background:rgba(255,255,255,.25);border-radius:3px}
