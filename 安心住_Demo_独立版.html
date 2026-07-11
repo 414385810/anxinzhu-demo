@@ -2518,59 +2518,116 @@ function generateAnnotationSVG(risks,imgW,imgH){
   if(risks.length===0) return '';
 
   const sf=Math.max(imgW,imgH)/400;
-  const sw=3*sf;           // circle stroke width
-  const fs=Math.round(14*sf); // number font size
-  const br=Math.round(16*sf); // number badge radius
+  const sw=2.5*sf;              // highlight ellipse stroke width
+  const fs=Math.round(13*sf);   // badge number font size
+  const br=Math.round(15*sf);   // badge base radius
   const gap=6*sf;
+  const pad=10*sf;              // padding from image edge
   const cjk="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif";
 
   const colors={high:'#ff3333',medium:'#ff9900',low:'#33cc66'};
 
   const bboxRisks=risks.filter(r=>r.bbox && r.verified!==false);
   const globalRisks=risks.filter(r=>!r.bbox);
-  let svg='';
-  const maskId='dm-'+Math.random().toString(36).slice(2,8);
 
-  // --- Draw subtle highlight circles around each hazard (no dark overlay) ---
-  bboxRisks.forEach(risk=>{
+  // ---- Compute initial badge positions: point inward from nearest image edge ----
+  const badges=bboxRisks.map((risk,idx)=>{
     const [x,y,w,h]=risk.bbox;
     const cx=x+w/2, cy=y+h/2;
-    // Clamp radius to keep circles reasonably sized and avoid overlap
-    const rx=Math.min(Math.max(w/2+8*sf, 22*sf), imgW*0.16);
-    const ry=Math.min(Math.max(h/2+8*sf, 22*sf), imgH*0.16);
+    // Highlight ellipse: tighter to actual bbox, with a small minimum
+    const rx=Math.min(Math.max(w/2+5*sf, 16*sf), imgW*0.14);
+    const ry=Math.min(Math.max(h/2+5*sf, 16*sf), imgH*0.14);
     const color=colors[risk.severity]||colors.low;
 
-    // Soft fill glow
-    svg+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${color}" fill-opacity="0.12"/>`;
-    // Solid stroke circle
-    svg+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${color}" stroke-width="${sw}"/>`;
-  });
+    // Start with angle pointing inward from closest edge
+    const leftDist=cx, rightDist=imgW-cx, topDist=cy, bottomDist=imgH-cy;
+    const minDist=Math.min(leftDist,rightDist,topDist,bottomDist);
+    let baseAngle=0;
+    if(minDist===leftDist) baseAngle=0;        // hazard at left, point right
+    else if(minDist===rightDist) baseAngle=180; // hazard at right, point left
+    else if(minDist===topDist) baseAngle=90;    // hazard at top, point down
+    else baseAngle=-90;                         // hazard at bottom, point up
 
-  // --- Draw number badges with small connecting line ---
-  bboxRisks.forEach((risk,idx)=>{
-    const [x,y,w,h]=risk.bbox;
-    const cx=x+w/2, cy=y+h/2;
-    const rx=Math.min(Math.max(w/2+8*sf, 22*sf), imgW*0.16);
-    const ry=Math.min(Math.max(h/2+8*sf, 22*sf), imgH*0.16);
-    const color=colors[risk.severity]||colors.low;
-
-    // Spread badges at different angles to reduce overlap
-    const angles=[-45, 45, 135, -135, 0, 90];
-    const angleDeg=angles[idx%angles.length];
+    // Add per-hazard spread so adjacent badges don't stack
+    const spread=[0,28,-28,56,-56,14,-14,42,-42];
+    const angleDeg=baseAngle+spread[idx%spread.length];
     const rad=angleDeg*Math.PI/180;
-    const lineLen=Math.max(rx,ry)+br+4*sf;
-    const bx=cx+Math.cos(rad)*lineLen;
-    const by=cy+Math.sin(rad)*lineLen;
 
-    // Small connecting line
-    svg+=`<line x1="${cx+Math.cos(rad)*rx}" y1="${cy+Math.sin(rad)*ry}" x2="${bx}" y2="${by}" stroke="${color}" stroke-width="${1.5*sf}"/>`;
-    // White circle background for the number
-    svg+=`<circle cx="${bx}" cy="${by}" r="${br}" fill="white" stroke="${color}" stroke-width="${2*sf}"/>`;
-    // Number text
-    svg+=`<text x="${bx}" y="${by+fs*0.35}" text-anchor="middle" fill="${color}" font-size="${fs}" font-weight="bold" font-family="${cjk}">${risk.number}</text>`;
+    const lineLen=Math.max(rx,ry)+br+5*sf;
+    let bx=cx+Math.cos(rad)*lineLen;
+    let by=cy+Math.sin(rad)*lineLen;
+
+    return {
+      risk, cx, cy, rx, ry, color, angleDeg,
+      bx, by, br,
+      number:String(risk.number||'')
+    };
   });
 
-  // --- Global risk banners at top ---
+  // ---- Clamp badges inside the image (prevent cut-off at edges) ----
+  badges.forEach(b=>{
+    b.bx=Math.max(pad+b.br, Math.min(imgW-pad-b.br, b.bx));
+    b.by=Math.max(pad+b.br, Math.min(imgH-pad-b.br, b.by));
+  });
+
+  // ---- Resolve overlaps iteratively ----
+  for(let iter=0; iter<40; iter++){
+    let moved=false;
+    for(let i=0;i<badges.length;i++){
+      for(let j=i+1;j<badges.length;j++){
+        const a=badges[i], b=badges[j];
+        const dx=b.bx-a.bx;
+        const dy=b.by-a.by;
+        const dist=Math.hypot(dx,dy)||1;
+        const minDist=a.br+b.br+5*sf;
+        if(dist<minDist){
+          const overlap=(minDist-dist)/2;
+          const nx=dx/dist, ny=dy/dist;
+          a.bx-=nx*overlap;
+          a.by-=ny*overlap;
+          b.bx+=nx*overlap;
+          b.by+=ny*overlap;
+          moved=true;
+        }
+      }
+    }
+    if(!moved) break;
+  }
+
+  // ---- Re-clamp after pushing badges apart ----
+  badges.forEach(b=>{
+    b.bx=Math.max(pad+b.br, Math.min(imgW-pad-b.br, b.bx));
+    b.by=Math.max(pad+b.br, Math.min(imgH-pad-b.br, b.by));
+  });
+
+  // ---- Build SVG ----
+  let svg='';
+
+  // Highlight ellipses
+  badges.forEach(b=>{
+    svg+=`<ellipse cx="${b.cx}" cy="${b.cy}" rx="${b.rx}" ry="${b.ry}" fill="${b.color}" fill-opacity="0.12"/>`;
+    svg+=`<ellipse cx="${b.cx}" cy="${b.cy}" rx="${b.rx}" ry="${b.ry}" fill="none" stroke="${b.color}" stroke-width="${sw}"/>`;
+  });
+
+  // Connecting lines
+  badges.forEach(b=>{
+    const rad=b.angleDeg*Math.PI/180;
+    const lx1=b.cx+Math.cos(rad)*b.rx;
+    const ly1=b.cy+Math.sin(rad)*b.ry;
+    svg+=`<line x1="${lx1}" y1="${ly1}" x2="${b.bx}" y2="${b.by}" stroke="${b.color}" stroke-width="${1.5*sf}"/>`;
+  });
+
+  // Badge pills (wider for multi-digit numbers)
+  badges.forEach(b=>{
+    const digits=Math.max(1,b.number.length);
+    const bw=b.br*2+(digits-1)*b.br*0.55; // expand width per extra digit
+    const bh=b.br*2;
+    const rx=bh/2;
+    svg+=`<rect x="${b.bx-bw/2}" y="${b.by-bh/2}" width="${bw}" height="${bh}" rx="${rx}" ry="${rx}" fill="white" stroke="${b.color}" stroke-width="${2*sf}"/>`;
+    svg+=`<text x="${b.bx}" y="${b.by+fs*0.35}" text-anchor="middle" fill="${b.color}" font-size="${fs}" font-weight="bold" font-family="${cjk}">${b.number}</text>`;
+  });
+
+  // Global risk banners at top
   globalRisks.forEach((risk,idx)=>{
     const color=colors[risk.severity]||colors.low;
     const st=(risk.title||'隐患').slice(0,6);
