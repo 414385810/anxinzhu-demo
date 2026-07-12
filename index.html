@@ -1045,10 +1045,11 @@ button:active{transform:scale(0.97)}
 <script>
 /* ============================================================
  * 安心住 Demo · 模型架构
- * 1. Qwen-VL-Plus（阿里百炼）—— 视觉识别：看图找隐患
- *    Doubao-Seed-2.1（字节豆包）—— 视觉识别备选
- * 2. Doubao-Seed-2.1（字节豆包）—— 交叉审查：审查误判、补充遗漏
- * 3. Doubao-Seed-2.1（字节豆包）—— 报告生成：沟通指南+父母版报告
+ * 1. qwen-omni-turbo（阿里百炼）—— 全模态视觉识别：看图找隐患
+ * 2. qwen-vl-max（阿里百炼）—— 视觉识别备选
+ * 3. qwen-vl-plus（阿里百炼）—— 视觉识别第三备选
+ * 4. Doubao-Seed-2.1（字节豆包）—— 交叉审查：审查误判、补充遗漏
+ * 5. Doubao-Seed-2.1（字节豆包）—— 报告生成：沟通指南+父母版报告
  * ============================================================ */
 
 
@@ -1912,21 +1913,29 @@ async function callQwenVision(photo, modelName, timeoutMs){
 }
 
 async function analyzePhotoWithLLM(photo, imgW, imgH){
-  updateProgress(10,'正在用 AI 分析照片...','视觉大模型直接看图识别隐患');
+  updateProgress(10,'正在用全模态AI分析照片...','qwen-omni-turbo 全模态视觉大模型直接看图识别隐患');
 
-  // Tier 1: qwen-vl-plus (fast & stable)
+  // Tier 1: qwen-omni-turbo (全模态，最强理解)
   try{
-    return await callQwenVision(photo, 'qwen-vl-plus', 45000);
+    return await callQwenVision(photo, 'qwen-omni-turbo', 60000);
   }catch(e1){
-    console.warn('Tier 1 (qwen-vl-plus) failed:', e1.message);
+    console.warn('Tier 1 (qwen-omni-turbo) failed:', e1.message);
   }
 
-  // Tier 2: qwen-vl-max (more capable but slower)
-  updateProgress(12,'正在尝试备选视觉模型...','qwen-vl-plus 不可用，切换 qwen-vl-max');
+  // Tier 2: qwen-vl-max (视觉专用，更强能力)
+  updateProgress(12,'正在尝试备选视觉模型...','qwen-omni-turbo 不可用，切换 qwen-vl-max');
   try{
     return await callQwenVision(photo, 'qwen-vl-max', 45000);
   }catch(e2){
     console.warn('Tier 2 (qwen-vl-max) failed:', e2.message);
+  }
+
+  // Tier 3: qwen-vl-plus (快速稳定)
+  updateProgress(12,'正在尝试第三备选模型...','qwen-vl-max 不可用，切换 qwen-vl-plus');
+  try{
+    return await callQwenVision(photo, 'qwen-vl-plus', 45000);
+  }catch(e3){
+    console.warn('Tier 3 (qwen-vl-plus) failed:', e3.message);
   }
 
   throw new Error('所有千问视觉模型均不可用');
@@ -2116,7 +2125,7 @@ async function startAnalysis(){
   if(oldSteps) oldSteps.remove();
   const stepsHTML=`<div class="analyze-step-list" id="analyzeStepList">
     <div class="analyze-step active" data-step="1"><div class="analyze-step-dot">1</div>压缩图片</div>
-    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>AI视觉识别</div>
+    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>全模态AI识别</div>
     <div class="analyze-step" data-step="3"><div class="analyze-step-dot">3</div>交叉审查</div>
     <div class="analyze-step" data-step="4"><div class="analyze-step-dot">4</div>生成报告</div>
   </div>`;
@@ -4069,7 +4078,7 @@ function startDemo(){
   if(stepList) stepList.remove();
   const stepsHTML=`<div class="analyze-step-list" id="analyzeStepList">
     <div class="analyze-step active" data-step="1"><div class="analyze-step-dot">1</div>准备示例照片</div>
-    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>AI视觉模型分析</div>
+    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>全模态AI模型分析</div>
     <div class="analyze-step" data-step="3"><div class="analyze-step-dot">3</div>综合问卷调整评级</div>
     <div class="analyze-step" data-step="4"><div class="analyze-step-dot">4</div>生成改造建议</div>
   </div>`;
