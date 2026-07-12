@@ -788,6 +788,104 @@ button:active{transform:scale(0.97)}
     <div class="welcome-desc">用AI的眼睛帮您检查家里容易忽略的安全隐患</div>
   </div>
 
+  <!-- 夜间动线SVG动画插画 -->
+  <div class="night-route-illustration" style="margin:0 20px 20px;padding:20px 16px;background:linear-gradient(135deg,#1a2e1f 0%,#243428 50%,#1a2e1f 100%);border-radius:16px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 30% 20%,rgba(95,139,107,0.15) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(213,139,85,0.1) 0%,transparent 50%);pointer-events:none;"></div>
+    <div style="position:relative;z-index:2;">
+      <div style="text-align:center;margin-bottom:12px;">
+        <span style="color:rgba(255,255,255,0.6);font-size:11px;letter-spacing:2px;text-transform:uppercase;">夜间起夜动线</span>
+      </div>
+      <svg viewBox="0 0 300 120" style="width:100%;height:100px;" xmlns="http://www.w3.org/2000/svg">
+        <!-- 路径线 -->
+        <path d="M 30 90 Q 80 80 120 85 T 220 80 Q 250 78 270 50" fill="none" stroke="rgba(95,139,107,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+        <!-- 动态光点路径 -->
+        <path d="M 30 90 Q 80 80 120 85 T 220 80 Q 250 78 270 50" fill="none" stroke="rgba(95,139,107,0.8)" stroke-width="2.5" stroke-dasharray="6,8" class="route-glow-path">
+          <animate attributeName="stroke-dashoffset" from="0" to="-28" dur="2s" repeatCount="indefinite"/>
+        </path>
+        <!-- 床图标 -->
+        <g transform="translate(15,70)">
+          <rect x="0" y="10" width="35" height="20" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(95,139,107,0.6)" stroke-width="1.5"/>
+          <rect x="2" y="12" width="10" height="8" rx="2" fill="rgba(95,139,107,0.3)"/>
+          <rect x="0" y="28" width="35" height="4" rx="2" fill="rgba(95,139,107,0.4)"/>
+          <text x="17" y="48" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9">床</text>
+        </g>
+        <!-- 通道图标 -->
+        <g transform="translate(100,65)">
+          <rect x="0" y="5" width="50" height="30" rx="4" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="25" cy="20" r="6" fill="rgba(213,139,85,0.2)" stroke="rgba(213,139,85,0.5)" stroke-width="1"/>
+          <text x="25" y="24" text-anchor="middle" fill="rgba(213,139,85,0.7)" font-size="8">!</text>
+          <text x="25" y="50" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9">通道</text>
+        </g>
+        <!-- 卫生间图标 -->
+        <g transform="translate(250,30)">
+          <rect x="0" y="0" width="35" height="35" rx="6" fill="rgba(255,255,255,0.08)" stroke="rgba(95,139,107,0.6)" stroke-width="1.5"/>
+          <circle cx="17.5" cy="15" r="6" fill="none" stroke="rgba(95,139,107,0.5)" stroke-width="1.5"/>
+          <path d="M 12 25 Q 17.5 30 23 25" fill="none" stroke="rgba(95,139,107,0.5)" stroke-width="1.5"/>
+          <text x="17.5" y="48" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9">卫生间</text>
+        </g>
+        <!-- 移动光点 -->
+        <circle r="3" fill="#5f8b6b" opacity="0.9">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 30 90 Q 80 80 120 85 T 220 80 Q 250 78 270 50"/>
+          <animate attributeName="opacity" values="0;0.9;0.9;0" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="5" fill="#5f8b6b" opacity="0.3">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 30 90 Q 80 80 120 85 T 220 80 Q 250 78 270 50"/>
+          <animate attributeName="opacity" values="0;0.3;0.3;0" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <!-- 月亮 -->
+        <g transform="translate(265,5)">
+          <circle cx="0" cy="0" r="6" fill="rgba(255,255,200,0.15)"/>
+          <circle cx="-2" cy="-1" r="5" fill="rgba(255,255,200,0.25)"/>
+        </g>
+        <!-- 星星 -->
+        <circle cx="150" cy="8" r="0.8" fill="rgba(255,255,255,0.4)">
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="200" cy="12" r="0.6" fill="rgba(255,255,255,0.3)">
+          <animate attributeName="opacity" values="0.1;0.6;0.1" dur="2.5s" repeatCount="indefinite" begin="0.5s"/>
+        </circle>
+        <circle cx="80" cy="5" r="0.5" fill="rgba(255,255,255,0.3)">
+          <animate attributeName="opacity" values="0.1;0.5;0.1" dur="4s" repeatCount="indefinite" begin="1s"/>
+        </circle>
+      </svg>
+    </div>
+  </div>
+
+  <!-- AI能力展示卡片 -->
+  <div style="margin:0 20px 20px;">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:600;">AI 核心能力</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="padding:12px;background:var(--card);border-radius:12px;border:1px solid var(--rule);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span style="font-size:12px;font-weight:600;color:var(--text);">视觉大模型</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;">通义千问VL真实识别照片中安全隐患，非模拟分析</div>
+      </div>
+      <div style="padding:12px;background:var(--card);border-radius:12px;border:1px solid var(--rule);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span style="font-size:12px;font-weight:600;color:var(--text);">场景验证</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;">上传无关图片自动拦截，不浪费分析资源</div>
+      </div>
+      <div style="padding:12px;background:var(--card);border-radius:12px;border:1px solid var(--rule);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span style="font-size:12px;font-weight:600;color:var(--text);">空间推理</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;">判断物体空间关系，不脑补不臆测</div>
+      </div>
+      <div style="padding:12px;background:var(--card);border-radius:12px;border:1px solid var(--rule);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span style="font-size:12px;font-weight:600;color:var(--text);">交叉审查</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;">文本模型二次审查视觉结果，过滤误判</div>
+      </div>
+    </div>
+  </div>
+
   <div class="route-scope">
     <div class="route-scope-title">全屋安全排查 · 路线规划</div>
     <div class="route-cards">
@@ -2814,6 +2912,75 @@ function getSurveyImpactReasons(r){
   return [...reasons];
 }
 
+// Radar chart helper functions
+function calcAreaRisk(results, area){
+  const r = results.find(r => r.photo.area === area);
+  if(!r || !r.risks) return 0.2;
+  const valid = r.risks.filter(rk => rk.verified !== false);
+  if(valid.length === 0) return 0.2;
+  let score = 0;
+  valid.forEach(rk => {
+    score += rk.severity === 'high' ? 1 : rk.severity === 'medium' ? 0.6 : 0.3;
+  });
+  return Math.min(1, score / 3);
+}
+
+function calcHeightRisk(results){
+  const bedResult = results.find(r => r.photo.area === 'bedside');
+  if(!bedResult || !bedResult.risks) return 0.3;
+  const heightRisk = bedResult.risks.find(rk => 
+    (rk.title || '').includes('高度') || (rk.title || '').includes('床面') || (rk.desc || '').includes('高度')
+  );
+  if(!heightRisk) return 0.2;
+  if(heightRisk.verified === false) return 0.1;
+  return heightRisk.severity === 'high' ? 0.9 : heightRisk.severity === 'medium' ? 0.6 : 0.3;
+}
+
+function calcLightRisk(results){
+  let hasLightIssue = false;
+  let severity = 0;
+  results.forEach(r => {
+    if(!r.risks) return;
+    r.risks.forEach(rk => {
+      if(rk.verified === false) return;
+      const t = (rk.title || '') + (rk.desc || '');
+      if(t.includes('照明') || t.includes('夜灯') || t.includes('灯光') || t.includes('暗')){
+        hasLightIssue = true;
+        severity = Math.max(severity, rk.severity === 'high' ? 0.9 : rk.severity === 'medium' ? 0.6 : 0.3);
+      }
+    });
+  });
+  return hasLightIssue ? severity : 0.2;
+}
+
+function getRadarPoints(bed, walk, bath, height, light){
+  const cx = 100, cy = 100, maxR = 80;
+  // 5 axes: top, right-top, right-bottom, left-bottom, left-top
+  const angles = [-90, -18, 54, 126, 198]; // degrees
+  const values = [bed, walk, bath, height, light];
+  const points = angles.map((a, i) => {
+    const rad = a * Math.PI / 180;
+    const r = Math.max(5, values[i] * maxR);
+    const x = cx + Math.cos(rad) * r;
+    const y = cy + Math.sin(rad) * r;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  return points.join(' ');
+}
+
+function getRadarDots(bed, walk, bath, height, light){
+  const cx = 100, cy = 100, maxR = 80;
+  const angles = [-90, -18, 54, 126, 198];
+  const values = [bed, walk, bath, height, light];
+  return values.map((v, i) => {
+    const rad = angles[i] * Math.PI / 180;
+    const r = Math.max(5, v * maxR);
+    const x = cx + Math.cos(rad) * r;
+    const y = cy + Math.sin(rad) * r;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#d58b55"/>`;
+  }).join('');
+}
+
 function renderResults(){
   // Render survey summary card
   renderSurveySummaryCard();
@@ -3073,6 +3240,13 @@ function renderSummary(){
   let score=100-high*8-medium*4-low*2;
   score=Math.max(0,Math.min(100,score));
 
+  // Calculate risk dimensions for radar chart
+  const bedRisk = calcAreaRisk(analysisResults, 'bedside');
+  const walkRisk = calcAreaRisk(analysisResults, 'hallway');
+  const bathRisk = calcAreaRisk(analysisResults, 'bathroom');
+  const heightRisk = calcHeightRisk(analysisResults);
+  const lightRisk = calcLightRisk(analysisResults);
+
   let evalText;
   if(score>=80) evalText='安全状况良好，仅有少量小问题需要注意。';
   else if(score>=60) evalText='存在一些安全隐患，建议逐步改善。';
@@ -3118,6 +3292,32 @@ function renderSummary(){
       </div>
       <div class="score-eval" style="text-align:center;margin-bottom:16px">${evalText}</div>
       <div class="risk-heatmap">${heatmapHTML}</div>
+      <!-- 风险雷达图 -->
+      <div style="margin-top:16px;padding:16px;background:var(--card);border-radius:12px;border:1px solid var(--rule);">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-align:center;">风险维度雷达</div>
+        <svg viewBox="0 0 200 200" style="width:100%;max-width:200px;height:200px;margin:0 auto;display:block;" xmlns="http://www.w3.org/2000/svg">
+          <!-- 雷达背景网格 -->
+          <polygon points="100,20 180,75 148,170 52,170 20,75" fill="none" stroke="var(--rule)" stroke-width="1"/>
+          <polygon points="100,44 156,85 134,153 66,153 44,85" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+          <polygon points="100,68 132,95 121,136 79,136 68,95" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+          <!-- 轴线 -->
+          <line x1="100" y1="100" x2="100" y2="20" stroke="var(--rule)" stroke-width="0.5"/>
+          <line x1="100" y1="100" x2="180" y2="75" stroke="var(--rule)" stroke-width="0.5"/>
+          <line x1="100" y1="100" x2="148" y2="170" stroke="var(--rule)" stroke-width="0.5"/>
+          <line x1="100" y1="100" x2="52" y2="170" stroke="var(--rule)" stroke-width="0.5"/>
+          <line x1="100" y1="100" x2="20" y2="75" stroke="var(--rule)" stroke-width="0.5"/>
+          <!-- 风险数据区域 -->
+          <polygon points="${getRadarPoints(bedRisk,walkRisk,bathRisk,heightRisk,lightRisk)}" fill="rgba(213,139,85,0.2)" stroke="#d58b55" stroke-width="2"/>
+          <!-- 数据点 -->
+          ${getRadarDots(bedRisk,walkRisk,bathRisk,heightRisk,lightRisk)}
+          <!-- 标签 -->
+          <text x="100" y="14" text-anchor="middle" fill="var(--muted)" font-size="9" font-weight="600">床边</text>
+          <text x="190" y="78" text-anchor="start" fill="var(--muted)" font-size="9" font-weight="600">通道</text>
+          <text x="152" y="184" text-anchor="middle" fill="var(--muted)" font-size="9" font-weight="600">卫生间</text>
+          <text x="48" y="184" text-anchor="middle" fill="var(--muted)" font-size="9" font-weight="600">高度差</text>
+          <text x="10" y="78" text-anchor="end" fill="var(--muted)" font-size="9" font-weight="600">照明</text>
+        </svg>
+      </div>
       <div class="summary-stats" style="margin-top:16px">
         <div class="stat-item"><div class="stat-num high" id="statHigh">0</div><div class="stat-label">高风险</div></div>
         <div class="stat-item"><div class="stat-num medium" id="statMed">0</div><div class="stat-label">中风险</div></div>
