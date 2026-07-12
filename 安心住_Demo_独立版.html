@@ -820,7 +820,7 @@ button:active{transform:scale(0.97)}
       <button class="btn-primary btn-pulse btn-half" id="startBtn" onclick="event.stopPropagation();goTo('screen-photo');" style="pointer-events:auto;cursor:pointer">开始检查隐患</button>
       <button class="btn-primary btn-accent btn-demo btn-half" onclick="event.stopPropagation();startDemo();" style="pointer-events:auto;cursor:pointer"><span class="demo-btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>一键演示</span></button>
     </div>
-    <div class="welcome-note">AI 视觉大模型 · 直接看图分析安全隐患 · 一键开始</div>
+    <div class="welcome-note">豆包多模态大模型 · 直接看图分析安全隐患 · 一键开始</div>
   </div>
 </div>
 
@@ -896,11 +896,11 @@ button:active{transform:scale(0.97)}
 
     <div class="model-status ready" id="modelStatus">
       <div class="model-dot"></div>
-      <span class="model-status-text">AI 视觉大模型已就绪</span>
+      <span class="model-status-text">豆包多模态大模型已就绪</span>
     </div>
 
     <div class="privacy-note">
-      <span class="privacy-lock"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>照片将发送至 AI 云端由视觉大模型进行安全分析，分析完成后不会存储。AI 直接看图识别隐患，提供专业评估。
+      <span class="privacy-lock"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>照片将发送至豆包多模态大模型进行安全分析，分析完成后不会存储。AI 直接看图识别隐患，提供专业评估。
     </div>
   </div>
 
@@ -1045,11 +1045,10 @@ button:active{transform:scale(0.97)}
 <script>
 /* ============================================================
  * 安心住 Demo · 模型架构
- * 1. qwen-omni-turbo（阿里百炼）—— 全模态视觉识别：看图找隐患
- * 2. qwen-vl-max（阿里百炼）—— 视觉识别备选
- * 3. qwen-vl-plus（阿里百炼）—— 视觉识别第三备选
- * 4. Doubao-Seed-2.1（字节豆包）—— 交叉审查：审查误判、补充遗漏
- * 5. Doubao-Seed-2.1（字节豆包）—— 报告生成：沟通指南+父母版报告
+ * 1. Doubao-Seed-1.6-Vision（字节豆包）—— 多模态视觉识别：看图找隐患
+ * 2. Doubao-Seed-2.1-Pro（字节豆包）—— 视觉识别备选
+ * 3. Doubao-Seed-2.1-Pro（字节豆包）—— 交叉审查：审查误判、补充遗漏
+ * 4. Doubao-Seed-2.1-Pro（字节豆包）—— 报告生成：沟通指南+父母版报告
  * ============================================================ */
 
 
@@ -1880,14 +1879,14 @@ function parseVisionResponse(respData){
   return {risks, objects_detected:objectsDetected, summary, scene_match:sceneMatch, scene_mismatch_reason:sceneMismatchReason};
 }
 
-async function callQwenVision(photo, modelName, timeoutMs){
+async function callDoubaoVision(photo, modelName, timeoutMs){
   const areaName=getAreaName(photo.area);
   const analyzePrompt=buildAnalyzePrompt(areaName);
   console.log(`[Vision] Calling ${modelName} for area:`, areaName);
-  const resp=await fetchWithRetry('https://llm-3ictjf20i1m7rqpw.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions',{
+  const resp=await fetchWithRetry('https://ark.cn-beijing.volces.com/api/v3/chat/completions',{
     method:'POST',
     headers:{
-      'Authorization':'Bearer sk-ws-H.EMHDHHL.CF4J.MEUCIGOFeVBxVatJx5yNPIZw3basqzQIA4FMbIp-NxM2Gu5TAiEAuCJ3D48rbCmj_HECWPDS-TTVt8imKgEY4Gq4v3KskAg',
+      'Authorization':'Bearer cc008ac6-e804-428a-8407-c788b914a906',
       'Content-Type':'application/json'
     },
     body:JSON.stringify({
@@ -1913,68 +1912,29 @@ async function callQwenVision(photo, modelName, timeoutMs){
 }
 
 async function analyzePhotoWithLLM(photo, imgW, imgH){
-  updateProgress(10,'正在用全模态AI分析照片...','qwen-omni-turbo 全模态视觉大模型直接看图识别隐患');
+  updateProgress(10,'正在用豆包多模态AI分析照片...','doubao-seed-1.6-vision 多模态视觉大模型直接看图识别隐患');
 
-  // Tier 1: qwen-omni-turbo (全模态，最强理解)
+  // Tier 1: doubao-seed-1.6-vision (多模态视觉，深度思考)
   try{
-    return await callQwenVision(photo, 'qwen-omni-turbo', 60000);
+    return await callDoubaoVision(photo, 'doubao-seed-1-6-vision-250815', 60000);
   }catch(e1){
-    console.warn('Tier 1 (qwen-omni-turbo) failed:', e1.message);
+    console.warn('Tier 1 (doubao-seed-1.6-vision) failed:', e1.message);
   }
 
-  // Tier 2: qwen-vl-max (视觉专用，更强能力)
-  updateProgress(12,'正在尝试备选视觉模型...','qwen-omni-turbo 不可用，切换 qwen-vl-max');
+  // Tier 2: doubao-seed-2.1-pro (通用多模态，更强理解)
+  updateProgress(12,'正在尝试备选模型...','doubao-seed-1.6-vision 不可用，切换 doubao-seed-2.1-pro');
   try{
-    return await callQwenVision(photo, 'qwen-vl-max', 45000);
+    return await callDoubaoVision(photo, 'doubao-seed-2-1-pro-260628', 45000);
   }catch(e2){
-    console.warn('Tier 2 (qwen-vl-max) failed:', e2.message);
+    console.warn('Tier 2 (doubao-seed-2.1-pro) failed:', e2.message);
   }
 
-  // Tier 3: qwen-vl-plus (快速稳定)
-  updateProgress(12,'正在尝试第三备选模型...','qwen-vl-max 不可用，切换 qwen-vl-plus');
-  try{
-    return await callQwenVision(photo, 'qwen-vl-plus', 45000);
-  }catch(e3){
-    console.warn('Tier 3 (qwen-vl-plus) failed:', e3.message);
-  }
-
-  throw new Error('所有千问视觉模型均不可用');
+  throw new Error('所有豆包多模态模型均不可用');
 }
 
 async function analyzePhotoWithFallbackLLM(photo, imgW, imgH){
-  const areaName=getAreaName(photo.area);
-  updateProgress(15,'正在用备选模型分析...','主模型繁忙，切换豆包视觉模型');
-  const analyzePrompt=buildAnalyzePrompt(areaName);
-
-  const resp=await fetchWithRetry('https://ark.cn-beijing.volces.com/api/v3/chat/completions',{
-    method:'POST',
-    headers:{
-      'Authorization':'Bearer cc008ac6-e804-428a-8407-c788b914a906',
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify({
-      model:'doubao-seed-2-1-pro-260628',
-      messages:[{
-        role:'user',
-        content:[
-          {type:'image_url',image_url:{url:photo.dataUrl}},
-          {type:'text',text:analyzePrompt}
-        ]
-      }],
-      max_tokens:8192,
-      temperature:0.1,
-      stream:false
-    })
-  }, 1, 45000);
-
-  if(!resp.ok){
-    const errText=await resp.text().catch(()=>'');
-    throw new Error('豆包视觉分析失败: '+errText.slice(0,200));
-  }
-
-  const respData=await resp.json();
-  const parsed=parseVisionResponse(respData);
-  return parsed;
+  updateProgress(15,'正在用备选模型分析...','doubao-seed-1.6-vision 不可用，切换 doubao-seed-2.1-pro');
+  return await callDoubaoVision(photo, 'doubao-seed-2-1-pro-260628', 45000);
 }
 
 // ===== GLM-4 Cross-Validation (Multi-Model Collaboration) =====
@@ -2125,7 +2085,7 @@ async function startAnalysis(){
   if(oldSteps) oldSteps.remove();
   const stepsHTML=`<div class="analyze-step-list" id="analyzeStepList">
     <div class="analyze-step active" data-step="1"><div class="analyze-step-dot">1</div>压缩图片</div>
-    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>全模态AI识别</div>
+    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>豆包多模态识别</div>
     <div class="analyze-step" data-step="3"><div class="analyze-step-dot">3</div>交叉审查</div>
     <div class="analyze-step" data-step="4"><div class="analyze-step-dot">4</div>生成报告</div>
   </div>`;
@@ -2177,9 +2137,9 @@ async function startAnalysis(){
   }
 
   // Step 2: AI recognition
-  updateProgress(15, '正在进行AI图片识别', `${photos.length}张照片同时分析中...`);
+  updateProgress(15, '正在进行豆包多模态图片识别', `${photos.length}张照片同时分析中...`);
 
-  // Analyze photos IN PARALLEL using primary model (Qwen-VL supports concurrency)
+  // Analyze photos IN PARALLEL using Doubao multimodal vision
   const results=new Array(photoData.length);
   let usedFallbackDemo=false;
   let completedCount=0;
@@ -4078,7 +4038,7 @@ function startDemo(){
   if(stepList) stepList.remove();
   const stepsHTML=`<div class="analyze-step-list" id="analyzeStepList">
     <div class="analyze-step active" data-step="1"><div class="analyze-step-dot">1</div>准备示例照片</div>
-    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>全模态AI模型分析</div>
+    <div class="analyze-step" data-step="2"><div class="analyze-step-dot">2</div>豆包多模态模型分析</div>
     <div class="analyze-step" data-step="3"><div class="analyze-step-dot">3</div>综合问卷调整评级</div>
     <div class="analyze-step" data-step="4"><div class="analyze-step-dot">4</div>生成改造建议</div>
   </div>`;
@@ -4096,7 +4056,7 @@ function startDemo(){
     surveyAnswers['q7_unstable']='no';
     surveyAnswers['q8_resistance']='little';
 
-    updateProgress(25,'AI视觉模型分析中','识别床边区域的物体和隐患...');
+    updateProgress(25,'豆包多模态模型分析中','识别床边区域的物体和隐患...');
   // Update step indicator
   setTimeout(()=>{
     document.querySelectorAll('.analyze-step').forEach((s,i)=>{s.classList.remove('active','done'); if(i<1)s.classList.add('done'); if(i===1)s.classList.add('active')});
@@ -4111,7 +4071,7 @@ function startDemo(){
       const dataUrl=generateDemoScene(area,w,h);
       uploadedPhotos.push({area,dataUrl,naturalWidth:w,naturalHeight:h});
     });
-    updateProgress(50,'AI视觉模型分析中','识别行走通道和卫生间入口...');
+    updateProgress(50,'豆包多模态模型分析中','识别行走通道和卫生间入口...');
   },700);
 
   setTimeout(()=>{
