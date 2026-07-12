@@ -1045,10 +1045,9 @@ button:active{transform:scale(0.97)}
 <script>
 /* ============================================================
  * 安心住 Demo · 模型架构
- * 1. Doubao-Seed-1.6-Vision（字节豆包）—— 多模态视觉识别：看图找隐患
- * 2. Doubao-Seed-2.1-Pro（字节豆包）—— 视觉识别备选
- * 3. Doubao-Seed-2.1-Pro（字节豆包）—— 交叉审查：审查误判、补充遗漏
- * 4. Doubao-Seed-2.1-Pro（字节豆包）—— 报告生成：沟通指南+父母版报告
+ * 1. Doubao-Seed-2.1-Pro（字节豆包）—— 多模态视觉识别：看图找隐患
+ * 2. Doubao-Seed-2.1-Pro（字节豆包）—— 交叉审查：审查误判、补充遗漏
+ * 3. Doubao-Seed-2.1-Pro（字节豆包）—— 报告生成：沟通指南+父母版报告
  * ============================================================ */
 
 
@@ -1912,28 +1911,13 @@ async function callDoubaoVision(photo, modelName, timeoutMs){
 }
 
 async function analyzePhotoWithLLM(photo, imgW, imgH){
-  updateProgress(10,'正在用豆包多模态AI分析照片...','doubao-seed-1.6-vision 多模态视觉大模型直接看图识别隐患');
+  updateProgress(10,'正在用豆包多模态AI分析照片...','doubao-seed-2.1-pro 多模态大模型直接看图识别隐患');
 
-  // Tier 1: doubao-seed-1.6-vision (多模态视觉，深度思考)
-  try{
-    return await callDoubaoVision(photo, 'doubao-seed-1-6-vision-250815', 60000);
-  }catch(e1){
-    console.warn('Tier 1 (doubao-seed-1.6-vision) failed:', e1.message);
-  }
-
-  // Tier 2: doubao-seed-2.1-pro (通用多模态，更强理解)
-  updateProgress(12,'正在尝试备选模型...','doubao-seed-1.6-vision 不可用，切换 doubao-seed-2.1-pro');
-  try{
-    return await callDoubaoVision(photo, 'doubao-seed-2-1-pro-260628', 45000);
-  }catch(e2){
-    console.warn('Tier 2 (doubao-seed-2.1-pro) failed:', e2.message);
-  }
-
-  throw new Error('所有豆包多模态模型均不可用');
+  return await callDoubaoVision(photo, 'doubao-seed-2-1-pro-260628', 60000);
 }
 
 async function analyzePhotoWithFallbackLLM(photo, imgW, imgH){
-  updateProgress(15,'正在用备选模型分析...','doubao-seed-1.6-vision 不可用，切换 doubao-seed-2.1-pro');
+  updateProgress(15,'正在用备选模型重试...','doubao-seed-2.1-pro 重试分析');
   return await callDoubaoVision(photo, 'doubao-seed-2-1-pro-260628', 45000);
 }
 
