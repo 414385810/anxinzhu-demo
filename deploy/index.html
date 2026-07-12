@@ -213,9 +213,7 @@ button{touch-action:manipulation;cursor:pointer}
 .photo-result-icon{font-size:18px}
 .photo-result-name{font-size:15px;font-weight:600;color:var(--ink)}
 .photo-result-count{margin-left:auto;font-size:12px;color:var(--muted)}
-.photo-annotation-wrap{position:relative;background:#1a1a1a}
-.photo-annotation-wrap img{width:100%;display:block}
-.annotation-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.photo-result-img{width:100%;display:block;border-radius:0}
 .risk-list{padding:12px 16px 16px}
 .risk-list-title{font-size:12px;color:var(--muted);margin-bottom:10px}
 .risk-card{padding:12px 14px;border-radius:var(--radius-sm);background:var(--soft);margin-bottom:8px;animation:cardIn .3s ease}
@@ -405,8 +403,6 @@ button{touch-action:manipulation;cursor:pointer}
 
 /* ===== Misc ===== */
 .no-risk-note{padding:20px;text-align:center;color:var(--muted);font-size:14px}
-.detected-objects{font-size:11px;color:var(--muted);padding:4px 12px 12px;display:flex;flex-wrap:wrap;gap:4px}
-.detected-obj-tag{padding:2px 8px;background:var(--soft);border-radius:8px;font-size:11px;color:var(--accent2)}
 
 /* ===== SVG Icon Helper ===== */
 .svg-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle}
@@ -945,7 +941,7 @@ button:active{transform:scale(0.97)}
     <button class="back-btn" onclick="goBack()">‹</button>
     <div>
       <div class="topbar-title">AI分析结果</div>
-      <div class="topbar-sub">照片标注 + 风险清单</div>
+      <div class="topbar-sub">风险清单</div>
     </div>
   </div>
   <div class="results-screen">
@@ -1822,56 +1818,15 @@ function buildAnalyzePrompt(areaName){
 
   const rules=areaRules[areaName]||areaRules['床边起身区域'];
 
-  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【场景匹配验证（最高优先级，必须首先执行）】\n- 在分析隐患之前，必须先判断这张照片是否与预期场景「'+areaName+'」匹配\n- 判断标准：照片中是否包含该场景的核心元素（床边区域应有床、床垫、床头柜等；行走通道应有走廊、过道、门等；卫生间入口应有门、马桶、洗手台、淋浴区等）\n- 如果照片明显不是该场景（如卡通图、风景照、人物照、食物照、文字图、动物照、与家居环境完全无关的图片），必须返回 scene_match=false，不要输出任何隐患\n- 如果照片是家居环境但不是该场景（如上传的是厨房照片但要求分析床边），必须返回 scene_match=false，并说明"这张照片看起来是XX场景，不是XX场景，请上传正确的照片"\n- 只有当照片确实是该场景或包含该场景的核心元素时，才返回 scene_match=true 并继续分析隐患\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求（严格遵守）】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须只描述照片中实际看到的内容（如"照片中床边地面有一双拖鞋"），不能写AI分析方法名称（如"色差Delta E""高光区域面积""关键点检测"等），不能写技术术语\n- description中不能写阈值数字（如">1.5cm""<80cm""覆盖率>15%"），阈值只用于AI内部判断，不呈现给用户\n- 看不清或不确定的内容，用"疑似""可能""需确认"等措辞，不要下确定性结论\n- 如果照片中看不到某个指标的对应证据，就不要输出这个隐患\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({scene_match:true,scene_mismatch_reason:'',hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容，包含物体空间位置）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm',location:{x:0.5,y:0.5,width:0.15,height:0.15}}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
+  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【场景匹配验证（最高优先级，必须首先执行）】\n- 在分析隐患之前，必须先判断这张照片是否与预期场景「'+areaName+'」匹配\n- 判断标准：照片中是否包含该场景的核心元素（床边区域应有床、床垫、床头柜等；行走通道应有走廊、过道、门等；卫生间入口应有门、马桶、洗手台、淋浴区等）\n- 如果照片明显不是该场景（如卡通图、风景照、人物照、食物照、文字图、动物照、与家居环境完全无关的图片），必须返回 scene_match=false，不要输出任何隐患\n- 如果照片是家居环境但不是该场景（如上传的是厨房照片但要求分析床边），必须返回 scene_match=false，并说明"这张照片看起来是XX场景，不是XX场景，请上传正确的照片"\n- 只有当照片确实是该场景或包含该场景的核心元素时，才返回 scene_match=true 并继续分析隐患\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求（严格遵守）】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须只描述照片中实际看到的内容（如"照片中床边地面有一双拖鞋"），不能写AI分析方法名称（如"色差Delta E""高光区域面积""关键点检测"等），不能写技术术语\n- description中不能写阈值数字（如">1.5cm""<80cm""覆盖率>15%"），阈值只用于AI内部判断，不呈现给用户\n- 看不清或不确定的内容，用"疑似""可能""需确认"等措辞，不要下确定性结论\n- 如果照片中看不到某个指标的对应证据，就不要输出这个隐患\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({scene_match:true,scene_mismatch_reason:'',hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容，包含物体空间位置）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
 }
 
 // Smart positioning: assign (x, y, sz) based on hazard TITLE only.
 // Uses scoring: longer keyword = higher score, pick best zone.
 // Completely ignores model's location coordinates (unreliable).
-function getSmartPosition(title, idx, total){
-  const t=String(title||'').toLowerCase();
-  
-  // Each zone: keywords + base position
-  // Score = length of matched keyword (longer = more specific = higher priority)
-  const zones=[
-    {kw:['床脚','床腿','地面','地板','地毯','门槛','电线','湿滑','防滑','杂物','杂乱','堆放','堆积','通道','动线','过道','狭窄','线缆','管路','水管','踢脚','拖鞋','障碍','收纳'], x:0.5, y:0.80, sz:0.16},
-    {kw:['床面','床垫','床高','床品','床单','被子','枕头','离地高度','床铺高度'], x:0.5, y:0.45, sz:0.20},
-    {kw:['床头柜','柜子','抽屉','衣架','挂衣','衣物','衣服','晾衣','架子','立架','收纳架'], x:0.75, y:0.35, sz:0.15},
-    {kw:['夜灯','照明','光线','亮度','昏暗'], x:0.20, y:0.70, sz:0.12},
-    {kw:['扶手','护栏','助力','支撑','拉手','栏杆','借力','起身','辅助'], x:0.15, y:0.45, sz:0.13},
-    {kw:['开关','插座','插头','面板'], x:0.80, y:0.50, sz:0.10},
-    {kw:['尖角','撞角','桌角','柜角','直角','锐角','棱角'], x:0.65, y:0.55, sz:0.14},
-    {kw:['门框','门扇','门缝','门把手','门帘','门边'], x:0.88, y:0.35, sz:0.13},
-    {kw:['马桶','卫生间','厕所','浴室','浴缸','淋浴','洗手台'], x:0.90, y:0.60, sz:0.13},
-    {kw:['床架','床框','床沿'], x:0.5, y:0.58, sz:0.18},
-  ];
-  
-  // Score each zone: find longest matching keyword
-  let bestZone=null, bestScore=0;
-  for(const z of zones){
-    for(const k of z.kw){
-      if(t.includes(k)){
-        if(k.length>bestScore){
-          bestScore=k.length;
-          bestZone=z;
-        }
-      }
-    }
-  }
-  if(!bestZone) bestZone={x:0.5, y:0.50, sz:0.15}; // default center
-  
-  // Circular spread: distribute hazards evenly around the zone center
-  const angle=(idx/Math.max(total,1))*Math.PI*2;
-  const radius=0.06; // small radius to avoid overlap without drifting too far
-  const x=Math.max(0.10, Math.min(0.90, bestZone.x+Math.cos(angle)*radius));
-  const y=Math.max(0.10, Math.min(0.90, bestZone.y+Math.sin(angle)*radius));
-  
-  return {x, y, sz:bestZone.sz};
-}
-
 // Parse vision model response into normalized risks
-// NOTE: We ignore model's location coordinates (unreliable) and use smart positioning
-function parseVisionResponse(respData, imgW, imgH){
+// NOTE: We no longer use bbox/annotation on photos
+function parseVisionResponse(respData){
   let resultText=respData.choices&&respData.choices[0]&&respData.choices[0].message&&(respData.choices[0].message.content||respData.choices[0].message.reasoning_content)||'';
   let parsed;
   try{
@@ -1893,45 +1848,15 @@ function parseVisionResponse(respData, imgW, imgH){
   }
 
   const hazards=Array.isArray(parsed.hazards)?parsed.hazards:[];
-  const totalHazards=hazards.length;
   const risks=hazards.map((h,idx)=>{
     const title=String(h.title||'').slice(0,20);
-
-    // Smart position fallback based on hazard keywords
-    const smartPos=getSmartPosition(title, idx, totalHazards);
-
-    // Use model's location coordinates if available and reasonable, otherwise use smart positioning
-    let bbox=null;
-    if(h.location && typeof h.location.x==='number' && typeof h.location.y==='number'){
-      const to01=(v)=>(v>1?v/100:v);
-      const cx_pct=to01(h.location.x);
-      const cy_pct=to01(h.location.y);
-      const w_pct=Math.max(0.08, to01(h.location.width||smartPos.sz));
-      const h_pct=Math.max(0.08, to01(h.location.height||smartPos.sz));
-      // Sanity check: if model returns coordinates outside [0,1], use smart position
-      if(cx_pct>=0 && cx_pct<=1 && cy_pct>=0 && cy_pct<=1){
-        const cx=cx_pct*imgW;
-        const cy=cy_pct*imgH;
-        const w=Math.max(40, Math.min(w_pct*imgW, imgW*0.3));
-        const hgt=Math.max(40, Math.min(h_pct*imgH, imgH*0.3));
-        bbox=[Math.max(0,cx-w/2), Math.max(0,cy-hgt/2), Math.min(w,imgW), Math.min(hgt,imgH)];
-      }
-    }
-    // Fallback to smart keyword-based positioning if model didn't provide valid coordinates
-    if(!bbox){
-      const cx=smartPos.x*imgW;
-      const cy=smartPos.y*imgH;
-      const w=Math.max(60, smartPos.sz*imgW);
-      const hgt=Math.max(60, smartPos.sz*imgH);
-      bbox=[Math.max(0,cx-w/2), Math.max(0,cy-hgt/2), Math.min(w,imgW), Math.min(hgt,imgH)];
-    }
 
     let sev=(h.severity||'medium').toLowerCase();
     if(sev!=='high' && sev!=='medium' && sev!=='low') sev='medium';
     return {
       number:null,
       severity:sev,
-      bbox:bbox,
+      bbox:null,
       title:title,
       desc:String(h.description||''),
       suggestion:String(h.suggestion||''),
@@ -1943,38 +1868,9 @@ function parseVisionResponse(respData, imgW, imgH){
     };
   });
 
-  // Spatial validation: for hazards that require contact with ground, verify bbox position
-  risks.forEach(r=>{
-    const t=String(r.title||'').toLowerCase();
-    if(t.includes('垂落') || t.includes('落地') || t.includes('地面杂物') || t.includes('地面障碍') || t.includes('绊倒物')){
-      if(r.bbox){
-        const bottomY=(r.bbox[1]+r.bbox[3])/imgH;
-        // If the claimed ground-related hazard's bbox bottom is not in the lower 30% of image,
-        // it's likely not actually on the ground (bed/counter/window sill instead)
-        if(bottomY<0.70){
-          r.needsVerification=true;
-          if(!r.verificationQuestion){
-            r.verificationQuestion='照片中该隐患所在位置是否确实接触地面或位于地面上？';
-            r.verificationType='confirm';
-          }
-          // Adjust description to reflect uncertainty
-          if(t.includes('垂落')){
-            r.desc=r.desc+'（系统提示：该隐患标注位置偏上，请确认是否确实垂落至地面）';
-          }
-        }
-      }
-    }
-  });
-
   // Sort by severity: high > medium > low
   const sevOrder={high:0,medium:1,low:2};
   risks.sort((a,b)=>(sevOrder[a.severity]||1)-(sevOrder[b.severity]||1));
-
-  // Assign numbers to bbox risks only (after sorting)
-  let numCounter=0;
-  risks.forEach(r=>{
-    if(r.bbox) r.number=++numCounter;
-  });
 
   const objectsDetected=Array.isArray(parsed.objects_detected)?parsed.objects_detected.map(s=>String(s)):[];
   const summary=String(parsed.summary||'');
@@ -2012,7 +1908,7 @@ async function callQwenVision(photo, modelName, timeoutMs){
     throw new Error(`${modelName} API 错误 ${resp.status}: ${errText.slice(0,200)}`);
   }
   const respData=await resp.json();
-  return parseVisionResponse(respData, photo.naturalWidth||photo.imgW||800, photo.naturalHeight||photo.imgH||600);
+  return parseVisionResponse(respData);
 }
 
 async function analyzePhotoWithLLM(photo, imgW, imgH){
@@ -2068,7 +1964,7 @@ async function analyzePhotoWithFallbackLLM(photo, imgW, imgH){
   }
 
   const respData=await resp.json();
-  const parsed=parseVisionResponse(respData, imgW, imgH);
+  const parsed=parseVisionResponse(respData);
   return parsed;
 }
 
@@ -2193,13 +2089,6 @@ async function crossValidateWithGLM4(areaName, risks, objectsDetected, imgW, img
   // Re-sort by severity
   const sevOrder={high:0,medium:1,low:2};
   finalRisks.sort((a,b)=>(sevOrder[a.severity]||1)-(sevOrder[b.severity]||1));
-
-  // Re-assign numbers
-  let numCounter2=0;
-  finalRisks.forEach(r=>{
-    if(r.bbox) r.number=++numCounter2;
-    else r.number=null;
-  });
 
   const finalSummary=validated.overall_assessment||summary;
 
@@ -2755,8 +2644,7 @@ function applySurveyAdjustments(){
     // Re-number visible bbox risks
     let n=0;
     result.risks.forEach(r=>{
-      if(r.bbox && r.verified!==false) r.number=++n;
-      else r.number=null;
+      r.number=null;
     });
   });
 }
@@ -2818,28 +2706,10 @@ function renderResults(){
   // Render survey summary card
   renderSurveySummaryCard();
   const container=document.getElementById('photoResults');
-  // Re-assign global sequential numbers: only bbox risks that are not dismissed get numbered
-  let globalN=0;
-  analysisResults.forEach(result=>{
-    result.risks.forEach(r=>{
-      if(r.bbox && r.verified!==false){
-        r.number=++globalN;
-      }else{
-        r.number=null;
-      }
-    });
-  });
   container.innerHTML=analysisResults.map((result,idx)=>{
     const photo=result.photo;
     const risks=result.risks;
     const visibleRisks=risks.filter(r=>r.verified!==false);
-    // Sort: numbered risks first (by number), then global risks
-    const sortedRisks=visibleRisks.slice().sort((a,b)=>{
-      if(a.number!==null && b.number!==null) return a.number-b.number;
-      if(a.number!==null) return -1;
-      if(b.number!==null) return 1;
-      return 0;
-    });
 
     // Handle scene mismatch
     if(result.sceneMismatch){
@@ -2877,21 +2747,15 @@ function renderResults(){
         <span class="photo-result-count">${visibleRisks.length}个隐患</span>
       </div>
       <div class="photo-annotation-wrap">
-        <img src="${photo.dataUrl}" alt="${getAreaName(photo.area)}" onload="this.dataset.loaded='1'">
-        ${generateAnnotationSVG(risks, result.imgW||photo.naturalWidth||800, result.imgH||photo.naturalHeight||600)}
+        <img src="${photo.dataUrl}" alt="${getAreaName(photo.area)}" class="photo-result-img" onload="this.dataset.loaded='1'">
       </div>
-      ${result.objects_detected && result.objects_detected.length>0?`
-      <div class="detected-objects">
-        <span style="color:var(--muted);margin-right:4px">AI检测到：</span>
-        ${result.objects_detected.slice(0,10).map(name=>`<span class="detected-obj-tag">${name}</span>`).join('')}
-      </div>`:''}
       <div class="risk-list">
         <div class="risk-list-title">隐患详情</div>
-        ${sortedRisks.length===0?'<div class="no-risk-note" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>未检测到明显安全隐患，请仍注意日常安全。</div>':''}
-        ${sortedRisks.map((r,ri)=>{
+        ${visibleRisks.length===0?'<div class="no-risk-note" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>未检测到明显安全隐患，请仍注意日常安全。</div>':''}
+        ${visibleRisks.map((r,ri)=>{
           r._riskIdx=ri;
-          const badgeContent=r.number!==null?r.number:'全图';
-          const badgeClass=r.number!==null?'':'global';
+          const badgeContent='全图';
+          const badgeClass='global';
           // Survey impact note
           let surveyNote='';
           if(r.upgradeReasons && r.upgradeReasons.length>0){
@@ -2932,134 +2796,6 @@ function renderResults(){
 
   // Render summary
   renderSummary();
-}
-
-function generateAnnotationSVG(risks,imgW,imgH){
-  if(risks.length===0) return '';
-
-  const sf=Math.max(imgW,imgH)/400;
-  const sw=2.5*sf;              // highlight ellipse stroke width
-  const fs=Math.round(13*sf);   // badge number font size
-  const br=Math.round(15*sf);   // badge base radius
-  const gap=6*sf;
-  const pad=10*sf;              // padding from image edge
-  const cjk="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif";
-
-  const colors={high:'#ff3333',medium:'#ff9900',low:'#33cc66'};
-
-  const bboxRisks=risks.filter(r=>r.bbox && r.verified!==false);
-  const globalRisks=risks.filter(r=>!r.bbox);
-
-  // ---- Compute initial badge positions: point inward from nearest image edge ----
-  const badges=bboxRisks.map((risk,idx)=>{
-    const [x,y,w,h]=risk.bbox;
-    const cx=x+w/2, cy=y+h/2;
-    // Highlight ellipse: tighter to actual bbox, with a small minimum
-    const rx=Math.min(Math.max(w/2+5*sf, 16*sf), imgW*0.14);
-    const ry=Math.min(Math.max(h/2+5*sf, 16*sf), imgH*0.14);
-    const color=colors[risk.severity]||colors.low;
-
-    // Start with angle pointing inward from closest edge
-    const leftDist=cx, rightDist=imgW-cx, topDist=cy, bottomDist=imgH-cy;
-    const minDist=Math.min(leftDist,rightDist,topDist,bottomDist);
-    let baseAngle=0;
-    if(minDist===leftDist) baseAngle=0;        // hazard at left, point right
-    else if(minDist===rightDist) baseAngle=180; // hazard at right, point left
-    else if(minDist===topDist) baseAngle=90;    // hazard at top, point down
-    else baseAngle=-90;                         // hazard at bottom, point up
-
-    // Add per-hazard spread so adjacent badges don't stack
-    const spread=[0,28,-28,56,-56,14,-14,42,-42];
-    const angleDeg=baseAngle+spread[idx%spread.length];
-    const rad=angleDeg*Math.PI/180;
-
-    const lineLen=Math.max(rx,ry)+br+5*sf;
-    let bx=cx+Math.cos(rad)*lineLen;
-    let by=cy+Math.sin(rad)*lineLen;
-
-    return {
-      risk, cx, cy, rx, ry, color, angleDeg,
-      bx, by, br,
-      number:String(risk.number||'')
-    };
-  });
-
-  // ---- Clamp badges inside the image (prevent cut-off at edges) ----
-  badges.forEach(b=>{
-    b.bx=Math.max(pad+b.br, Math.min(imgW-pad-b.br, b.bx));
-    b.by=Math.max(pad+b.br, Math.min(imgH-pad-b.br, b.by));
-  });
-
-  // ---- Resolve overlaps iteratively ----
-  for(let iter=0; iter<40; iter++){
-    let moved=false;
-    for(let i=0;i<badges.length;i++){
-      for(let j=i+1;j<badges.length;j++){
-        const a=badges[i], b=badges[j];
-        const dx=b.bx-a.bx;
-        const dy=b.by-a.by;
-        const dist=Math.hypot(dx,dy)||1;
-        const minDist=a.br+b.br+5*sf;
-        if(dist<minDist){
-          const overlap=(minDist-dist)/2;
-          const nx=dx/dist, ny=dy/dist;
-          a.bx-=nx*overlap;
-          a.by-=ny*overlap;
-          b.bx+=nx*overlap;
-          b.by+=ny*overlap;
-          moved=true;
-        }
-      }
-    }
-    if(!moved) break;
-  }
-
-  // ---- Re-clamp after pushing badges apart ----
-  badges.forEach(b=>{
-    b.bx=Math.max(pad+b.br, Math.min(imgW-pad-b.br, b.bx));
-    b.by=Math.max(pad+b.br, Math.min(imgH-pad-b.br, b.by));
-  });
-
-  // ---- Build SVG ----
-  let svg='';
-
-  // Highlight ellipses
-  badges.forEach(b=>{
-    svg+=`<ellipse cx="${b.cx}" cy="${b.cy}" rx="${b.rx}" ry="${b.ry}" fill="${b.color}" fill-opacity="0.12"/>`;
-    svg+=`<ellipse cx="${b.cx}" cy="${b.cy}" rx="${b.rx}" ry="${b.ry}" fill="none" stroke="${b.color}" stroke-width="${sw}"/>`;
-  });
-
-  // Connecting lines
-  badges.forEach(b=>{
-    const rad=b.angleDeg*Math.PI/180;
-    const lx1=b.cx+Math.cos(rad)*b.rx;
-    const ly1=b.cy+Math.sin(rad)*b.ry;
-    svg+=`<line x1="${lx1}" y1="${ly1}" x2="${b.bx}" y2="${b.by}" stroke="${b.color}" stroke-width="${1.5*sf}"/>`;
-  });
-
-  // Badge pills (wider for multi-digit numbers)
-  badges.forEach(b=>{
-    const digits=Math.max(1,b.number.length);
-    const bw=b.br*2+(digits-1)*b.br*0.55; // expand width per extra digit
-    const bh=b.br*2;
-    const rx=bh/2;
-    svg+=`<rect x="${b.bx-bw/2}" y="${b.by-bh/2}" width="${bw}" height="${bh}" rx="${rx}" ry="${rx}" fill="white" stroke="${b.color}" stroke-width="${2*sf}"/>`;
-    svg+=`<text x="${b.bx}" y="${b.by+fs*0.35}" text-anchor="middle" fill="${b.color}" font-size="${fs}" font-weight="bold" font-family="${cjk}">${b.number}</text>`;
-  });
-
-  // Global risk banners at top
-  globalRisks.forEach((risk,idx)=>{
-    const color=colors[risk.severity]||colors.low;
-    const st=(risk.title||'隐患').slice(0,6);
-    const bannerH=Math.max(fs+10*sf,30*sf);
-    const by=idx*(bannerH+gap)+gap;
-    svg+=`<rect x="0" y="${by}" width="${imgW}" height="${bannerH}" fill="rgba(0,0,0,0.7)"/>`;
-    svg+=`<rect x="0" y="${by}" width="${5*sf}" height="${bannerH}" fill="${color}"/>`;
-    svg+=`<text x="${16*sf}" y="${by+bannerH/2+fs*0.35}" fill="${color}" font-size="${fs+2*sf}" font-family="${cjk}" font-weight="bold">!</text>`;
-    svg+=`<text x="${32*sf}" y="${by+bannerH/2+fs*0.35}" fill="white" font-size="${fs}" font-family="${cjk}">${st}</text>`;
-  });
-
-  return `<svg class="annotation-svg" viewBox="0 0 ${imgW} ${imgH}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;
 }
 
 function renderSummary(){
@@ -4378,23 +4114,16 @@ function startDemo(){
     // Generate analysis results from fallback data WITH smart bbox annotations
     analysisResults=uploadedPhotos.map(photo=>{
       const fb=getFallbackAnalysis(photo, photo.naturalWidth, photo.naturalHeight);
-      // Add smart bbox positions for demo visualization AND normalize field names
-      const totalRisks=fb.risks.length;
       fb.risks=fb.risks.map((rk,idx)=>{
-        const smartPos=getSmartPosition(rk.title, idx, totalRisks);
-        const cx=smartPos.x*photo.naturalWidth;
-        const cy=smartPos.y*photo.naturalHeight;
-        const bw=Math.max(80, smartPos.sz*photo.naturalWidth);
-        const bh=Math.max(80, smartPos.sz*photo.naturalHeight);
         return {
           number:null,
           severity:rk.severity,
-          bbox:[Math.max(0,cx-bw/2), Math.max(0,cy-bh/2), bw, bh],
+          bbox:null,
           title:rk.title,
           desc:rk.description||'',
           suggestion:rk.suggestion||'',
           cost:rk.cost||0,
-          needsVerification:false, // demo mode: skip verification for smooth flow
+          needsVerification:false,
           verificationQuestion:rk.verification_question||'',
           verificationType:rk.verification_type||'confirm',
           verified:null
