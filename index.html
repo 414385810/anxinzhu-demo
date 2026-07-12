@@ -68,36 +68,42 @@ button{touch-action:manipulation;cursor:pointer}
 @keyframes screenIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
 /* ===== Top Bar ===== */
-.topbar{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg2);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100}
-.back-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink);cursor:pointer;flex-shrink:0}
-.topbar-title{font-size:17px;font-weight:600;color:var(--ink)}
-.topbar-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100}
+.back-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink);cursor:pointer;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600;color:var(--ink)}
+.topbar-sub{font-size:11px;color:var(--muted);margin-top:1px}
 
 /* ===== Welcome Screen ===== */
 .welcome-hero{padding:48px 28px 32px;text-align:center;background:linear-gradient(180deg,var(--soft2) 0%,var(--bg) 100%)}
 .welcome-logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--accent2),#4a7a58);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px;box-shadow:0 8px 24px rgba(95,139,107,.3)}
-.welcome-title{font-size:28px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.welcome-title{font-size:32px;font-weight:800;color:var(--ink);margin-bottom:10px}
 .welcome-slogan{font-size:15px;color:var(--accent);font-weight:600;margin-bottom:12px}
-.welcome-desc{font-size:14px;color:var(--muted);line-height:1.7;margin:0 auto 32px}
+.welcome-value-prop{display:inline-block;white-space:nowrap;margin:0 auto 12px;font-size:14px;font-weight:700;color:var(--accent);padding:0 10px}
+.welcome-desc{font-size:14px;color:var(--muted);line-height:1.7;margin:0 auto 28px}
 
-.route-scope{padding:0 24px 32px}
-.route-scope-title{font-size:16px;font-weight:700;color:#22c55e;margin-bottom:14px;text-align:center}
-.route-cards{display:flex;flex-direction:column;gap:12px}
-.route-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--radius);background:var(--bg2);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.route-scope{padding:0 24px 32px;background:var(--bg)}
+.route-scope-title{font-size:18px;font-weight:700;color:var(--accent2);margin-bottom:14px;text-align:center}
+.route-cards{display:flex;flex-direction:column;gap:8px}
+.route-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);background:var(--bg2);box-shadow:var(--shadow);position:relative;overflow:hidden}
 .route-card.active{border:2px solid var(--accent2)}
 .route-card.locked{opacity:.55}
-.route-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.route-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.route-icon svg{width:18px;height:18px}
 .route-icon.active-bg{background:var(--soft);color:var(--accent2)}
 .route-icon.locked-bg{background:#f0ede8;color:var(--muted)}
 .route-info{flex:1;min-width:0}
-.route-name{font-size:15px;font-weight:600;color:var(--ink)}
-.route-desc{font-size:12px;color:var(--muted);margin-top:2px}
-.route-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap}
+.route-name{font-size:14px;font-weight:600;color:var(--ink)}
+.route-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.route-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
 .route-badge.live{background:var(--soft);color:var(--accent2)}
 .route-badge.soon{background:#f0ede8;color:var(--muted)}
 
 .welcome-cta{padding:0 28px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
-.welcome-note{font-size:12px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.5}
+.welcome-btn-row{display:flex;gap:10px;align-items:center}
+.welcome-btn-row .btn-half{flex:1;width:auto;min-width:0;white-space:nowrap;padding:12px 8px;font-size:14px}
+.welcome-btn-row .btn-half .demo-btn-icon{display:inline-flex;align-items:center;gap:4px}
+.welcome-btn-row .btn-half .demo-btn-icon svg{flex-shrink:0}
+.welcome-note{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
 
 /* ===== API Key Box ===== */
 .apikey-box{margin:0 0 18px;padding:16px;background:var(--bg2);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -116,26 +122,27 @@ button{touch-action:manipulation;cursor:pointer}
 
 /* ===== Photo Upload Screen ===== */
 .upload-screen{padding:0 0 80px}
-.upload-header{padding:24px 24px 8px}
-.upload-h-title{font-size:20px;font-weight:700;color:var(--ink)}
-.upload-h-desc{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
-.upload-h-tip{font-size:12px;color:var(--accent2);margin-top:10px;line-height:1.5;padding:10px 12px;background:var(--soft);border-radius:var(--radius-sm)}
+.upload-header{padding:16px 20px 6px}
+.upload-h-title{font-size:17px;font-weight:700;color:var(--ink)}
+.upload-h-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+.upload-h-tip{font-size:11px;color:var(--accent2);margin-top:8px;line-height:1.5;padding:8px 10px;background:var(--soft);border-radius:var(--radius-sm)}
 .upload-h-tip strong{font-weight:700}
 
-.upload-areas{padding:16px 24px;display:flex;flex-direction:column;gap:16px}
+.upload-areas{padding:10px 20px;display:flex;flex-direction:column;gap:10px}
 .upload-area{background:var(--bg2);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s}
 .upload-area.has-photo{border:2px solid var(--accent2)}
-.upload-slot{display:flex;align-items:center;gap:14px;padding:16px}
-.upload-icon{width:48px;height:48px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.upload-slot{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.upload-icon{width:36px;height:36px;border-radius:10px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .upload-info{flex:1;min-width:0}
-.upload-label{font-size:15px;font-weight:600;color:var(--ink)}
-.upload-hint{font-size:12px;color:var(--muted);margin-top:2px}
-.upload-btn{font-size:13px;color:var(--accent2);background:var(--soft);border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.upload-label{font-size:14px;font-weight:600;color:var(--ink)}
+.upload-hint{font-size:11px;color:var(--muted);margin-top:1px}
+.upload-btn{font-size:12px;color:#fff;background:var(--accent2);border:none;padding:8px 14px;border-radius:20px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;min-height:36px}
+.upload-btn:hover{filter:brightness(1.1)}
 .upload-preview{position:relative;display:none}
 .upload-preview.show{display:block}
-.upload-preview img{width:100%;height:160px;object-fit:cover;display:block}
-.upload-preview .del-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.upload-preview .area-tag{position:absolute;bottom:8px;left:8px;font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(95,139,107,.9);color:#fff;font-weight:600}
+.upload-preview img{width:100%;height:140px;object-fit:cover;display:block}
+.upload-preview .del-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.upload-preview .area-tag{position:absolute;bottom:6px;left:6px;font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(95,139,107,.9);color:#fff;font-weight:600}
 
 .model-status{margin:8px 24px 0;display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--soft);border-radius:var(--radius-sm);font-size:12px;color:var(--muted)}
 .model-dot{width:8px;height:8px;border-radius:50%;background:var(--warn);animation:pulse 1.5s infinite}
@@ -147,15 +154,15 @@ button{touch-action:manipulation;cursor:pointer}
 .privacy-note::before{content:"";display:none}
 
 /* ===== Fixed Bottom Bar ===== */
-.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px 24px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg2);border-top:1px solid var(--rule);z-index:100}
-.btn-primary{width:100%;padding:16px;border:none;border-radius:var(--radius);background:linear-gradient(135deg,var(--accent2),#4a7a58);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(95,139,107,.3)}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:12px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg2);border-top:1px solid var(--rule);z-index:100}
+.btn-primary{width:100%;padding:13px;border:none;border-radius:var(--radius);background:linear-gradient(135deg,var(--accent2),#4a7a58);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(95,139,107,.3)}
 .btn-primary:active{transform:scale(.98)}
 .btn-primary:disabled{background:#ccc;box-shadow:none;cursor:not-allowed}
 .btn-accent{background:linear-gradient(135deg,var(--accent),#c47a48);box-shadow:0 4px 16px rgba(213,139,85,.3)}
 
 /* ===== Analysis Screen ===== */
 .analyze-screen{padding:0 0 40px}
-.analyze-content{padding:40px 28px;text-align:center}
+.analyze-content{padding:40px 14px;text-align:center}
 .analyze-icon{width:80px;height:80px;margin:0 auto 24px;position:relative}
 .analyze-icon-ring{width:80px;height:80px;border-radius:50%;border:4px solid var(--soft);border-top:4px solid var(--accent2);animation:spin 1.2s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -177,12 +184,12 @@ button{touch-action:manipulation;cursor:pointer}
 @keyframes scanGlow{0%,100%{opacity:0.3}50%{opacity:0.7}}
 
 /* ===== Analysis Questions ===== */
-.analyze-questions{margin-top:24px;padding:0 24px 24px;max-width:430px;margin-left:auto;margin-right:auto}
+.analyze-questions{margin-top:24px;padding:0 12px 24px;max-width:430px;margin-left:auto;margin-right:auto}
 .analyze-questions-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
 .analyze-questions-sub{font-size:12px;color:var(--muted);margin-bottom:16px;text-align:center;line-height:1.5}
 .survey-progress-badge{background:var(--soft2);color:var(--accent);font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px}
 .survey-progress-badge.done{background:var(--soft);color:var(--accent2)}
-.analyze-question{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.analyze-question{background:var(--bg2);border-radius:var(--radius);padding:12px 10px;margin-bottom:10px;box-shadow:var(--shadow)}
 .analyze-question-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--accent2);font-size:13px;font-weight:700;margin-right:8px;vertical-align:middle}
 .analyze-question-stage{font-size:13px;color:#d9534f;font-weight:700;vertical-align:middle;margin-left:6px}
 .analyze-question-text{font-size:15px;font-weight:600;color:var(--ink);line-height:1.55;margin-bottom:14px;text-align:left}
@@ -211,26 +218,25 @@ button{touch-action:manipulation;cursor:pointer}
 .annotation-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 .risk-list{padding:12px 16px 16px}
 .risk-list-title{font-size:12px;color:var(--muted);margin-bottom:10px}
-.risk-card{display:flex;gap:12px;padding:14px;border-radius:var(--radius-sm);background:var(--soft);margin-bottom:8px;animation:cardIn .3s ease}
+.risk-card{padding:12px 14px;border-radius:var(--radius-sm);background:var(--soft);margin-bottom:8px;animation:cardIn .3s ease}
 .risk-card:last-child{margin-bottom:0}
 .risk-card.high{background:#fef2f0}
 .risk-card.medium{background:var(--soft2)}
 .risk-card.low{background:var(--soft)}
 @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.risk-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.risk-card-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.risk-badge{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
 .risk-badge.high{background:var(--danger)}
 .risk-badge.medium{background:var(--accent)}
 .risk-badge.low{background:var(--accent2)}
-.risk-badge.global{background:var(--muted);font-size:11px}
-.risk-body{flex:1;min-width:0}
-.risk-title-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
-.risk-title{font-size:14px;font-weight:600;color:var(--ink)}
-.risk-sev-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.risk-badge.global{background:var(--muted);font-size:10px}
+.risk-title{font-size:14px;font-weight:600;color:var(--ink);flex:1;min-width:0}
+.risk-sev-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .risk-sev-tag.high{background:#fee;color:var(--danger)}
 .risk-sev-tag.medium{background:#fdf0e5;color:var(--accent)}
 .risk-sev-tag.low{background:var(--soft);color:var(--accent2)}
-.risk-desc{font-size:13px;color:var(--muted);line-height:1.6}
-.risk-suggestion{margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--ink);line-height:1.5;border-left:3px solid var(--accent2)}
+.risk-desc{font-size:13px;color:var(--muted);line-height:1.6;text-align:left;margin:0;padding:0}
+.risk-suggestion{margin-top:8px;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--ink);line-height:1.5;border-left:3px solid var(--accent2);text-align:left}
 .risk-survey-impact{margin-top:6px;padding:6px 10px;background:#fff3cd;border-radius:6px;font-size:11px;color:#856404;line-height:1.5;border-left:3px solid #ffc107}
 .risk-survey-context{margin-top:6px;padding:6px 10px;background:#e8f4fd;border-radius:6px;font-size:11px;color:#0c5460;line-height:1.5;border-left:3px solid #17a2b8}
 .survey-sum-card{margin:0 0 16px;padding:14px 16px;background:var(--bg2);border-radius:12px;border:1px solid var(--rule)}
@@ -346,11 +352,11 @@ button{touch-action:manipulation;cursor:pointer}
 .comm-tip-body{flex:1}
 .comm-script{color:var(--accent);font-weight:600;background:var(--soft2);padding:1px 5px;border-radius:3px}
 .comm-key{color:var(--accent2);font-weight:700}
-.qa-item{background:var(--bg2);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--accent)}
-.qa-q{font-size:14px;font-weight:600;color:var(--danger);margin-bottom:10px;display:flex;gap:6px;line-height:1.5}
-.qa-q::before{content:"Q";color:#fff;background:var(--danger);font-weight:700;flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
-.qa-a{font-size:13px;color:var(--muted);line-height:1.7;display:flex;gap:8px}
-.qa-a::before{content:"A";color:#fff;background:var(--accent2);font-weight:700;flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:1px}
+.qa-item{background:var(--bg2);border-radius:var(--radius-sm);padding:14px 12px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--accent)}
+.qa-q{font-size:14px;font-weight:600;color:var(--danger);margin-bottom:10px;line-height:1.6;padding-left:26px;position:relative}
+.qa-q::before{content:"Q";color:#fff;background:var(--danger);font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;position:absolute;left:0;top:1px}
+.qa-a{font-size:13px;color:var(--muted);line-height:1.7;padding-left:26px;position:relative}
+.qa-a::before{content:"A";color:#fff;background:var(--accent2);font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;position:absolute;left:0;top:1px}
 .qa-script{color:var(--accent2);font-weight:600;background:var(--soft);padding:1px 5px;border-radius:3px}
 /* 隐患核实 */
 .verify-card{background:var(--soft2);border:1.5px solid var(--accent);border-radius:var(--radius-sm);padding:14px;margin:8px 0}
@@ -421,7 +427,7 @@ button{touch-action:manipulation;cursor:pointer}
 .btn-pulse{position:relative;overflow:visible}
 .btn-pulse::after{content:"";position:absolute;inset:-3px;border-radius:21px;border:2px solid var(--accent);animation:ctaPulse 2s ease-out infinite;pointer-events:none}
 @keyframes ctaPulse{0%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
-.btn-demo{position:relative;background:linear-gradient(135deg,var(--accent),#e8956a)!important;box-shadow:0 6px 24px rgba(213,139,85,0.4)!important;font-size:16px!important;padding:17px!important}
+.btn-demo{position:relative;background:linear-gradient(135deg,var(--accent),#e8956a)!important;box-shadow:0 6px 24px rgba(213,139,85,0.4)!important}
 .demo-btn-icon{display:inline-flex;align-items:center;gap:8px}
 
 /* ===== Demo Mode Badge ===== */
@@ -526,14 +532,183 @@ button:active{transform:scale(0.97)}
 /* ===== Lock icon for privacy ===== */
 .privacy-lock{display:inline-flex;margin-right:6px;flex-shrink:0;vertical-align:middle;color:var(--accent2)}
 
-/* ===== Desktop Phone Mockup ===== */
+/* ===== Desktop Phone Mockup - iPhone 13 Pro Graphite ===== */
 @media (min-width:700px){
-  body{background:#1f1f24;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;margin:0;overflow:auto}
-  .phone-frame{display:block;height:min(820px,calc(100vh - 80px));aspect-ratio:9/18;width:auto;max-width:calc(100vw - 40px);background:#111;border-radius:54px;padding:14px;box-shadow:0 25px 80px rgba(0,0,0,.55), inset 0 0 0 2px #333;position:relative;flex-shrink:0}
-  .phone-notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:160px;height:32px;background:#111;border-radius:0 0 20px 20px;z-index:10}
-  .phone-screen{width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);position:relative;display:flex;flex-direction:column}
-  .phone-button{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:140px;height:5px;background:rgba(255,255,255,.25);border-radius:3px}
-  .app{max-width:none;width:100%;height:100%;min-height:auto;border-radius:42px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  body{background:#f5f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;margin:0;overflow:auto}
+
+  /* Outer frame - graphite stainless steel with metallic gradient + chamfer highlight */
+  .phone-frame{
+    display:block;
+    height:min(844px,calc(100vh - 80px));
+    aspect-ratio:10.5/19.5;
+    width:auto;
+    max-width:calc(100vw - 40px);
+    background:
+      /* top edge highlight - simulates light from above */
+      linear-gradient(180deg,
+        rgba(120,120,125,.25) 0%,
+        transparent 8%,
+        transparent 92%,
+        rgba(80,80,82,.2) 100%),
+      /* left-right metallic sheen - simulates cylindrical reflection */
+      linear-gradient(90deg,
+        rgba(80,80,82,.35) 0%,
+        rgba(160,160,165,.15) 12%,
+        rgba(50,50,52,.1) 30%,
+        rgba(60,60,62,.1) 70%,
+        rgba(160,160,165,.15) 88%,
+        rgba(80,80,82,.35) 100%),
+      /* base graphite color */
+      linear-gradient(135deg,#3a3a3c 0%,#1c1c1e 25%,#2c2c2e 50%,#1c1c1e 75%,#3a3a3c 100%);
+    border-radius:55px;
+    padding:5px;
+    box-shadow:
+      /* outer chamfer bright edge */
+      0 0 0 1px rgba(200,200,205,.2),
+      /* deeper outer shadow */
+      0 0 0 2px rgba(0,0,0,.4),
+      /* drop shadow - soft ambient */
+      0 35px 70px rgba(0,0,0,.3),
+      0 12px 25px rgba(0,0,0,.18),
+      0 2px 8px rgba(0,0,0,.12),
+      /* inner top highlight - CNC chamfer catch light */
+      inset 0 1.5px 0 rgba(200,200,205,.15),
+      /* inner bottom shadow */
+      inset 0 -2px 0 rgba(0,0,0,.4),
+      /* inner left-right subtle gradient for 3D edge */
+      inset 1px 0 0 rgba(140,140,145,.08),
+      inset -1px 0 0 rgba(140,140,145,.08);
+    position:relative;
+    flex-shrink:0;
+  }
+
+  /* Side buttons - left side: mute switch + volume up + volume down */
+  .phone-frame::before{
+    content:'';
+    position:absolute;
+    left:-2.5px;
+    top:15%;
+    width:2.5px;
+    height:5.5%;
+    background:linear-gradient(to right,#1c1c1e 0%,#3a3a3c 40%,#2c2c2e 60%,#1c1c1e 100%);
+    border-radius:2px 0 0 2px;
+    box-shadow:0 0 1px rgba(180,180,185,.15), inset 0 1px 0 rgba(200,200,205,.1);
+  }
+  .phone-frame::after{
+    content:'';
+    position:absolute;
+    left:-2.5px;
+    top:22.5%;
+    width:2.5px;
+    height:9%;
+    background:linear-gradient(to right,#1c1c1e 0%,#3a3a3c 40%,#2c2c2e 60%,#1c1c1e 100%);
+    border-radius:2px 0 0 2px;
+    box-shadow:0 14px 0 0 #2c2c2e, 0 14px 1px 0 rgba(180,180,185,.1);
+  }
+  /* Right side: power button */
+  .phone-side-right{
+    position:absolute;
+    right:-2.5px;
+    top:20%;
+    width:2.5px;
+    height:13%;
+    background:linear-gradient(to left,#1c1c1e 0%,#3a3a3c 40%,#2c2c2e 60%,#1c1c1e 100%);
+    border-radius:0 2px 2px 0;
+    z-index:0;
+    box-shadow:0 0 1px rgba(180,180,185,.15), inset 0 1px 0 rgba(200,200,205,.1);
+  }
+
+  /* Inner black bezel layer (BM area) - creates depth between frame and screen */
+  .phone-bezel{
+    width:100%;
+    height:100%;
+    background:
+      /* subtle gradient on black bezel for depth */
+      linear-gradient(180deg,#0a0a0a 0%,#000 30%,#000 70%,#0a0a0a 100%);
+    border-radius:50px;
+    padding:7px;
+    position:relative;
+    /* inner shadow from frame onto bezel */
+    box-shadow:
+      inset 0 1.5px 3px rgba(0,0,0,.6),
+      inset 0 -1px 2px rgba(0,0,0,.4),
+      inset 1px 0 1.5px rgba(0,0,0,.3),
+      inset -1px 0 1.5px rgba(0,0,0,.3);
+  }
+
+  /* Notch - iPhone 13 Pro style with depth */
+  .phone-notch{
+    position:absolute;
+    top:7px;
+    left:50%;
+    transform:translateX(-50%);
+    width:34%;
+    height:30px;
+    background:
+      /* notch has subtle gradient for 3D depth */
+      radial-gradient(ellipse at center top,#0a0a0a 0%,#000 70%);
+    border-radius:0 0 20px 20px;
+    z-index:10;
+    /* notch edge shadow for depth */
+    box-shadow:
+      inset 0 -2px 4px rgba(0,0,0,.5),
+      0 1px 0 rgba(80,80,82,.15);
+  }
+  /* Front camera lens - multi-layer for realism */
+  .phone-notch::before{
+    content:'';
+    position:absolute;
+    top:8px;
+    left:24%;
+    width:9px;
+    height:9px;
+    background:
+      /* lens glint */
+      radial-gradient(circle at 30% 30%,
+        rgba(80,80,90,.3) 0%,
+        #1a1a1a 30%,
+        #050505 60%,
+        #000 100%);
+    border-radius:50%;
+    /* lens ring + depth */
+    box-shadow:
+      0 0 0 1px rgba(40,40,45,.5),
+      0 0 2px rgba(100,100,120,.1),
+      inset 0 0 2px rgba(0,0,0,.8);
+  }
+  /* Speaker grille (earpiece) - with mesh detail */
+  .phone-notch::after{
+    content:'';
+    position:absolute;
+    top:10px;
+    right:30%;
+    width:5px;
+    height:2px;
+    background:linear-gradient(90deg,#000 0%,#1a1a1a 50%,#000 100%);
+    border-radius:1px;
+    box-shadow:
+      inset 0 0 1px rgba(40,40,45,.3),
+      0 0 0 .5px rgba(20,20,22,.3);
+  }
+
+  /* Screen - with inner glow for depth */
+  .phone-screen{
+    width:100%;
+    height:100%;
+    border-radius:44px;
+    overflow:hidden;
+    background:var(--bg);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    /* subtle inner glow from bezel edge */
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.03),
+      inset 0 1px 2px rgba(0,0,0,.15);
+  }
+  .phone-button{display:none}
+  .app{max-width:none;width:100%;height:100%;min-height:auto;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+
   /* Each screen is a flex column filling the phone height */
   .phone-screen .screen{display:none;flex-direction:column;height:100%;min-height:100%;padding:0;overflow:hidden}
   .phone-screen .screen.active{display:flex}
@@ -543,8 +718,7 @@ button:active{transform:scale(0.97)}
   .phone-screen .welcome-scroll{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
   .phone-screen .upload-screen{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
   .phone-screen .results-screen{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
-  .phone-screen .analyze-screen{flex:1;overflow-y:auto;min-height:0;display:flex;flex-direction:column}
-  .phone-screen .analyze-content{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .phone-screen .analyze-content{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px;-webkit-overflow-scrolling:touch}
   .phone-screen .survey-content{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
   .phone-screen .budget-screen{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
   .phone-screen .report-scroll{flex:1;overflow-y:auto;min-height:0;padding-bottom:8px}
@@ -555,27 +729,48 @@ button:active{transform:scale(0.97)}
   .phone-screen .survey-content::-webkit-scrollbar,
   .phone-screen .budget-screen::-webkit-scrollbar,
   .phone-screen .report-scroll::-webkit-scrollbar,
-  .phone-screen .analyze-screen::-webkit-scrollbar{width:0;display:none}
+  .phone-screen .analyze-content::-webkit-scrollbar{width:0;display:none}
   /* Bottom bars - fixed at bottom via flex, no fixed/sticky positioning */
-  .phone-screen .bottom-bar{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 42px 42px;padding:12px 20px 14px;background:var(--bg2);border-top:1px solid var(--rule)}
-  .phone-screen .welcome-cta{position:relative;flex-shrink:0;z-index:100;border-radius:0 0 42px 42px;margin:0;padding:0 24px 16px;background:var(--bg)}
-  .phone-screen .report-bottom-actions{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 42px 42px;padding:12px 16px 14px;background:var(--bg);border-top:1px solid var(--rule)}
+  .phone-screen .bottom-bar{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;padding:12px 20px 14px;background:var(--bg2);border-top:1px solid var(--rule)}
+  .phone-screen .welcome-cta{position:relative;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;margin:0;padding:0 24px 16px;background:var(--bg)}
+  .phone-screen .report-bottom-actions{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;padding:12px 16px 14px;background:var(--bg);border-top:1px solid var(--rule)}
   /* Reduce welcome hero padding on desktop */
-  .phone-screen .welcome-hero{padding:28px 24px 20px}
-  .demo-badge{position:absolute;top:12px;right:12px;z-index:200}
+  .phone-screen .welcome-hero{padding:34px 24px 20px}
+  .demo-badge{position:absolute;top:14px;right:14px;z-index:200}
   .demo-badge.show{display:flex}
-  .share-modal{position:absolute;inset:0;border-radius:42px;z-index:1000}
+  .share-modal{position:absolute;inset:0;border-radius:44px;z-index:1000}
 }
 @media (max-width:699px){
   .phone-frame{display:contents}
   .phone-notch,.phone-button{display:none}
+  .screen{min-height:100vh;display:none;flex-direction:column}
+  .screen.active{display:flex}
+  #screen-welcome .welcome-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #screen-welcome .welcome-cta{flex-shrink:0}
+  #screen-photo{display:none;flex-direction:column}
+  #screen-photo.active{display:flex}
+  #screen-photo .upload-screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #screen-analyze{display:none;flex-direction:column}
+  #screen-analyze.active{display:flex}
+  #screen-analyze .analyze-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;padding-bottom:20px}
+  #screen-results{display:none;flex-direction:column}
+  #screen-results.active{display:flex}
+  #screen-results .results-screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #screen-budget{display:none;flex-direction:column}
+  #screen-budget.active{display:flex}
+  #screen-budget .budget-screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #screen-report{display:none;flex-direction:column}
+  #screen-report.active{display:flex}
+  #screen-report .report-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 }
 </style>
 </head>
 <body>
 <div class="phone-frame">
-  <div class="phone-notch"></div>
-  <div class="phone-screen">
+  <div class="phone-side-right"></div>
+  <div class="phone-bezel">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
     <div class="app">
 
 <!-- Demo Mode Badge -->
@@ -624,8 +819,10 @@ button:active{transform:scale(0.97)}
   </div><!-- end welcome-scroll -->
 
   <div class="welcome-cta">
-    <button class="btn-primary btn-pulse" id="startBtn" onclick="goTo('screen-photo')">开始检查起夜路线</button>
-    <button class="btn-primary btn-accent btn-demo" style="margin-top:12px" onclick="startDemo()"><span class="demo-btn-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>一键演示（看示例效果）</span></button>
+    <div class="welcome-btn-row">
+      <button class="btn-primary btn-pulse btn-half" id="startBtn" onclick="goTo('screen-photo')">开始检查隐患</button>
+      <button class="btn-primary btn-accent btn-demo btn-half" onclick="startDemo()"><span class="demo-btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>一键演示</span></button>
+    </div>
     <div class="welcome-note">AI 视觉大模型 · 直接看图分析安全隐患 · 一键开始</div>
   </div>
 </div>
@@ -650,7 +847,7 @@ button:active{transform:scale(0.97)}
     <div class="upload-areas">
       <div class="upload-area" data-area="bedside">
         <div class="upload-slot">
-          <div class="upload-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></div>
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></div>
           <div class="upload-info">
             <div class="upload-label">床边起身区域</div>
             <div class="upload-hint">拍下老人下床时的位置和周边</div>
@@ -667,7 +864,7 @@ button:active{transform:scale(0.97)}
 
       <div class="upload-area" data-area="hallway">
         <div class="upload-slot">
-          <div class="upload-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10.5 21l2-5-2-2-3-3"/><path d="M13.5 14l2 2 2-2-1-4-3-1"/><path d="M7 14l2-2"/></svg></div>
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10.5 21l2-5-2-2-3-3"/><path d="M13.5 14l2 2 2-2-1-4-3-1"/><path d="M7 14l2-2"/></svg></div>
           <div class="upload-info">
             <div class="upload-label">行走通道</div>
             <div class="upload-hint">拍下从床到卫生间的走道</div>
@@ -684,7 +881,7 @@ button:active{transform:scale(0.97)}
 
       <div class="upload-area" data-area="bathroom">
         <div class="upload-slot">
-          <div class="upload-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v4a4 4 0 0 1-4 4"/><circle cx="8" cy="2" r="1"/><path d="M7 14l-2 6"/><path d="M11 14l2 6"/><path d="M8.5 14v6"/></svg></div>
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v4a4 4 0 0 1-4 4"/><circle cx="8" cy="2" r="1"/><path d="M7 14l-2 6"/><path d="M11 14l2 6"/><path d="M8.5 14v6"/></svg></div>
           <div class="upload-info">
             <div class="upload-label">卫生间入口</div>
             <div class="upload-hint">拍下卫生间门和入口区域</div>
@@ -1299,6 +1496,18 @@ function goTo(id){
   window.scrollTo(0,0);
 }
 
+function goToReupload(area){
+  // Go back to photo upload screen and trigger re-upload for specific area
+  goTo('screen-photo');
+  // Trigger file input for the specific area after a short delay
+  setTimeout(()=>{
+    const fileInput=document.querySelector(`.upload-area[data-area="${area}"] input[type="file"]`);
+    if(fileInput){
+      fileInput.click();
+    }
+  }, 300);
+}
+
 function goBack(){
   if(historyStack.length>0){
     const prevId=historyStack.pop();
@@ -1354,10 +1563,86 @@ function handleUpload(e,area){
       preview.classList.add('show');
       area_el.classList.add('has-photo');
       updateAnalyzeBtn();
+
+      // Immediately validate scene match after upload
+      validateSceneMatch(area, dataUrl, w, h);
     };
     img.src=origUrl;
   };
   reader.readAsDataURL(file);
+}
+
+// Validate scene match immediately after upload
+async function validateSceneMatch(area, dataUrl, imgW, imgH){
+  const areaName={bedside:'床边区域',hallway:'行走通道',bathroom:'卫生间入口'}[area]||area;
+  const area_el=document.querySelector(`.upload-area[data-area="${area}"]`);
+  const preview=area_el.querySelector('.upload-preview');
+
+  // Show validation status
+  const statusDiv=document.createElement('div');
+  statusDiv.className='upload-validation-status';
+  statusDiv.style.cssText='margin-top:8px;padding:8px 12px;border-radius:8px;font-size:12px;text-align:center;';
+  statusDiv.innerHTML='<span style="color:var(--muted)">正在验证照片场景...</span>';
+  preview.appendChild(statusDiv);
+
+  try{
+    const result=await analyzePhotoWithLLM({area,dataUrl,naturalWidth:imgW,naturalHeight:imgH}, imgW, imgH);
+
+    if(result.scene_match===false){
+      // Scene mismatch - show error and prevent analysis
+      statusDiv.style.background='#fef2f0';
+      statusDiv.style.color='var(--danger)';
+      statusDiv.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${result.scene_mismatch_reason||'这张照片看起来不是'+areaName+'，请重新上传'}`;
+
+      // Remove the photo from uploadedPhotos
+      uploadedPhotos=uploadedPhotos.filter(p=>p.area!==area);
+      preview.classList.remove('show');
+      area_el.classList.remove('has-photo');
+      updateAnalyzeBtn();
+
+      // Add retry button
+      const retryBtn=document.createElement('button');
+      retryBtn.textContent='重新上传';
+      retryBtn.style.cssText='margin-top:8px;padding:6px 16px;background:var(--accent2);color:#fff;border:none;border-radius:16px;font-size:12px;cursor:pointer;';
+      retryBtn.onclick=()=>{
+        const input=area_el.querySelector('input[type="file"]');
+        if(input) input.click();
+      };
+      statusDiv.appendChild(retryBtn);
+    }else{
+      // Scene match - show success
+      statusDiv.style.background='#f0fdf4';
+      statusDiv.style.color='var(--accent2)';
+      statusDiv.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>场景验证通过';
+
+      // Auto-remove status after 2 seconds
+      setTimeout(()=>{
+        if(statusDiv.parentNode) statusDiv.remove();
+      }, 2000);
+    }
+  }catch(e){
+    // API error - do NOT allow upload to proceed, require re-upload
+    console.warn('Scene validation failed:', e.message);
+    statusDiv.style.background='#fef2f0';
+    statusDiv.style.color='var(--danger)';
+    statusDiv.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>场景验证失败，请重新上传${areaName}照片`;
+
+    // Remove the photo from uploadedPhotos
+    uploadedPhotos=uploadedPhotos.filter(p=>p.area!==area);
+    preview.classList.remove('show');
+    area_el.classList.remove('has-photo');
+    updateAnalyzeBtn();
+
+    // Add retry button
+    const retryBtn=document.createElement('button');
+    retryBtn.textContent='重新上传';
+    retryBtn.style.cssText='margin-top:8px;padding:6px 16px;background:var(--accent2);color:#fff;border:none;border-radius:16px;font-size:12px;cursor:pointer;';
+    retryBtn.onclick=()=>{
+      const input=area_el.querySelector('input[type="file"]');
+      if(input) input.click();
+    };
+    statusDiv.appendChild(retryBtn);
+  }
 }
 
 function deletePhoto(area){
@@ -1422,33 +1707,42 @@ function getFallbackAnalysis(photo, imgW, imgH){
   const fallbacks={
     bedside:{
       risks:[
-        {title:'床边落脚区有杂物',description:'照片中床边第一步落脚区域可见杂物（需人工确认具体物品），夜间起夜时可能绊倒。',severity:'high',suggestion:'清理床边地面杂物，保持落脚区干净无障碍。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'床边地面是否有拖鞋、杂物或电线？',verification_type:'confirm'},
-        {title:'床边无可见支撑',description:'照片中未看到稳定的床边支撑点（扶手或固定家具），老人起身时缺少借力点。',severity:'high',suggestion:'在床边安装固定扶手或确保床头柜稳固可借力。预估费用：约200-350元',cost:300,needs_verification:true,verification_question:'床边是否有稳固的支撑点（如固定扶手、床头柜）？',verification_type:'confirm'},
-        {title:'床边无明显夜灯',description:'照片中未看到床头灯、小夜灯或感应灯，夜间起夜时可能摸黑行走。',severity:'medium',suggestion:'在床边安装人体感应夜灯，距地30-40cm。预估费用：约30-60元',cost:60,needs_verification:false},
-        {title:'床边尖角风险',description:'照片中可见家具尖角（需确认具体位置），老人起夜时可能磕碰。',severity:'low',suggestion:'在家具尖角处粘贴防撞条或防撞角。预估费用：约10-20元',cost:15,needs_verification:true,verification_question:'床边是否有家具尖角或突出物？',verification_type:'confirm'}
+        {title:'床边落脚区有杂物',description:'照片中床边地面可见散落物品，可能影响下床第一步落脚。需确认具体物品类型。',severity:'high',suggestion:'清理床边地面杂物，保持落脚区干净无障碍。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'床边地面是否有拖鞋、杂物或电线？',verification_type:'confirm'},
+        {title:'床边无可见支撑',description:'照片中床边未见明显的固定扶手或稳固家具，老人起身时可能缺少借力点。',severity:'high',suggestion:'在床边安装固定扶手或确保床头柜稳固可借力。预估费用：约200-350元',cost:300,needs_verification:true,verification_question:'床边是否有稳固的支撑点（如固定扶手、床头柜）？',verification_type:'confirm'},
+        {title:'床边无明显夜灯',description:'照片中床边未见床头灯、小夜灯或感应灯，夜间起夜可能摸黑。',severity:'medium',suggestion:'在床边安装人体感应夜灯，距地30-40cm。预估费用：约30-60元',cost:60,needs_verification:false},
+        {title:'床品垂落至地面',description:'照片中床单或被褥垂落较多，接近或触及地面，可能覆盖落脚区。需确认是否影响下床。',severity:'medium',suggestion:'将垂落的床品收拢至床面，不覆盖落脚区。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'床单或被褥是否垂落到地面并覆盖落脚区？',verification_type:'confirm'},
+        {title:'拖鞋摆放散乱',description:'照片中床边地面可见拖鞋，摆放位置较远或不成对，老人下床时可能踩到或找不到。需确认实际摆放情况。',severity:'medium',suggestion:'将拖鞋成对摆放在床沿附近、开口朝外，固定位置。预估费用：免费（调整摆放位置）',cost:0,needs_verification:true,verification_question:'拖鞋是否在床沿附近且成对摆放？',verification_type:'confirm'},
+        {title:'床头柜稳固性存疑',description:'照片中床头柜看起来较轻便或带轮子，受力时可能移动，不适合作为起身支撑。需确认是否有轮子。',severity:'low',suggestion:'更换为无轮固定床头柜，或锁死轮子制动装置。预估费用：约100-300元（更换）',cost:200,needs_verification:true,verification_question:'床头柜是否有轮子或为玻璃材质？',verification_type:'confirm'},
+        {title:'床边尖角风险',description:'照片中可见家具边角靠近床边，老人起夜时可能磕碰。需确认具体位置。',severity:'low',suggestion:'在家具尖角处粘贴防撞条或防撞角。预估费用：约10-20元',cost:15,needs_verification:true,verification_question:'床边是否有家具尖角或突出物？',verification_type:'confirm'},
+        {title:'床铺离地高度存疑',description:'照片中无法判断床面离地高度。需向用户求证实际高度。',severity:'medium',suggestion:'理想床面高度为45-50cm（约小腿长度），以老人坐于床沿双脚平踏地面为宜。如过高可加装踏步凳，过低可加装床腿增高器。预估费用：约50-200元',cost:120,needs_verification:true,verification_question:'请测量床面（床垫表面）到地面的垂直高度，输入数值：',verification_type:'measure'}
       ],
-      summary:'床边区域需关注落脚区杂物、支撑点和照明问题。',
-      objects_detected:['床','床头柜','地面']
+      summary:'床边区域需关注落脚区杂物、支撑点、照明、床品垂落、拖鞋摆放和床铺高度。',
+      objects_detected:['床','床头柜','地面','拖鞋','床品']
     },
     hallway:{
       risks:[
-        {title:'通道有绊倒物',description:'照片中通道地面可见疑似杂物或障碍物，夜间行走可能绊倒。',severity:'high',suggestion:'清理通道地面所有杂物、电线、拖鞋，保持行走路线畅通。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'通道地面是否有杂物、电线或拖鞋？',verification_type:'confirm'},
-        {title:'通道照明不足',description:'照片中未看到沿路线的连续照明设施，夜间起夜时存在暗角。',severity:'medium',suggestion:'沿行走路线安装感应夜灯，确保全程有照明。预估费用：约30-50元',cost:40,needs_verification:false},
-        {title:'通道有高差',description:'照片中疑似存在门槛或地面高低差，需人工确认。',severity:'medium',suggestion:'如有高差，加装橡胶坡道消除。预估费用：约30-60元',cost:50,needs_verification:true,verification_question:'通道中是否有门槛或地面高低差？',verification_type:'confirm'},
+        {title:'通道有绊倒物',description:'照片中通道地面可见疑似杂物或障碍物，夜间行走可能绊倒。需确认具体物品。',severity:'high',suggestion:'清理通道地面所有杂物、电线、拖鞋，保持行走路线畅通。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'通道地面是否有杂物、电线或拖鞋？',verification_type:'confirm'},
+        {title:'通道照明不足',description:'照片中通道未见沿路线的照明设施，夜间可能存在暗角。',severity:'medium',suggestion:'沿行走路线安装感应夜灯，确保全程有照明。预估费用：约30-50元',cost:40,needs_verification:false},
+        {title:'通道疑似有高差',description:'照片中地面疑似有高低变化或门槛，需人工确认是否存在高差。',severity:'medium',suggestion:'如有高差，加装橡胶坡道消除。预估费用：约30-60元',cost:50,needs_verification:true,verification_question:'通道中是否有门槛或地面高低差？',verification_type:'confirm'},
+        {title:'通道疑似偏窄',description:'照片中通道两侧有家具或门扇，有效通行宽度可能不足。需测量确认。',severity:'medium',suggestion:'移除通道两侧多余家具或物品，确保有效通行宽度充足。预估费用：免费（调整布局）',cost:0,needs_verification:true,verification_question:'通道扣除两侧家具后最窄处是否不足80cm？',verification_type:'measure'},
+        {title:'地面材质交界',description:'照片中地面疑似有两种不同材质交界，交界处未见过渡条。需确认是否存在材质突变。',severity:'low',suggestion:'在材质交界处加装过渡条，平滑过渡。预估费用：约20-40元',cost:30,needs_verification:true,verification_question:'通道地面是否有不同材质交界且无过渡条？',verification_type:'confirm'},
+        {title:'开关不显眼',description:'照片中墙面开关颜色与墙面接近，未见夜光标识，夜间可能不易找到。',severity:'low',suggestion:'更换高对比度开关面板，或贴夜光标识贴纸。预估费用：约10-20元',cost:15,needs_verification:false},
         {title:'家具边角靠近通道',description:'照片中可见家具边角靠近行走路线，夜间可能磕碰。',severity:'low',suggestion:'将家具移开行走路线，或在尖角处粘贴防撞条。预估费用：约10-20元',cost:15,needs_verification:false}
       ],
-      summary:'行走通道需关注地面障碍物、照明和地面高差。',
-      objects_detected:['地面','墙面','家具']
+      summary:'行走通道需关注地面障碍物、照明、高差、通行宽度和材质交界。',
+      objects_detected:['地面','墙面','家具','开关']
     },
     bathroom:{
       risks:[
-        {title:'入口门槛高差',description:'照片中卫生间入口疑似有门槛或挡水条，进出时可能绊倒。',severity:'high',suggestion:'加装橡胶坡道消除高差。预估费用：约30-60元',cost:50,needs_verification:true,verification_question:'卫生间门口是否有门槛或挡水条？',verification_type:'confirm'},
-        {title:'地面疑似湿滑',description:'照片中地面看起来光滑或反光，若有水渍会增加滑倒风险。',severity:'high',suggestion:'铺设防滑地垫，或在地砖上贴防滑贴。预估费用：约40-80元',cost:70,needs_verification:true,verification_question:'卫生间地面是否看起来光滑或有水渍？',verification_type:'confirm'},
-        {title:'入口无扶手',description:'照片中未看到卫生间入口附近的扶手或稳定支撑点。',severity:'medium',suggestion:'在入口墙面安装固定扶手。预估费用：约150-250元',cost:200,needs_verification:false},
-        {title:'入口空间拥挤',description:'照片中门口疑似有拖鞋、盆等物品占用入口空间。',severity:'low',suggestion:'清理门口物品，保持入口宽敞。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'卫生间门口是否有拖鞋、盆等物品占用空间？',verification_type:'confirm'}
+        {title:'入口门槛高差',description:'照片中卫生间入口可见门槛或挡水条，进出时可能绊倒。需确认高度。',severity:'high',suggestion:'加装橡胶坡道消除高差。预估费用：约30-60元',cost:50,needs_verification:true,verification_question:'卫生间门口是否有门槛或挡水条？',verification_type:'confirm'},
+        {title:'地面疑似湿滑',description:'照片中地面看起来较光滑或有反光，如有水渍会增加滑倒风险。需确认地面实际情况。',severity:'high',suggestion:'铺设防滑地垫，或在地砖上贴防滑贴。预估费用：约40-80元',cost:70,needs_verification:true,verification_question:'卫生间地面是否看起来光滑或有水渍？',verification_type:'confirm'},
+        {title:'入口无扶手',description:'照片中卫生间入口附近墙面未见扶手或稳定支撑点。',severity:'medium',suggestion:'在入口墙面及马桶侧墙安装固定扶手。预估费用：约150-250元',cost:200,needs_verification:false},
+        {title:'挡水条颜色接近地面',description:'照片中挡水条颜色与周围地面接近，视觉上不明显，夜间暗光下可能忽略。需确认是否容易辨认。',severity:'medium',suggestion:'在挡水条上贴高对比度警示贴条，提高夜间可见性。预估费用：约10-15元',cost:15,needs_verification:true,verification_question:'挡水条颜色是否与地面相近、不易辨认？',verification_type:'confirm'},
+        {title:'开关位置存疑',description:'照片中卫生间灯开关位置不明确，如开关在门外则需摸黑进入。需确认开关位置。',severity:'medium',suggestion:'如开关在门外，移至门内或增加感应灯联动。预估费用：约50-100元（电工改造）',cost:80,needs_verification:true,verification_question:'卫生间灯开关是在门内还是门外？',verification_type:'confirm'},
+        {title:'入口有物品占用',description:'照片中门口可见拖鞋、盆等物品占用入口空间。需确认是否影响通行。',severity:'low',suggestion:'清理门口物品，保持入口宽敞。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'卫生间门口是否有拖鞋、盆等物品占用空间？',verification_type:'confirm'}
       ],
-      summary:'卫生间入口需关注门槛、地面湿滑、扶手和入口拥挤问题。',
-      objects_detected:['门','地面','门槛']
+      summary:'卫生间入口需关注门槛高差、地面湿滑、扶手缺失、挡水条可见性和开关位置。',
+      objects_detected:['门','地面','门槛','挡水条','开关']
     }
   };
 
@@ -1511,14 +1805,14 @@ function buildAnalyzePrompt(areaName){
 
   // Area-specific identification rules
   const areaRules={
-    '床边起身区域':'【这张图的作用】\n判断老人从床上坐起、下床、第一脚落地时有没有风险。重点是"起身第一步是否安全"。\n\n【必须识别以下内容】\n1. 床边第一步落脚区是否干净：是否有拖鞋、地毯、杂物、电线、小凳子、垃圾桶、收纳箱等\n2. 床边是否有可见支撑点：如床头柜、墙面、固定家具、扶手\n3. 支撑点是否看起来可能不稳定：如小椅子、轻便桌、移动柜\n4. 床边是否有尖角或磕碰点：如床角、柜角、桌角\n5. 床边是否可见照明：如床头灯、小夜灯、感应灯、开关位置，或明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人会不会头晕\n2. 不判断老人平时是否一定会摔倒\n3. 不判断床垫软硬\n4. 不判断家具真实承重能力\n5. 不判断老人夜里一定会不会开灯\n6. 不判断老人实际起身习惯，这部分由问答题补充',
-    '行走通道':'【这张图的作用】\n判断老人从床边走到卫生间这段路是否顺畅，有没有绊倒、绕行、磕碰、照明断点。重点是"这几米路能不能顺着走"。\n\n【必须识别以下内容】\n1. 通道是否被占用：如椅子、凳子、收纳箱、垃圾桶、家具伸入通道\n2. 地面是否有绊倒物：如拖鞋、地毯、地垫、电线、杂物\n3. 是否存在门槛、高低差或地面边缘变化\n4. 家具边角是否靠近行走路线：如茶几角、柜角、桌角、床角、门框突出\n5. 通道是否明显狭窄或需要绕行\n6. 路线上是否可见连续照明，或者存在明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人走路速度\n2. 不判断老人视力好不好\n3. 不判断老人夜里是否会开灯\n4. 不判断宠物夜里是否会经过\n5. 不精确估算通道宽度是多少厘米，除非照片里有明确参照物\n6. 不凭空判断"这里一定会摔倒"',
-    '卫生间入口':'【这张图的作用】\n判断老人进入卫生间前后最容易出事的位置。重点是"门槛、湿滑、防滑、支撑和入口是否拥挤"。\n\n【必须识别以下内容】\n1. 是否可见门槛、挡水条、台阶或地面高低差\n2. 地面是否看起来光滑、反光，或有疑似水渍、湿滑迹象\n3. 是否有地垫、防滑垫，地垫是否可能移动、卷边或占据入口\n4. 是否可见扶手或稳定支撑点：如墙面扶手、马桶扶手、固定支撑\n5. 是否只有门把手、毛巾架、洗手台边缘等不适合作为主要支撑的借力点\n6. 门口是否有拖鞋、盆、垃圾桶、洗浴用品等占用入口空间\n\n【不许识别 / 不许乱猜】\n1. 不判断墙体能不能承重\n2. 不判断地面一定湿滑，只能说"疑似湿滑"或"若有水渍会增加风险"\n3. 不判断扶手一定安全，除非能明确看到是专用扶手\n4. 不判断老人一定会跌倒\n5. 不判断卫生间内部完整安全状况，因为这张图主要看入口\n6. 不替代人工确认门槛高度、防滑垫是否固定、地面是否真的有水'
+    '床边起身区域':'【这张图的作用】\n判断老人从床上坐起、下床、第一脚落地时有没有风险。核心逻辑：识别"下床第一步"的稳定性与可视性。\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【几何高度指标·床面离地高度】照片中通常无法准确判断床面离地高度，必须作为必检隐患输出。标准高度45-50cm（约小腿长度），50-55cm低风险，>55cm下床冲击力大易伤膝，<45cm起身费力。注意理想高度因人而异，与身高和小腿长度有关。必须设置needs_verification=true，verification_type=measure，向用户求证实际高度。\n\n2. 【垂落物检测·床品/衣物垂地长度】检测床单、被褥、衣物等非刚性物体是否向下延伸垂落至地面。风险阈值：垂地长度>10cm且覆盖落脚区。\n\n3. 【地面障碍物密度·落脚区物体密度】在床沿外扩50cm的矩形区域内，检测非固定物体（箱子、袋子、电线、拖鞋、小凳子等）的数量和占据面积比。风险阈值：覆盖率>15%或存在高度>5cm的物体。\n\n4. 【支撑物属性·床头柜稳固性特征】检测床头柜底部是否有轮子(Wheels)；检测材质是否为玻璃/高光面(Glass/Reflective)易碎或不稳。有轮子或玻璃材质的家具不适合作为起身支撑。\n\n5. 【拖鞋状态·拖鞋摆放姿态】检测拖鞋是否在床沿30cm范围内；检测是否成对且开口朝外（通过关键点检测鞋口方向）。散落、不成对或朝向不对的拖鞋增加绊倒风险。\n\n6. 床边是否有可见支撑点：如床头柜、墙面、固定家具、扶手\n\n7. 床边是否有尖角或磕碰点：如床角、柜角、桌角\n\n8. 床边是否可见照明：如床头灯、小夜灯、感应灯、开关位置，或明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人会不会头晕\n2. 不判断老人平时是否一定会摔倒\n3. 不判断床垫软硬\n4. 不判断家具真实承重能力\n5. 不判断老人夜里一定会不会开灯\n6. 不判断老人实际起身习惯，这部分由问答题补充',
+    '行走通道':'【这张图的作用】\n判断老人从床边走到卫生间这段路是否顺畅，有没有绊倒、绕行、磕碰、照明断点。核心逻辑：识别"行进中"的连续性障碍与视觉误导。\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【高差检测·门槛/地面落差】检测地面材质交界处的垂直边缘高度。风险阈值：高差>1.5cm有绊倒风险，>2cm轮椅受阻。需人工确认。\n\n2. 【门体状态·门开启角度】检测门扇与门框的夹角。风险指标：角度在15°-80°之间为半开状态，暗光下极易碰撞。需人工确认门的实际开合状态。\n\n3. 【通道净宽·有效通行宽度】扣除两侧家具/门扇后，计算通道最窄处宽度。风险阈值：<80cm助行器/轮椅难以通过。需人工测量确认。\n\n4. 【材质突变·地面摩擦系数突变】通过纹理分析识别地面材质交界（如木地板→瓷砖）。风险指标：存在明显材质边界且无过渡条，导致摩擦系数突变，行走时易滑倒。\n\n5. 【开关可视性·开关对比度与夜光】检测墙面开关面板与墙面的颜色对比度；检测开关上是否有发光点（夜光标识）。低对比度、无夜光标识的开关夜间难以定位。\n\n6. 通道是否被占用：如椅子、凳子、收纳箱、垃圾桶、家具伸入通道\n\n7. 地面是否有绊倒物：如拖鞋、地毯、地垫、电线、杂物\n\n8. 家具边角是否靠近行走路线：如茶几角、柜角、桌角、床角、门框突出\n\n9. 路线上是否可见连续照明，或存在明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人走路速度\n2. 不判断老人视力好不好\n3. 不判断老人夜里是否会开灯\n4. 不判断宠物夜里是否会经过\n5. 不凭空判断"这里一定会摔倒"',
+    '卫生间入口':'【这张图的作用】\n判断老人进入卫生间前后最容易出事的位置。核心逻辑：识别"干湿过渡区"的滑倒风险与操作逻辑。\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【挡水条特征·挡水条颜色对比度】计算挡水条颜色与周围地面的色差(Delta E)。风险指标：色差极小（同色系），暗光下不可见，容易忽略而绊倒。\n\n2. 【地面湿滑推断·地面反光率/光泽度】检测地面高光区域(Specular Highlights)的面积和强度。风险指标：高光面积大且集中，暗示瓷砖光滑或有水渍。\n\n3. 【路径障碍物·入口-马桶直线路径遮挡】连接"门中心点"与"马桶中心点"画线，检测线上是否有物体（如凳子、盆等）遮挡通行路径。\n\n4. 【扶手缺失·扶手存在性检测】在马桶侧墙、淋浴区墙面进行目标检测。风险指标：未检测到扶手类物体。\n\n5. 【开关逻辑·开关相对位置】检测开关在门框内侧还是外侧。风险指标：开关在门外，意味着必须"摸黑进入"湿滑区才能开灯。\n\n6. 【临时家具·移动物体检测】检测地面上是否有非固定家具（如塑料凳、脸盆、拖鞋等）。风险指标：物体位于高频行走路径上。\n\n7. 是否有地垫、防滑垫，地垫是否可能移动、卷边或占据入口\n\n8. 是否只有门把手、毛巾架、洗手台边缘等不适合作为主要支撑的借力点\n\n【不许识别 / 不许乱猜】\n1. 不判断墙体能不能承重\n2. 不判断地面一定湿滑，只能说"疑似湿滑"或"若有水渍会增加风险"\n3. 不判断扶手一定安全，除非能明确看到是专用扶手\n4. 不判断老人一定会跌倒\n5. 不判断卫生间内部完整安全状况，因为这张图主要看入口'
   };
 
   const rules=areaRules[areaName]||areaRules['床边起身区域'];
 
-  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张「'+areaName+'」的照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须具体描述照片中看到的实际情况（如"照片中床边地面有双拖鞋"），不能泛泛而谈\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
+  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【场景匹配验证（最高优先级，必须首先执行）】\n- 在分析隐患之前，必须先判断这张照片是否与预期场景「'+areaName+'」匹配\n- 判断标准：照片中是否包含该场景的核心元素（床边区域应有床、床垫、床头柜等；行走通道应有走廊、过道、门等；卫生间入口应有门、马桶、洗手台、淋浴区等）\n- 如果照片明显不是该场景（如卡通图、风景照、人物照、食物照、文字图、动物照、与家居环境完全无关的图片），必须返回 scene_match=false，不要输出任何隐患\n- 如果照片是家居环境但不是该场景（如上传的是厨房照片但要求分析床边），必须返回 scene_match=false，并说明"这张照片看起来是XX场景，不是XX场景，请上传正确的照片"\n- 只有当照片确实是该场景或包含该场景的核心元素时，才返回 scene_match=true 并继续分析隐患\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求（严格遵守）】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须只描述照片中实际看到的内容（如"照片中床边地面有一双拖鞋"），不能写AI分析方法名称（如"色差Delta E""高光区域面积""关键点检测"等），不能写技术术语\n- description中不能写阈值数字（如">1.5cm""<80cm""覆盖率>15%"），阈值只用于AI内部判断，不呈现给用户\n- 看不清或不确定的内容，用"疑似""可能""需确认"等措辞，不要下确定性结论\n- 如果照片中看不到某个指标的对应证据，就不要输出这个隐患\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({scene_match:true,scene_mismatch_reason:'',hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
 }
 
 // Smart positioning: assign (x, y, sz) based on hazard TITLE only.
@@ -1531,7 +1825,7 @@ function getSmartPosition(title, idx, total){
   // Score = length of matched keyword (longer = more specific = higher priority)
   const zones=[
     {kw:['床脚','床腿','地面','地板','地毯','门槛','电线','湿滑','防滑','杂物','杂乱','堆放','堆积','通道','动线','过道','狭窄','线缆','管路','水管','踢脚','拖鞋','障碍','收纳'], x:0.5, y:0.80, sz:0.16},
-    {kw:['床面','床垫','床高','床品','床单','被子','枕头'], x:0.5, y:0.45, sz:0.20},
+    {kw:['床面','床垫','床高','床品','床单','被子','枕头','离地高度','床铺高度'], x:0.5, y:0.45, sz:0.20},
     {kw:['床头柜','柜子','抽屉','衣架','挂衣','衣物','衣服','晾衣','架子','立架','收纳架'], x:0.75, y:0.35, sz:0.15},
     {kw:['夜灯','照明','光线','亮度','昏暗'], x:0.20, y:0.70, sz:0.12},
     {kw:['扶手','护栏','助力','支撑','拉手','栏杆','借力','起身','辅助'], x:0.15, y:0.45, sz:0.13},
@@ -1651,7 +1945,9 @@ function parseVisionResponse(respData, imgW, imgH){
 
   const objectsDetected=Array.isArray(parsed.objects_detected)?parsed.objects_detected.map(s=>String(s)):[];
   const summary=String(parsed.summary||'');
-  return {risks, objects_detected:objectsDetected, summary};
+  const sceneMatch=parsed.scene_match!==false; // default true if not specified
+  const sceneMismatchReason=String(parsed.scene_mismatch_reason||'');
+  return {risks, objects_detected:objectsDetected, summary, scene_match:sceneMatch, scene_mismatch_reason:sceneMismatchReason};
 }
 
 async function callQwenVision(photo, modelName, timeoutMs){
@@ -1878,6 +2174,13 @@ async function crossValidateWithGLM4(areaName, risks, objectsDetected, imgW, img
 }
 
 async function startAnalysis(){
+  // Final guard: do not proceed if no valid photos remain
+  if(uploadedPhotos.length===0){
+    alert('请先上传正确的场景照片');
+    goTo('screen-photo');
+    return;
+  }
+
   goTo('screen-analyze');
   // Make sure questions section is visible (may have been hidden by demo mode)
   const aq=document.getElementById('analyzeQuestions');
@@ -1953,6 +2256,7 @@ async function startAnalysis(){
 
   // Human-friendly step messages that cycle through analysis stages
   const stepMessages=[
+    {progress:15, title:'正在验证照片场景', sub:'确认照片与预期场景匹配'},
     {progress:30, title:'正在检查地面障碍', sub:'排查绊倒、湿滑、高差等隐患'},
     {progress:45, title:'正在检查家具边角', sub:'排查尖角、突出物、稳固性等隐患'},
     {progress:60, title:'正在检查照明设施', sub:'排查夜灯、开关、光线不足等隐患'},
@@ -2032,14 +2336,36 @@ async function startAnalysis(){
   for(let i=0;i<results.length;i++){
     const r=results[i];
     if(r.success){
-      analysisResults.push({
-        photo:r.photo,
-        risks:r.result.risks,
-        objects_detected:r.result.objects_detected,
-        summary:r.result.summary,
-        imgW:r.imgW,
-        imgH:r.imgH
-      });
+      // Check if AI detected scene mismatch
+      if(r.result.scene_match===false){
+        analysisResults.push({
+          photo:r.photo,
+          risks:[{
+            number:null,severity:'medium',bbox:null,
+            title:'照片与场景不匹配',
+            desc:r.result.scene_mismatch_reason||'这张照片看起来不是'+r.photo.area+'场景，请上传正确的照片。',
+            suggestion:'请重新拍摄并上传'+{bedside:'床边区域',hallway:'行走通道',bathroom:'卫生间入口'}[r.photo.area]+'的照片，确保照片中包含该场景的核心元素。',
+            cost:0,
+            needsVerification:false,
+            verificationQuestion:'',
+            verified:null
+          }],
+          objects_detected:[],
+          summary:'场景不匹配',
+          imgW:r.imgW,
+          imgH:r.imgH,
+          sceneMismatch:true
+        });
+      }else{
+        analysisResults.push({
+          photo:r.photo,
+          risks:r.result.risks,
+          objects_detected:r.result.objects_detected,
+          summary:r.result.summary,
+          imgW:r.imgW,
+          imgH:r.imgH
+        });
+      }
     }else{
       analysisResults.push({
         photo:r.photo,
@@ -2060,6 +2386,30 @@ async function startAnalysis(){
       });
     }
   }
+
+  // Ensure mandatory indicators: bed height for bedside area (skip scene mismatch)
+  analysisResults.forEach((ar)=>{
+    if(ar.sceneMismatch) return; // Skip scene mismatch results
+    const areaCode=ar.photo?ar.photo.area:'';
+    if(areaCode==='bedside'){
+      const hasBedHeight=ar.risks.some(rk=>rk.title.includes('离地高度')||rk.title.includes('床铺高度'));
+      if(!hasBedHeight){
+        ar.risks.push({
+          title:'床铺离地高度存疑',
+          description:'照片中无法判断床面离地高度。需向用户求证实际高度。',
+          severity:'medium',
+          suggestion:'理想床面高度为45-50cm（约小腿长度），以老人坐于床沿双脚平踏地面为宜。如过高可加装踏步凳，过低可加装床腿增高器。预估费用：约50-200元',
+          cost:120,
+          needs_verification:true,
+          verification_question:'请测量床面（床垫表面）到地面的垂直高度，输入数值：',
+          verification_type:'measure',
+          number:null,
+          bbox:null,
+          verified:null
+        });
+      }
+    }
+  });
 
   // Apply survey-based risk adjustments before rendering
   applySurveyAdjustments();
@@ -2142,10 +2492,14 @@ function renderAnalyzeThumbs(){
 }
 
 function updateProgress(pct,status,sub){
-  document.getElementById('progressFill').style.width=pct+'%';
-  document.getElementById('progressText').textContent=pct+'%';
-  if(status) document.getElementById('analyzeStatus').textContent=status;
-  if(sub) document.getElementById('analyzeSub').textContent=sub;
+  const progressFill=document.getElementById('progressFill');
+  const progressText=document.getElementById('progressText');
+  const analyzeStatus=document.getElementById('analyzeStatus');
+  const analyzeSub=document.getElementById('analyzeSub');
+  if(progressFill) progressFill.style.width=pct+'%';
+  if(progressText) progressText.textContent=pct+'%';
+  if(status && analyzeStatus) analyzeStatus.textContent=status;
+  if(sub && analyzeSub) analyzeSub.textContent=sub;
   // Stop spinner animation when complete or failed
   const ring=document.querySelector('.analyze-icon-ring');
   if(ring){
@@ -2446,6 +2800,41 @@ function renderResults(){
     const photo=result.photo;
     const risks=result.risks;
     const visibleRisks=risks.filter(r=>r.verified!==false);
+    // Sort: numbered risks first (by number), then global risks
+    const sortedRisks=visibleRisks.slice().sort((a,b)=>{
+      if(a.number!==null && b.number!==null) return a.number-b.number;
+      if(a.number!==null) return -1;
+      if(b.number!==null) return 1;
+      return 0;
+    });
+
+    // Handle scene mismatch
+    if(result.sceneMismatch){
+      return `
+      <div class="photo-result">
+        <div class="photo-result-header">
+          <span class="photo-result-icon">${{bedside:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>',hallway:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10.5 21l2-5-2-2-3-3"/><path d="M13.5 14l2 2 2-2-1-4-3-1"/><path d="M7 14l2-2"/></svg>',bathroom:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v4a4 4 0 0 1-4 4"/><circle cx="8" cy="2" r="1"/><path d="M7 14l-2 6"/><path d="M11 14l2 6"/><path d="M8.5 14v6"/></svg>'}[photo.area]||'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>'}</span>
+          <span class="photo-result-name">${getAreaName(photo.area)}</span>
+          <span class="photo-result-count" style="color:var(--accent)">场景不匹配</span>
+        </div>
+        <div class="photo-annotation-wrap">
+          <img src="${photo.dataUrl}" alt="${getAreaName(photo.area)}" onload="this.dataset.loaded='1'">
+        </div>
+        <div class="risk-list">
+          <div class="risk-card medium" style="border-left:4px solid var(--accent)">
+            <div class="risk-card-head">
+              <div class="risk-badge medium">!</div>
+              <span class="risk-title">${risks[0].title}</span>
+            </div>
+            <div class="risk-desc">${risks[0].desc}</div>
+            <div class="risk-suggestion" style="display:flex;align-items:flex-start;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg><span>${risks[0].suggestion}</span></div>
+            <div style="margin-top:12px;text-align:center">
+              <button onclick="goToReupload('${photo.area}')" style="padding:10px 24px;background:var(--accent2);color:#fff;border:none;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer">重新上传${getAreaName(photo.area)}照片</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
 
     return `
     <div class="photo-result">
@@ -2465,8 +2854,8 @@ function renderResults(){
       </div>`:''}
       <div class="risk-list">
         <div class="risk-list-title">隐患详情</div>
-        ${risks.length===0?'<div class="no-risk-note" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>未检测到明显安全隐患，请仍注意日常安全。</div>':''}
-        ${risks.map((r,ri)=>{
+        ${sortedRisks.length===0?'<div class="no-risk-note" style="display:flex;align-items:center;justify-content:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>未检测到明显安全隐患，请仍注意日常安全。</div>':''}
+        ${sortedRisks.map((r,ri)=>{
           r._riskIdx=ri;
           const badgeContent=r.number!==null?r.number:'全图';
           const badgeClass=r.number!==null?'':'global';
@@ -2477,12 +2866,11 @@ function renderResults(){
           }
           return `
           <div class="risk-card ${r.severity}">
-            <div class="risk-badge ${r.severity} ${badgeClass}">${badgeContent}</div>
-            <div class="risk-body">
-              <div class="risk-title-row">
-                <span class="risk-title">${r.title}</span>
-                <span class="risk-sev-tag ${r.severity}">${{high:'高风险',medium:'中风险',low:'低风险'}[r.severity]}</span>
-              </div>
+            <div class="risk-card-head">
+              <div class="risk-badge ${r.severity} ${badgeClass}">${badgeContent}</div>
+              <span class="risk-title">${r.title}</span>
+              <span class="risk-sev-tag ${r.severity}">${{high:'高风险',medium:'中风险',low:'低风险'}[r.severity]}</span>
+            </div>
               <div class="risk-desc">${r.desc}</div>
               ${surveyNote}
               <div class="risk-suggestion" style="display:flex;align-items:flex-start;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg><span>${stripCost(r.suggestion)}</span></div>
@@ -2503,7 +2891,6 @@ function renderResults(){
               </div>`:''}
               ${r.verified===true?'<div class="verify-resolved" style="display:flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>已确认存在此隐患'+(r.verifiedValue?('（用户输入：'+r.verifiedValue+'厘米）'):'')+'</div>':''}
               ${r.verified===false?'<div class="verify-resolved" style="color:var(--muted);display:flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>用户已排除此隐患</div>':''}
-            </div>
           </div>`;
         }).join('')}
       </div>
@@ -2805,10 +3192,48 @@ function verifyRiskMeasure(resultIdx,riskIdx){
     return;
   }
   const risk=analysisResults[resultIdx].risks[riskIdx];
-  risk.verified=true;
   risk.verifiedValue=value;
-  // If user reported a measurement, update the description
-  risk.desc=risk.desc+'（用户确认：'+value+'厘米）';
+  // Smart judgment based on measurement value
+  if(risk.title.includes('高度') || risk.title.includes('离地')){
+    if(value>=45 && value<=50){
+      // Safe range - exclude this hazard entirely
+      risk.verified=false;
+      risk.desc='用户测量床面高度为'+value+'厘米，在标准范围内（45-50cm），无安全隐患。';
+      risk.severity='low';
+      risk.suggestion='当前床面高度在标准范围内，无需调整。';
+    }else if(value>55){
+      risk.verified=true;
+      risk.desc='用户测量床面高度为'+value+'厘米，偏高，下床时冲击力大，增加跌倒风险。';
+      risk.severity='high';
+    }else if(value>=50){
+      risk.verified=true;
+      risk.desc='用户测量床面高度为'+value+'厘米，略高于标准范围，需关注。理想高度因人而异，以老人坐于床沿双脚平踏地面为宜。';
+      risk.severity='low';
+    }else if(value>=35){
+      risk.verified=true;
+      risk.desc='用户测量床面高度为'+value+'厘米，偏低，起身费力。理想高度因人而异，以老人坐于床沿双脚平踏地面为宜。';
+      risk.severity='medium';
+    }else{
+      risk.verified=true;
+      risk.desc='用户测量床面高度为'+value+'厘米，过低，起身困难，风险较大。';
+      risk.severity='high';
+    }
+  }else if(risk.title.includes('净宽') || risk.title.includes('宽度')){
+    if(value>=80){
+      // Meets standard - exclude this hazard
+      risk.verified=false;
+      risk.desc='用户测量通道宽度为'+value+'厘米，达标（≥80cm），无安全隐患。';
+      risk.severity='low';
+      risk.suggestion='当前通道宽度达标，无需调整。';
+    }else{
+      risk.verified=true;
+      risk.desc='用户测量通道宽度为'+value+'厘米，不足80cm，助行器或轮椅可能难以通过。';
+      risk.severity='medium';
+    }
+  }else{
+    risk.verified=true;
+    risk.desc=risk.desc+'（用户确认：'+value+'厘米）';
+  }
   renderResults();
   dynamicBudgetPlans=null;
 }
@@ -3982,6 +4407,7 @@ function startDemo(){
 }
 </script>
     </div>
+  </div>
   </div>
   <div class="phone-button"></div>
 </div>
