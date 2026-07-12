@@ -98,8 +98,8 @@ button{touch-action:manipulation;cursor:pointer}
 .route-badge.live{background:var(--soft);color:var(--accent2)}
 .route-badge.soon{background:#f0ede8;color:var(--muted)}
 
-.welcome-cta{padding:0 28px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
-.welcome-btn-row{display:flex;gap:10px;align-items:center}
+.welcome-cta{padding:0 28px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px));position:relative;z-index:10}
+.welcome-btn-row{display:flex;gap:10px;align-items:center;position:relative;z-index:5}
 .welcome-btn-row .btn-half{flex:1;width:auto;min-width:0;white-space:nowrap;padding:12px 8px;font-size:14px}
 .welcome-btn-row .btn-half .demo-btn-icon{display:inline-flex;align-items:center;gap:4px}
 .welcome-btn-row .btn-half .demo-btn-icon svg{flex-shrink:0}
@@ -291,14 +291,14 @@ button{touch-action:manipulation;cursor:pointer}
 .budget-item-reason{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
 
 /* ===== Report Screen ===== */
-.report-screen{padding-bottom:40px}
+.report-screen{padding-bottom:100px}
 .report-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100}
 .report-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .2s}
 .report-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
 .report-subtitle{font-size:13px;color:var(--muted);text-align:left;padding:12px 20px;line-height:1.5;background:var(--soft);border-bottom:1px solid var(--rule)}
 .share-btn-top{background:var(--accent2);color:#fff;border:none;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .share-btn-top:active{transform:scale(.97)}
-.report-bottom-actions{display:flex;gap:10px;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--rule);z-index:50}
+.report-bottom-actions{display:flex;gap:10px;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg);border-top:1px solid var(--rule);z-index:100}
 .btn-share{flex:1;padding:14px;background:var(--accent2);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
 .btn-share:active{transform:scale(.98)}
 .btn-restart{padding:14px 20px;background:var(--bg2);color:var(--muted);border:1.5px solid var(--rule);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
@@ -708,6 +708,7 @@ button:active{transform:scale(0.97)}
   }
   .phone-button{display:none}
   .app{max-width:none;width:100%;height:100%;min-height:auto;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  #screen-welcome.screen{overflow:visible}
 
   /* Each screen is a flex column filling the phone height */
   .phone-screen .screen{display:none;flex-direction:column;height:100%;min-height:100%;padding:0;overflow:hidden}
@@ -733,7 +734,7 @@ button:active{transform:scale(0.97)}
   /* Bottom bars - fixed at bottom via flex, no fixed/sticky positioning */
   .phone-screen .bottom-bar{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;padding:12px 20px 14px;background:var(--bg2);border-top:1px solid var(--rule)}
   .phone-screen .welcome-cta{position:relative;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;margin:0;padding:0 24px 16px;background:var(--bg)}
-  .phone-screen .report-bottom-actions{position:relative;bottom:auto;left:auto;right:auto;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;padding:12px 16px 14px;background:var(--bg);border-top:1px solid var(--rule)}
+  .phone-screen .report-bottom-actions{position:absolute;bottom:0;left:0;right:0;transform:none;max-width:none;width:100%;margin:0;flex-shrink:0;z-index:100;border-radius:0 0 44px 44px;padding:12px 16px 14px;background:var(--bg);border-top:1px solid var(--rule)}
   /* Reduce welcome hero padding on desktop */
   .phone-screen .welcome-hero{padding:34px 24px 20px}
   .demo-badge{position:absolute;top:14px;right:14px;z-index:200}
@@ -820,8 +821,8 @@ button:active{transform:scale(0.97)}
 
   <div class="welcome-cta">
     <div class="welcome-btn-row">
-      <button class="btn-primary btn-pulse btn-half" id="startBtn" onclick="goTo('screen-photo')">开始检查隐患</button>
-      <button class="btn-primary btn-accent btn-demo btn-half" onclick="startDemo()"><span class="demo-btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>一键演示</span></button>
+      <button class="btn-primary btn-pulse btn-half" id="startBtn" onclick="event.stopPropagation();goTo('screen-photo');" style="pointer-events:auto;cursor:pointer">开始检查隐患</button>
+      <button class="btn-primary btn-accent btn-demo btn-half" onclick="event.stopPropagation();startDemo();" style="pointer-events:auto;cursor:pointer"><span class="demo-btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>一键演示</span></button>
     </div>
     <div class="welcome-note">AI 视觉大模型 · 直接看图分析安全隐患 · 一键开始</div>
   </div>
@@ -1669,6 +1670,15 @@ function updateAnalyzeBtn(){
 // ===== Page initialization =====
 document.addEventListener('DOMContentLoaded',()=>{
   updateAnalyzeBtn();
+  // Ensure welcome page buttons work via addEventListener as fallback
+  const startBtn=document.getElementById('startBtn');
+  if(startBtn){
+    startBtn.addEventListener('click',(e)=>{ e.stopPropagation(); goTo('screen-photo'); });
+  }
+  const demoBtns=document.querySelectorAll('.btn-demo');
+  demoBtns.forEach(btn=>{
+    btn.addEventListener('click',(e)=>{ e.stopPropagation(); startDemo(); });
+  });
 });
 
 // ===== Global API Queue (prevents 429 rate limit) =====
@@ -1710,7 +1720,7 @@ function getFallbackAnalysis(photo, imgW, imgH){
         {title:'床边落脚区有杂物',description:'照片中床边地面可见散落物品，可能影响下床第一步落脚。需确认具体物品类型。',severity:'high',suggestion:'清理床边地面杂物，保持落脚区干净无障碍。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'床边地面是否有拖鞋、杂物或电线？',verification_type:'confirm'},
         {title:'床边无可见支撑',description:'照片中床边未见明显的固定扶手或稳固家具，老人起身时可能缺少借力点。',severity:'high',suggestion:'在床边安装固定扶手或确保床头柜稳固可借力。预估费用：约200-350元',cost:300,needs_verification:true,verification_question:'床边是否有稳固的支撑点（如固定扶手、床头柜）？',verification_type:'confirm'},
         {title:'床边无明显夜灯',description:'照片中床边未见床头灯、小夜灯或感应灯，夜间起夜可能摸黑。',severity:'medium',suggestion:'在床边安装人体感应夜灯，距地30-40cm。预估费用：约30-60元',cost:60,needs_verification:false},
-        {title:'床品垂落至地面',description:'照片中床单或被褥垂落较多，接近或触及地面，可能覆盖落脚区。需确认是否影响下床。',severity:'medium',suggestion:'将垂落的床品收拢至床面，不覆盖落脚区。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'床单或被褥是否垂落到地面并覆盖落脚区？',verification_type:'confirm'},
+        {title:'床品垂落至地面',description:'照片中可见床单或被褥边缘向下延伸并接触地面，可能覆盖床边落脚区。',severity:'medium',suggestion:'将垂落的床品收拢至床面，确保不接触地面、不覆盖落脚区。预估费用：免费（自己动手整理）',cost:0,needs_verification:true,verification_question:'照片中床单或被褥是否确实垂落到地面？',verification_type:'confirm'},
         {title:'拖鞋摆放散乱',description:'照片中床边地面可见拖鞋，摆放位置较远或不成对，老人下床时可能踩到或找不到。需确认实际摆放情况。',severity:'medium',suggestion:'将拖鞋成对摆放在床沿附近、开口朝外，固定位置。预估费用：免费（调整摆放位置）',cost:0,needs_verification:true,verification_question:'拖鞋是否在床沿附近且成对摆放？',verification_type:'confirm'},
         {title:'床头柜稳固性存疑',description:'照片中床头柜看起来较轻便或带轮子，受力时可能移动，不适合作为起身支撑。需确认是否有轮子。',severity:'low',suggestion:'更换为无轮固定床头柜，或锁死轮子制动装置。预估费用：约100-300元（更换）',cost:200,needs_verification:true,verification_question:'床头柜是否有轮子或为玻璃材质？',verification_type:'confirm'},
         {title:'床边尖角风险',description:'照片中可见家具边角靠近床边，老人起夜时可能磕碰。需确认具体位置。',severity:'low',suggestion:'在家具尖角处粘贴防撞条或防撞角。预估费用：约10-20元',cost:15,needs_verification:true,verification_question:'床边是否有家具尖角或突出物？',verification_type:'confirm'},
@@ -1805,14 +1815,14 @@ function buildAnalyzePrompt(areaName){
 
   // Area-specific identification rules
   const areaRules={
-    '床边起身区域':'【这张图的作用】\n判断老人从床上坐起、下床、第一脚落地时有没有风险。核心逻辑：识别"下床第一步"的稳定性与可视性。\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【几何高度指标·床面离地高度】照片中通常无法准确判断床面离地高度，必须作为必检隐患输出。标准高度45-50cm（约小腿长度），50-55cm低风险，>55cm下床冲击力大易伤膝，<45cm起身费力。注意理想高度因人而异，与身高和小腿长度有关。必须设置needs_verification=true，verification_type=measure，向用户求证实际高度。\n\n2. 【垂落物检测·床品/衣物垂地长度】检测床单、被褥、衣物等非刚性物体是否向下延伸垂落至地面。风险阈值：垂地长度>10cm且覆盖落脚区。\n\n3. 【地面障碍物密度·落脚区物体密度】在床沿外扩50cm的矩形区域内，检测非固定物体（箱子、袋子、电线、拖鞋、小凳子等）的数量和占据面积比。风险阈值：覆盖率>15%或存在高度>5cm的物体。\n\n4. 【支撑物属性·床头柜稳固性特征】检测床头柜底部是否有轮子(Wheels)；检测材质是否为玻璃/高光面(Glass/Reflective)易碎或不稳。有轮子或玻璃材质的家具不适合作为起身支撑。\n\n5. 【拖鞋状态·拖鞋摆放姿态】检测拖鞋是否在床沿30cm范围内；检测是否成对且开口朝外（通过关键点检测鞋口方向）。散落、不成对或朝向不对的拖鞋增加绊倒风险。\n\n6. 床边是否有可见支撑点：如床头柜、墙面、固定家具、扶手\n\n7. 床边是否有尖角或磕碰点：如床角、柜角、桌角\n\n8. 床边是否可见照明：如床头灯、小夜灯、感应灯、开关位置，或明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人会不会头晕\n2. 不判断老人平时是否一定会摔倒\n3. 不判断床垫软硬\n4. 不判断家具真实承重能力\n5. 不判断老人夜里一定会不会开灯\n6. 不判断老人实际起身习惯，这部分由问答题补充',
+    '床边起身区域':'【这张图的作用】\n判断老人从床上坐起、下床、第一脚落地时有没有风险。核心逻辑：识别"下床第一步"的稳定性与可视性。\n\n【空间关系识别原则（必须遵守）】\n- AI不能只输出"图中有床、被褥、衣物"这类物体清单，必须先描述每个相关物体的空间位置\n- 对每个物体的描述必须包含：它在什么家具的什么部位、是否接触地面、距离地面大概多高\n- 例如："床尾堆放的被褥和衣物位于床垫表面，未超出床沿，未接触地面"\n- 例如："床单左侧边缘垂落至地面，覆盖床沿下方区域"\n- 不允许使用"可能""疑似延伸至地面""部分可能"等猜测性表达作为结论\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【几何高度指标·床面离地高度】照片中通常无法准确判断床面离地高度，必须作为必检隐患输出。标准高度45-50cm（约小腿长度），50-55cm低风险，>55cm下床冲击力大易伤膝，<45cm起身费力。注意理想高度因人而异，与身高和小腿长度有关。必须设置needs_verification=true，verification_type=measure，向用户求证实际高度。\n\n2. 【垂落物检测·床品/衣物垂地长度】只有当你能清晰看到床单、被褥、衣物等物体的边缘向下延伸并实际接触地面，或者明显超出床沿悬空下垂（能判断下垂长度超过5cm）时，才输出此隐患。如果物体只是放在床上、椅子上或窗台上，没有接触地面，不要输出此隐患。必须在description中明确写出"垂落的边缘接触地面"或"超出床沿约X厘米"。\n\n3. 【地面障碍物密度·落脚区物体密度】在床沿外扩50cm的矩形区域内，检测非固定物体（箱子、袋子、电线、拖鞋、小凳子等）的数量和占据面积比。风险阈值：覆盖率>15%或存在高度>5cm的物体。只输出确实位于地面/地板上的物体，不要把床上、窗台、椅子上的物体算入。\n\n4. 【支撑物属性·床头柜稳固性特征】检测床头柜底部是否有轮子(Wheels)；检测材质是否为玻璃/高光面(Glass/Reflective)易碎或不稳。有轮子或玻璃材质的家具不适合作为起身支撑。\n\n5. 【拖鞋状态·拖鞋摆放姿态】检测拖鞋是否在地面上、床沿30cm范围内；检测是否成对且开口朝外。不要把床上、椅子上的鞋误识别为拖鞋。\n\n6. 床边是否有可见支撑点：如床头柜、墙面、固定家具、扶手\n\n7. 床边是否有尖角或磕碰点：如床角、柜角、桌角\n\n8. 床边是否可见照明：如床头灯、小夜灯、感应灯、开关位置，或明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人会不会头晕\n2. 不判断老人平时是否一定会摔倒\n3. 不判断床垫软硬\n4. 不判断家具真实承重能力\n5. 不判断老人夜里一定会不会开灯\n6. 不判断老人实际起身习惯，这部分由问答题补充\n7. 不允许因为"被褥""衣物""床单"等关键词就默认输出"垂落"隐患，必须确认其与地面的实际空间关系',
     '行走通道':'【这张图的作用】\n判断老人从床边走到卫生间这段路是否顺畅，有没有绊倒、绕行、磕碰、照明断点。核心逻辑：识别"行进中"的连续性障碍与视觉误导。\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【高差检测·门槛/地面落差】检测地面材质交界处的垂直边缘高度。风险阈值：高差>1.5cm有绊倒风险，>2cm轮椅受阻。需人工确认。\n\n2. 【门体状态·门开启角度】检测门扇与门框的夹角。风险指标：角度在15°-80°之间为半开状态，暗光下极易碰撞。需人工确认门的实际开合状态。\n\n3. 【通道净宽·有效通行宽度】扣除两侧家具/门扇后，计算通道最窄处宽度。风险阈值：<80cm助行器/轮椅难以通过。需人工测量确认。\n\n4. 【材质突变·地面摩擦系数突变】通过纹理分析识别地面材质交界（如木地板→瓷砖）。风险指标：存在明显材质边界且无过渡条，导致摩擦系数突变，行走时易滑倒。\n\n5. 【开关可视性·开关对比度与夜光】检测墙面开关面板与墙面的颜色对比度；检测开关上是否有发光点（夜光标识）。低对比度、无夜光标识的开关夜间难以定位。\n\n6. 通道是否被占用：如椅子、凳子、收纳箱、垃圾桶、家具伸入通道\n\n7. 地面是否有绊倒物：如拖鞋、地毯、地垫、电线、杂物\n\n8. 家具边角是否靠近行走路线：如茶几角、柜角、桌角、床角、门框突出\n\n9. 路线上是否可见连续照明，或存在明显暗角\n\n【不许识别 / 不许乱猜】\n1. 不判断老人走路速度\n2. 不判断老人视力好不好\n3. 不判断老人夜里是否会开灯\n4. 不判断宠物夜里是否会经过\n5. 不凭空判断"这里一定会摔倒"',
     '卫生间入口':'【这张图的作用】\n判断老人进入卫生间前后最容易出事的位置。核心逻辑：识别"干湿过渡区"的滑倒风险与操作逻辑。\n\n【必须识别以下内容（每项对应一个AI检测指标）】\n\n1. 【挡水条特征·挡水条颜色对比度】计算挡水条颜色与周围地面的色差(Delta E)。风险指标：色差极小（同色系），暗光下不可见，容易忽略而绊倒。\n\n2. 【地面湿滑推断·地面反光率/光泽度】检测地面高光区域(Specular Highlights)的面积和强度。风险指标：高光面积大且集中，暗示瓷砖光滑或有水渍。\n\n3. 【路径障碍物·入口-马桶直线路径遮挡】连接"门中心点"与"马桶中心点"画线，检测线上是否有物体（如凳子、盆等）遮挡通行路径。\n\n4. 【扶手缺失·扶手存在性检测】在马桶侧墙、淋浴区墙面进行目标检测。风险指标：未检测到扶手类物体。\n\n5. 【开关逻辑·开关相对位置】检测开关在门框内侧还是外侧。风险指标：开关在门外，意味着必须"摸黑进入"湿滑区才能开灯。\n\n6. 【临时家具·移动物体检测】检测地面上是否有非固定家具（如塑料凳、脸盆、拖鞋等）。风险指标：物体位于高频行走路径上。\n\n7. 是否有地垫、防滑垫，地垫是否可能移动、卷边或占据入口\n\n8. 是否只有门把手、毛巾架、洗手台边缘等不适合作为主要支撑的借力点\n\n【不许识别 / 不许乱猜】\n1. 不判断墙体能不能承重\n2. 不判断地面一定湿滑，只能说"疑似湿滑"或"若有水渍会增加风险"\n3. 不判断扶手一定安全，除非能明确看到是专用扶手\n4. 不判断老人一定会跌倒\n5. 不判断卫生间内部完整安全状况，因为这张图主要看入口'
   };
 
   const rules=areaRules[areaName]||areaRules['床边起身区域'];
 
-  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【场景匹配验证（最高优先级，必须首先执行）】\n- 在分析隐患之前，必须先判断这张照片是否与预期场景「'+areaName+'」匹配\n- 判断标准：照片中是否包含该场景的核心元素（床边区域应有床、床垫、床头柜等；行走通道应有走廊、过道、门等；卫生间入口应有门、马桶、洗手台、淋浴区等）\n- 如果照片明显不是该场景（如卡通图、风景照、人物照、食物照、文字图、动物照、与家居环境完全无关的图片），必须返回 scene_match=false，不要输出任何隐患\n- 如果照片是家居环境但不是该场景（如上传的是厨房照片但要求分析床边），必须返回 scene_match=false，并说明"这张照片看起来是XX场景，不是XX场景，请上传正确的照片"\n- 只有当照片确实是该场景或包含该场景的核心元素时，才返回 scene_match=true 并继续分析隐患\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求（严格遵守）】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须只描述照片中实际看到的内容（如"照片中床边地面有一双拖鞋"），不能写AI分析方法名称（如"色差Delta E""高光区域面积""关键点检测"等），不能写技术术语\n- description中不能写阈值数字（如">1.5cm""<80cm""覆盖率>15%"），阈值只用于AI内部判断，不呈现给用户\n- 看不清或不确定的内容，用"疑似""可能""需确认"等措辞，不要下确定性结论\n- 如果照片中看不到某个指标的对应证据，就不要输出这个隐患\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({scene_match:true,scene_mismatch_reason:'',hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm'}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
+  return '你是居家安全评估专家，专注老年人跌倒预防和居家适老化改造。请仔细观察这张照片，按照下方识别规范进行分析。\n\n'+rules+'\n\n【总规则（适用于所有图片）】\n- AI只识别照片中可见的空间证据；看不清的地方必须标记为"需人工确认"\n- 最终风险报告必须结合图片识别结果和8个问答答案共同生成\n- 不能凭空推断老人行为、健康状态、真实使用习惯、家具承重能力、地面真实湿滑程度\n- 不能使用"必然摔倒""非常危险""严重事故"等恐吓表达\n\n【场景匹配验证（最高优先级，必须首先执行）】\n- 在分析隐患之前，必须先判断这张照片是否与预期场景「'+areaName+'」匹配\n- 判断标准：照片中是否包含该场景的核心元素（床边区域应有床、床垫、床头柜等；行走通道应有走廊、过道、门等；卫生间入口应有门、马桶、洗手台、淋浴区等）\n- 如果照片明显不是该场景（如卡通图、风景照、人物照、食物照、文字图、动物照、与家居环境完全无关的图片），必须返回 scene_match=false，不要输出任何隐患\n- 如果照片是家居环境但不是该场景（如上传的是厨房照片但要求分析床边），必须返回 scene_match=false，并说明"这张照片看起来是XX场景，不是XX场景，请上传正确的照片"\n- 只有当照片确实是该场景或包含该场景的核心元素时，才返回 scene_match=true 并继续分析隐患\n\n【老人行为习惯（来自问卷，必须结合分析）】\n'+surveySummary+'\n\n【分析要求（严格遵守）】\n- 只报告照片中真实可见的隐患，不要编造照片中不存在的隐患\n- 每个隐患的description必须只描述照片中实际看到的内容（如"照片中床边地面有一双拖鞋"），不能写AI分析方法名称（如"色差Delta E""高光区域面积""关键点检测"等），不能写技术术语\n- description中不能写阈值数字（如">1.5cm""<80cm""覆盖率>15%"），阈值只用于AI内部判断，不呈现给用户\n- 看不清或不确定的内容，用"疑似""可能""需确认"等措辞，不要下确定性结论\n- 如果照片中看不到某个指标的对应证据，就不要输出这个隐患\n- 结合问卷信息判断风险等级和优先级（如老人起夜急、不开灯，则照明和地面隐患优先级更高）\n- suggestion要具体可操作，包含预估费用\n- 看不清或不确定的隐患，必须设置needs_verification=true，向用户提问确认\n\n请以严格JSON格式返回（不要包含markdown代码块标记），结构如下：'+JSON.stringify({scene_match:true,scene_mismatch_reason:'',hazards:[{title:'隐患简称（4-6个字）',description:'详细说明（必须描述照片中实际看到的内容，包含物体空间位置）',severity:'high/medium/low',suggestion:'具体整改建议',cost:0,needs_verification:false,verification_question:'',verification_type:'confirm',location:{x:0.5,y:0.5,width:0.15,height:0.15}}],summary:'整体评估',objects_detected:['照片中识别到的物品']}).replace(/"/g,'\"');
 }
 
 // Smart positioning: assign (x, y, sz) based on hazard TITLE only.
@@ -1931,6 +1941,29 @@ function parseVisionResponse(respData, imgW, imgH){
       verificationType:String(h.verification_type||'confirm'),
       verified:null
     };
+  });
+
+  // Spatial validation: for hazards that require contact with ground, verify bbox position
+  risks.forEach(r=>{
+    const t=String(r.title||'').toLowerCase();
+    if(t.includes('垂落') || t.includes('落地') || t.includes('地面杂物') || t.includes('地面障碍') || t.includes('绊倒物')){
+      if(r.bbox){
+        const bottomY=(r.bbox[1]+r.bbox[3])/imgH;
+        // If the claimed ground-related hazard's bbox bottom is not in the lower 30% of image,
+        // it's likely not actually on the ground (bed/counter/window sill instead)
+        if(bottomY<0.70){
+          r.needsVerification=true;
+          if(!r.verificationQuestion){
+            r.verificationQuestion='照片中该隐患所在位置是否确实接触地面或位于地面上？';
+            r.verificationType='confirm';
+          }
+          // Adjust description to reflect uncertainty
+          if(t.includes('垂落')){
+            r.desc=r.desc+'（系统提示：该隐患标注位置偏上，请确认是否确实垂落至地面）';
+          }
+        }
+      }
+    }
   });
 
   // Sort by severity: high > medium > low
@@ -2056,7 +2089,7 @@ async function crossValidateWithGLM4(areaName, risks, objectsDetected, imgW, img
     verification_question:r.verificationQuestion
   }));
 
-  const validatePrompt='你是一位严谨的居家安全审查专家。另一个AI视觉模型刚刚分析了一张'+areaName+'的照片，识别出了以下安全隐患：\n\n'+JSON.stringify(hazardsForReview,null,2)+'\n\n同时，视觉模型检测到照片中有以下物品：'+JSON.stringify(objectsDetected)+'\n\n请对这些隐患进行交叉审查，返回严格JSON格式（不要markdown代码块）：\n{\n  "reviewed_hazards": [\n    {\n      "original_index": 0,\n      "action": "keep/remove/downgrade/upgrade",\n      "reason": "判断理由",\n      "adjusted_severity": "high/medium/low",\n      "add_verification": false,\n      "verification_question": "",\n      "verification_type": "confirm"\n    }\n  ],\n  "missed_hazards": [\n    {\n      "title": "遗漏的隐患",\n      "description": "说明",\n      "severity": "high/medium/low",\n      "suggestion": "建议",\n      "cost": 0,\n      "needs_verification": false,\n      "verification_question": "",\n      "verification_type": "confirm"\n    }\n  ],\n  "overall_assessment": "整体审查结论"\n}\n\n审查规则：\n1. action="remove"：如果某个识别结果明显错误（比如把正常家具误判为隐患，或者描述不构成安全风险），标记为 remove\n2. action="downgrade"：如果风险等级被高估（如把轻微问题标为高风险），降低等级\n3. action="upgrade"：如果风险等级被低估（如把电线杂乱标为低风险），提高等级\n4. action="keep"：识别准确，保持不变\n5. 如果某个隐患的判断依据不足，设置 add_verification=true 并写 verification_question 和 verification_type：\n   - 不确定物品是什么：verification_type="confirm"，如"地上的是不是电线？"\n   - 描述中用了"目测""大约""可能"等不确定词：verification_type="measure"或"confirm"\n     例如"目测不足30cm"→verification_question="床边通道宽度是否不足30厘米？" verification_type="confirm"\n     或"床面离地高度大约是多少厘米？" verification_type="measure"\n   - 能用是非问法就用confirm类型\n   - 【关键】所有问题必须从"确认风险存在"的角度提问，让用户回答"是"=确认有隐患，"否"=排除隐患\n     错误示例："是否安装了夜灯？"（答是=已安装=没风险，跟按钮冲突）\n     正确示例："是否没有安装夜灯？"（答是=没安装=确认风险）\n6. missed_hazards：根据检测到的物品，判断视觉模型是否遗漏了重要隐患\n7. 如果视觉模型的分析已经足够准确，missed_hazards 返回空数组\n8. overall_assessment 写一句对这次分析质量的评价';
+  const validatePrompt='你是一位严谨的居家安全审查专家。另一个AI视觉模型刚刚分析了一张'+areaName+'的照片，识别出了以下安全隐患：\n\n'+JSON.stringify(hazardsForReview,null,2)+'\n\n同时，视觉模型检测到照片中有以下物品：'+JSON.stringify(objectsDetected)+'\n\n请对这些隐患进行交叉审查，重点审查"描述是否与照片事实相符""是否基于空间关系下结论"，返回严格JSON格式（不要markdown代码块）：\n{\n  "reviewed_hazards": [\n    {\n      "original_index": 0,\n      "action": "keep/remove/downgrade/upgrade",\n      "reason": "判断理由",\n      "adjusted_severity": "high/medium/low",\n      "add_verification": false,\n      "verification_question": "",\n      "verification_type": "confirm"\n    }\n  ],\n  "missed_hazards": [\n    {\n      "title": "遗漏的隐患",\n      "description": "说明",\n      "severity": "high/medium/low",\n      "suggestion": "建议",\n      "cost": 0,\n      "needs_verification": false,\n      "verification_question": "",\n      "verification_type": "confirm"\n    }\n  ],\n  "overall_assessment": "整体审查结论"\n}\n\n审查规则：\n【最高优先级：图文一致性审查】\n- 必须判断每个隐患的description描述的内容在照片中是否真实可见\n- 如果description只是列出了"图中有XX物体"但没有说明该物体与地面的空间关系，对于"垂落""绊倒""障碍物"类隐患，属于依据不足，必须 remove 或 add_verification\n- 对于"床品垂落""衣物垂落"类隐患：如果描述只说"床尾有被褥""衣物在床上"而没有明确说"边缘接触地面"或"超出床沿悬空下垂"，必须 remove，因为放在床上不构成垂落隐患\n- 对于"地面障碍物"类隐患：必须确认物体确实在地面上，而不是在床上、椅子上、窗台上\n- 如果description中出现"可能""疑似""部分可能""大约""目测"等不确定性词汇却下了确定性结论，必须 add_verification 或 remove\n\n1. action="remove"：如果某个识别结果明显错误（比如把正常家具误判为隐患，或者描述不构成安全风险，或者空间关系判断错误），标记为 remove\n2. action="downgrade"：如果风险等级被高估（如把轻微问题标为高风险），降低等级\n3. action="upgrade"：如果风险等级被低估（如把电线杂乱标为低风险），提高等级\n4. action="keep"：识别准确、空间关系清楚、描述与图片一致，保持不变\n5. 如果某个隐患的判断依据不足，设置 add_verification=true 并写 verification_question 和 verification_type：\n   - 不确定物品是什么：verification_type="confirm"，如"地上的是不是电线？"\n   - 描述中用了"目测""大约""可能"等不确定词：verification_type="measure"或"confirm"\n     例如"目测不足30cm"→verification_question="床边通道宽度是否不足30厘米？" verification_type="confirm"\n     或"床面离地高度大约是多少厘米？" verification_type="measure"\n   - 能用是非问法就用confirm类型\n   - 【关键】所有问题必须从"确认风险存在"的角度提问，让用户回答"是"=确认有隐患，"否"=排除隐患\n     错误示例："是否安装了夜灯？"（答是=已安装=没风险，跟按钮冲突）\n     正确示例："是否没有安装夜灯？"（答是=没安装=确认风险）\n6. missed_hazards：根据检测到的物品，判断视觉模型是否遗漏了重要隐患\n7. 如果视觉模型的分析已经足够准确，missed_hazards 返回空数组\n8. overall_assessment 写一句对这次分析质量的评价';
 
   let resp;
   resp=await fetchWithRetry('https://ark.cn-beijing.volces.com/api/v3/chat/completions',{
